@@ -1,0 +1,17 @@
+{
+  "public_e_buses": 120,
+  "cng_stations": 45,
+  "microbuses_cng_percent": 68.5,
+  "electric_vehicles": 950,
+  "charging_points": 220,
+  "bike_lanes_km": 75,
+  "bike_trips_per_day": 320,
+  "bike_trips_total": 58400,
+  "bike_sharing_stations": 18,
+  "taxis_cng_percent": 72.3,
+  "tourist_vehicles": {
+    "cars": 300,
+    "minibuses": 120,
+    "buses": 55
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "generation_collection": {
+    "total_generated_tpd": {
+      "MSW": 150,
+      "C&D": 90,
+      "other": 40
+    },
+    "recyclable_generated_tpd": {
+      "Paper": 25,
+      "Plastic": 20,
+      "Glass": 10,
+      "Metal": 15
+    },
+    "collection_efficiency_percent": 92.5,
+    "overflow_rate_percent": 8.4,
+    "collected_uco_liters": {
+      "January": 1200,
+      "February": 1350,
+      "March": 1280
+    }
+  },
+  "processing_diversion": {
+    "overall_diversion_rate_percent": 47.2,
+    "biodiesel_from_uco_liters": 980,
+    "overall_recycling_rate_percent": 32.5,
+    "source_segregation": {
+      "participation_rate_percent": 64.3
+    },
+    "organic_waste_composting_percent": 28.9
+  },
+  "hazardous_waste": {
+    "medical_waste_tpm": 65,
+    "weee_collected_tpm": 18,
+    "weee_processing": {
+      "recycled_refurbished_percent": 70.4,
+      "hazardous_material_removed_percent": 88.2
+    }
+  },
+  "circular_engagement": {
+    "local_initiatives": 14,
+    "stakeholder_engagement_events": 9,
+    "estimated_participants": 1200
+  }
+}

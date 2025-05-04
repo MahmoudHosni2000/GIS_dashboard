@@ -1,0 +1,42 @@
+{
+  "tourism_boats_daily": {
+    "Site A": 14,
+    "Site B": 9,
+    "Site C": 6
+  },
+  "operational_moorings": {
+    "Site A": 12,
+    "Site B": 7,
+    "Site C": 5
+  },
+  "coral_change_percent": -12.5,
+  "trained_crew_percent": 82,
+  "trained_guides_percent": 74,
+  "eco_friendly_sports_percent": 41,
+  "sustainability_incentives": 8,
+  "visitors_per_site": {
+    "Site A": 1500,
+    "Site B": 980,
+    "Site C": 730
+  },
+  "green_fins_growth_percent": 22,
+  "green_fins_operator_incentives": 6,
+  "reef_species_change_percent": 17,
+  "pa_trained_personnel_percent": 36,
+  "pa_budget_growth_percent": 12,
+  "enforcement_patrols": 28,
+  "boats_with_holding_tanks": 11,
+  "nutrient_level_reduction_percent": 15.3,
+  "pump_out_facility_boats": 9,
+  "effluent_quality_improvement_percent": 10.6,
+  "grey_water_reduction_percent": 9.2,
+  "reef_safe_product_operators": 13,
+  "marine_cleanups": 19,
+  "coastal_damage_reports": 4,
+  "illegal_fishing_reports": 5,
+  "enforcement_actions": 23,
+  "bird_mortality_decrease_percent": 6.4,
+  "bird_rehab_actions": 7,
+  "protected_turtle_sites": 11,
+  "rescued_turtles": 16
+}

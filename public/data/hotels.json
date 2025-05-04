@@ -1,0 +1,30 @@
+{
+  "hotel": {
+    "name": "Sunrise Grand Resort",
+    "location": "Sector A - Red Sea",
+    "number_of_rooms": 250,
+    "plane_trips": 580,
+    "visitors": 12500,
+    "star_rating": {
+      "five_stars": 1,
+      "four_stars": 0
+    },
+    "pv_capacity_kw": 120,
+    "solar_water_heater": true,
+    "has_desalination_plant": true,
+    "has_treatment_plant": false,
+    "separates_waste": true,
+    "electricity_consumption_kw_per_year": {
+      "2021": 420000,
+      "2022": 435000,
+      "2023": 415500,
+      "2024": 440200
+    },
+    "accommodation_percentage": {
+      "2021": 68.4,
+      "2022": 72.1,
+      "2023": 75.3,
+      "2024": 78.6
+    }
+  }
+}

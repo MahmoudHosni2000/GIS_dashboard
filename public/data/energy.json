@@ -1,0 +1,38 @@
+{
+  "pv_capacity_mwp": 18.5,
+  "monthly_generation_mwh": [
+    1000,
+    1050,
+    1100,
+    950,
+    1020,
+    1080
+  ],
+  "monthly_consumption_mwh": [
+    1200,
+    1150,
+    1180,
+    1250,
+    1230,
+    1220
+  ],
+  "smart_rooms": 72,
+  "dimmable_area_percent": 65,
+  "smart_room_energy": [
+    {
+      "room": "Raom",
+      "energy_usage": "42 kWh",
+      "status": "Optimized"
+    },
+    {
+      "room": "Jeddah",
+      "energy_usage": "37 kWh",
+      "status": "Moderate"
+    },
+    {
+      "room": "Riyadh",
+      "energy_usage": "50 kWh",
+      "status": "High"
+    }
+  ]
+}

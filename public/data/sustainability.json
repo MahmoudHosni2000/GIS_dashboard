@@ -1,0 +1,20 @@
+{
+  "solar_capacity_mw": 215,
+  "sustainable_transport_index": {
+    "public_transport_share_percent": 43,
+    "bike_lanes_km": 132,
+    "pedestrian_zones_km": 54
+  },
+  "green_infra_coverage_percent": {
+    "parks": 14.2,
+    "green_roofs": 3.8,
+    "urban_forests": 5.7
+  },
+  "waste_to_energy_mwh_per_year": 8450,
+  "climate_risk_index": 6.2,
+  "circular_economy_score_percent": 48,
+  "water_energy_nexus_efficiency": {
+    "energy_per_m3_water_kwh": 1.6
+  },
+  "carbon_neutrality_progress_percent": 36.5
+}

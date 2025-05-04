@@ -1,0 +1,33 @@
+{
+  "population": {
+    "male": 100000,
+    "female": 95000,
+    "children": 30000,
+    "elderly": 15000
+  },
+  "hospitals": 12,
+  "hotels": {
+    "green_star": 25,
+    "non_green_star": 40
+  },
+  "energy_coverage_percent": 38,
+
+  "pv_vs_consumption": [
+    { "month": "Jan", "pv": 420, "consumption": 620 },
+    { "month": "Feb", "pv": 380, "consumption": 600 },
+    { "month": "Mar", "pv": 460, "consumption": 590 },
+    { "month": "Apr", "pv": 500, "consumption": 630 },
+    { "month": "May", "pv": 580, "consumption": 640 },
+    { "month": "Jun", "pv": 610, "consumption": 700 }
+  ],
+
+  "waste_trends": [
+    { "day": "Sun", "waste": 18 },
+    { "day": "Mon", "waste": 25 },
+    { "day": "Tue", "waste": 22 },
+    { "day": "Wed", "waste": 30 },
+    { "day": "Thu", "waste": 27 },
+    { "day": "Fri", "waste": 35 },
+    { "day": "Sat", "waste": 28 }
+  ]
+}
