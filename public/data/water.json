@@ -1,19 +1,52 @@
 {
-  "water_consumption_per_capita": 125,
+  "water_consumption_per_capita": {
+    "cityA": 120,
+    "cityB": 130
+  },
   "desalination_plants": {
-    "city": 4,
-    "hotels": 7
+    "cityA": {
+      "municipal": 3,
+      "hotels": 2
+    },
+    "cityB": {
+      "municipal": 2,
+      "hotels": 1
+    }
   },
   "desalination_capacity_m3": {
-    "city": 800000,
-    "hotels": 450000
+    "cityA": {
+      "municipal": 500000,
+      "hotels": 200000
+    },
+    "cityB": {
+      "municipal": 300000,
+      "hotels": 150000
+    }
   },
-  "treatment_plants": 5,
-  "leakage_percent": 6.5,
+  "treatment_plants": {
+    "cityA": 3,
+    "cityB": 2
+  },
+  "leakage_percent": {
+    "cityA": 6.2,
+    "cityB": 6.8
+  },
   "sewage_volume": {
-    "2021": 1200000,
-    "2022": 1250000,
-    "2023": 1280000,
-    "2024": 1305000
+    "2021": {
+      "cityA": 600000,
+      "cityB": 600000
+    },
+    "2022": {
+      "cityA": 620000,
+      "cityB": 630000
+    },
+    "2023": {
+      "cityA": 640000,
+      "cityB": 640000
+    },
+    "2024": {
+      "cityA": 655000,
+      "cityB": 650000
+    }
   }
 }

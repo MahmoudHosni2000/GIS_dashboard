@@ -7,7 +7,7 @@ const Sidebar = () => {
   const location = useLocation(); // لمعرفة المسار الحالي
 
   const Menus = [
-    { title: "Dashboard", src: "dashboard", path: "/" },
+    { title: "General Info", src: "dashboard", path: "/" },
     { title: "Energy", src: "energy", path: "/energy" },
     { title: "Water", src: "water", gap: true, path: "/water" },
     { title: "Transport", src: "transport", path: "/transport" },

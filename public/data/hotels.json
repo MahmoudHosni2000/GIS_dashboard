@@ -1,30 +1,229 @@
 {
-  "hotel": {
-    "name": "Sunrise Grand Resort",
-    "location": "Sector A - Red Sea",
-    "number_of_rooms": 250,
-    "plane_trips": 580,
-    "visitors": 12500,
-    "star_rating": {
-      "five_stars": 1,
-      "four_stars": 0
+  "hotels": [
+    {
+      "name": "Sunrise Grand Resort",
+      "location": "Sector A - Red Sea",
+      "number_of_rooms": 250,
+      "plane_trips": 580,
+      "visitors": 12500,
+      "star_rating": 5,
+      "pv_capacity_kw": 120,
+      "solar_water_heater": true,
+      "has_desalination_plant": true,
+      "has_treatment_plant": false,
+      "separates_waste": true,
+      "electricity_consumption_kw_per_year": {
+        "2021": 420000,
+        "2022": 435000,
+        "2023": 415500,
+        "2024": 440200
+      },
+      "accommodation_percentage": {
+        "2021": 68.4,
+        "2022": 72.1,
+        "2023": 75.3,
+        "2024": 78.6
+      }
     },
-    "pv_capacity_kw": 120,
-    "solar_water_heater": true,
-    "has_desalination_plant": true,
-    "has_treatment_plant": false,
-    "separates_waste": true,
-    "electricity_consumption_kw_per_year": {
-      "2021": 420000,
-      "2022": 435000,
-      "2023": 415500,
-      "2024": 440200
+    {
+      "name": "Red Sea Paradise Hotel",
+      "location": "Sector A - Red Sea",
+      "number_of_rooms": 190,
+      "plane_trips": 490,
+      "visitors": 10400,
+      "star_rating": 4.5,
+      "pv_capacity_kw": 100,
+      "solar_water_heater": true,
+      "has_desalination_plant": true,
+      "has_treatment_plant": true,
+      "separates_waste": true,
+      "electricity_consumption_kw_per_year": {
+        "2021": 380000,
+        "2022": 390000,
+        "2023": 400000,
+        "2024": 410000
+      },
+      "accommodation_percentage": {
+        "2021": 65.2,
+        "2022": 67.9,
+        "2023": 70.0,
+        "2024": 73.2
+      }
     },
-    "accommodation_percentage": {
-      "2021": 68.4,
-      "2022": 72.1,
-      "2023": 75.3,
-      "2024": 78.6
+    {
+      "name": "Lagoon Bay Resort",
+      "location": "Sector A - Red Sea",
+      "number_of_rooms": 220,
+      "plane_trips": 520,
+      "visitors": 11700,
+      "star_rating": 5,
+      "pv_capacity_kw": 140,
+      "solar_water_heater": true,
+      "has_desalination_plant": true,
+      "has_treatment_plant": false,
+      "separates_waste": false,
+      "electricity_consumption_kw_per_year": {
+        "2021": 410000,
+        "2022": 430000,
+        "2023": 445000,
+        "2024": 460000
+      },
+      "accommodation_percentage": {
+        "2021": 66.7,
+        "2022": 69.0,
+        "2023": 72.5,
+        "2024": 75.9
+      }
+    },
+    {
+      "name": "Coral Sea Holiday",
+      "location": "Sector B - South Sinai",
+      "number_of_rooms": 180,
+      "plane_trips": 410,
+      "visitors": 9600,
+      "star_rating": 3.5,
+      "pv_capacity_kw": 85,
+      "solar_water_heater": false,
+      "has_desalination_plant": false,
+      "has_treatment_plant": true,
+      "separates_waste": false,
+      "electricity_consumption_kw_per_year": {
+        "2021": 320000,
+        "2022": 335000,
+        "2023": 310500,
+        "2024": 342100
+      },
+      "accommodation_percentage": {
+        "2021": 60.2,
+        "2022": 63.5,
+        "2023": 65.1,
+        "2024": 66.8
+      }
+    },
+    {
+      "name": "Sharm Dream Resort",
+      "location": "Sector B - South Sinai",
+      "number_of_rooms": 200,
+      "plane_trips": 450,
+      "visitors": 10100,
+      "star_rating": 4,
+      "pv_capacity_kw": 90,
+      "solar_water_heater": true,
+      "has_desalination_plant": true,
+      "has_treatment_plant": false,
+      "separates_waste": true,
+      "electricity_consumption_kw_per_year": {
+        "2021": 340000,
+        "2022": 355000,
+        "2023": 360000,
+        "2024": 370000
+      },
+      "accommodation_percentage": {
+        "2021": 61.5,
+        "2022": 64.0,
+        "2023": 66.2,
+        "2024": 68.5
+      }
+    },
+    {
+      "name": "Dahab Blue Lagoon",
+      "location": "Sector B - South Sinai",
+      "number_of_rooms": 160,
+      "plane_trips": 380,
+      "visitors": 8900,
+      "star_rating": 3,
+      "pv_capacity_kw": 70,
+      "solar_water_heater": false,
+      "has_desalination_plant": false,
+      "has_treatment_plant": false,
+      "separates_waste": false,
+      "electricity_consumption_kw_per_year": {
+        "2021": 300000,
+        "2022": 310000,
+        "2023": 295000,
+        "2024": 305000
+      },
+      "accommodation_percentage": {
+        "2021": 58.0,
+        "2022": 60.3,
+        "2023": 61.5,
+        "2024": 63.1
+      }
+    },
+    {
+      "name": "Nile Palace Luxor",
+      "location": "Sector C - Upper Egypt",
+      "number_of_rooms": 300,
+      "plane_trips": 670,
+      "visitors": 13800,
+      "star_rating": 4,
+      "pv_capacity_kw": 160,
+      "solar_water_heater": true,
+      "has_desalination_plant": false,
+      "has_treatment_plant": true,
+      "separates_waste": true,
+      "electricity_consumption_kw_per_year": {
+        "2021": 450000,
+        "2022": 462000,
+        "2023": 470500,
+        "2024": 480000
+      },
+      "accommodation_percentage": {
+        "2021": 70.5,
+        "2022": 74.3,
+        "2023": 77.0,
+        "2024": 80.1
+      }
+    },
+    {
+      "name": "Aswan Nile View Hotel",
+      "location": "Sector C - Upper Egypt",
+      "number_of_rooms": 220,
+      "plane_trips": 490,
+      "visitors": 11000,
+      "star_rating": 4.5,
+      "pv_capacity_kw": 130,
+      "solar_water_heater": true,
+      "has_desalination_plant": false,
+      "has_treatment_plant": true,
+      "separates_waste": true,
+      "electricity_consumption_kw_per_year": {
+        "2021": 400000,
+        "2022": 415000,
+        "2023": 428000,
+        "2024": 440000
+      },
+      "accommodation_percentage": {
+        "2021": 69.0,
+        "2022": 71.2,
+        "2023": 74.0,
+        "2024": 76.3
+      }
+    },
+    {
+      "name": "Luxor Garden Resort",
+      "location": "Sector C - Upper Egypt",
+      "number_of_rooms": 180,
+      "plane_trips": 450,
+      "visitors": 9800,
+      "star_rating": 4,
+      "pv_capacity_kw": 110,
+      "solar_water_heater": false,
+      "has_desalination_plant": false,
+      "has_treatment_plant": false,
+      "separates_waste": false,
+      "electricity_consumption_kw_per_year": {
+        "2021": 370000,
+        "2022": 380000,
+        "2023": 395000,
+        "2024": 405000
+      },
+      "accommodation_percentage": {
+        "2021": 66.0,
+        "2022": 68.2,
+        "2023": 70.1,
+        "2024": 72.5
+      }
     }
-  }
+  ]
 }

@@ -1,6 +1,9 @@
-const Card = ({ icon, value, label }) => {
+const Card = ({ icon, value, label, onClick, className = "" }) => {
   return (
-    <div className="bg-white w-auto rounded-xl shadow-lg flex items-center justify-between p-4 hover:shadow-xl transition">
+    <div
+      onClick={onClick}
+      className={`bg-white w-auto h-fit rounded-xl shadow-lg flex items-center justify-between p-4 hover:shadow-xl transition ${className}`}
+    >
       <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full">
         {icon}
       </div>

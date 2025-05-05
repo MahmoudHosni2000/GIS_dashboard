@@ -17,6 +17,13 @@
       "January": 1200,
       "February": 1350,
       "March": 1280
+    },
+    "collection_efficiency_percent_actual": 95.0,
+    "open_container_overflow_rate_percent": 6.2,
+    "collected_uco_liters_month": {
+      "April": 1300,
+      "May": 1250,
+      "June": 1400
     }
   },
   "processing_diversion": {
@@ -40,5 +47,12 @@
     "local_initiatives": 14,
     "stakeholder_engagement_events": 9,
     "estimated_participants": 1200
+  },
+  "circular_economy_community_engagement": {
+    "number_of_active_local_initiatives": 18,
+    "stakeholder_engagement": {
+      "events_count": 12,
+      "estimated_participants": 1500
+    }
   }
 }

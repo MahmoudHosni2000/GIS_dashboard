@@ -10,24 +10,37 @@
     "green_star": 25,
     "non_green_star": 40
   },
-  "energy_coverage_percent": 38,
-
-  "pv_vs_consumption": [
-    { "month": "Jan", "pv": 420, "consumption": 620 },
-    { "month": "Feb", "pv": 380, "consumption": 600 },
-    { "month": "Mar", "pv": 460, "consumption": 590 },
-    { "month": "Apr", "pv": 500, "consumption": 630 },
-    { "month": "May", "pv": 580, "consumption": 640 },
-    { "month": "Jun", "pv": 610, "consumption": 700 }
-  ],
-
-  "waste_trends": [
-    { "day": "Sun", "waste": 18 },
-    { "day": "Mon", "waste": 25 },
-    { "day": "Tue", "waste": 22 },
-    { "day": "Wed", "waste": 30 },
-    { "day": "Thu", "waste": 27 },
-    { "day": "Fri", "waste": 35 },
-    { "day": "Sat", "waste": 28 }
+  "Diving_centres": 38,
+  "geolocation": [
+    {
+      "coords": [27.9125, 34.3080], 
+      "population": {
+        "male": 5000,
+        "female": 4500,
+        "children": 1200,
+        "elderly": 800
+      },
+      "place": "Sharm El Sheikh - Naama Bay"
+    },
+    {
+      "coords": [27.9262, 34.3450],
+      "population": {
+        "male": 7000,
+        "female": 6500,
+        "children": 1500,
+        "elderly": 900
+      },
+      "place": "Sharm El Sheikh - Sharm Old Market"
+    },
+    {
+      "coords": [27.915817,34.329948], 
+      "population": {
+        "male": 8000,
+        "female": 7500,
+        "children": 1800,
+        "elderly": 1100
+      },
+      "place": "Sharm El Sheikh - Nabq Bay"
+    }
   ]
 }

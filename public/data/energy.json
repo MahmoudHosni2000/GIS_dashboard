@@ -16,23 +16,41 @@
     1230,
     1220
   ],
+  "energy_coverage_percent": 38,
   "smart_rooms": 72,
   "dimmable_area_percent": 65,
   "smart_room_energy": [
     {
-      "room": "Raom",
+      "room": "Nabq Bay",
       "energy_usage": "42 kWh",
-      "status": "Optimized"
+      "status": "Optimized",
+      "coords": [27.9739, 34.4647]
     },
     {
-      "room": "Jeddah",
+      "room": "Naama Bay",
       "energy_usage": "37 kWh",
-      "status": "Moderate"
+      "status": "Moderate",
+      "coords": [27.9153, 34.3236]
     },
     {
-      "room": "Riyadh",
+      "room": "Sharm El Sheikh City Centre",
       "energy_usage": "50 kWh",
-      "status": "High"
+      "status": "High",
+      "coords": [27.9400, 34.3370]
+    }
+  ],
+  "geolocation": [
+    {
+      "coords": [27.9153, 34.3236], 
+      "place": "Naama Bay"
+    },
+    {
+      "coords": [27.9400, 34.3370],
+      "place": "Sharm Old Market"
+    },
+    {
+      "coords": [27.9262, 34.3450], 
+      "place": "Nabq Bay"
     }
   ]
 }
