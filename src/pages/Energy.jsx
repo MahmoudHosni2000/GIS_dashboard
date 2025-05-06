@@ -31,7 +31,6 @@ const Energy = () => {
 
   if (showSplash) return <SplashScreen />;
 
-  // التصفية بناءً على الاختيارات
   const handleFilterChange = (e) => {
     setFilter({ ...filter, [e.target.name]: e.target.value });
   };
@@ -42,18 +41,21 @@ const Energy = () => {
       value: `${data.pv_capacity_mwp} MWp`,
       icon: <Zap className="w-6 h-6 text-yellow-500" />,
       category: "energy",
+      type: "pv_capacity",
     },
     {
       label: "Smart Rooms",
       value: data.smart_rooms,
       icon: <Lightbulb className="w-6 h-6 text-blue-500" />,
       category: "rooms",
+      type: "smart_rooms",
     },
     {
       label: "Dimmable Area %",
       value: `${data.dimmable_area_percent}%`,
       icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
       category: "energy",
+      type: "dimmable_area",
     },
   ];
 
@@ -71,7 +73,6 @@ const Energy = () => {
       <div className="flex flex-col h-fill-available space-y-4">
         {/* فلتر البيانات */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          {/* فلتر القسم */}
           <select
             name="category"
             className="p-2 border border-gray-300 rounded"
@@ -83,7 +84,6 @@ const Energy = () => {
             <option value="rooms">Smart Rooms</option>
           </select>
 
-          {/* فلتر النوع */}
           <select
             name="type"
             className="p-2 border border-gray-300 rounded"
@@ -96,10 +96,9 @@ const Energy = () => {
             <option value="dimmable_area">Dimmable Area</option>
           </select>
 
-          {/* زر التعديل */}
           <button
             onClick={() => navigate("/EnergyForm")}
-            className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2"
+            className="bg-green-500 text-white p-2 rounded"
           >
             Edit Energy Data
           </button>
@@ -112,8 +111,7 @@ const Energy = () => {
               return (
                 (filter.category === "all" ||
                   card.category === filter.category) &&
-                (filter.type === "all" ||
-                  card.label.toLowerCase().includes(filter.type))
+                (filter.type === "all" || card.type === filter.type)
               );
             })
             .map((item, i) => (

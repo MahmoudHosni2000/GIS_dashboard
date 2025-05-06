@@ -60,10 +60,9 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
         } else {
           return [
             {
-              label: `${
-                filter.population.charAt(0).toUpperCase() +
+              label: `${filter.population.charAt(0).toUpperCase() +
                 filter.population.slice(1)
-              } Population`,
+                } Population`,
               value: data.population[filter.population],
               icon: <Users className="w-6 h-6 text-orange-950" />,
             },
@@ -133,6 +132,13 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
             <option value="elderly">Elderly</option>
           </select>
         )}
+        {/* زر التعديل */}
+        <button
+          onClick={() => navigate("/DashboardForm")}
+          className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
+        >
+          Edit Sustainability Data
+        </button>
       </form>
 
       {/* Cards and Bar Chart */}
@@ -147,29 +153,25 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
               icon={item.icon}
               value={item.value}
               label={item.label}
-              onClick={
-                isPopulationCard ? () => navigate("/DashboardForm") : undefined
-              }
-              className={isPopulationCard ? "cursor-pointer" : ""}
             />
           );
         })}
 
         {/* Population Bar Chart */}
         {(filter.section === "population" || filter.section === "all") && (
-  <div className="col-span-1 sm:col-span-2 md:col-span-3 xl:col-span-4">
-    <CustomBarChart
-      data={Object.entries(data.population).map(([key, value]) => ({
-        group: key,
-        count: value,
-      }))}
-      xKey="group"
-      barKey="count"
-      barColor="#60a5fa"
-      title="Population Distribution"
-    />
-  </div>
-)}
+          <div className="col-span-1 sm:col-span-2 md:col-span-3 xl:col-span-4">
+            <CustomBarChart
+              data={Object.entries(data.population).map(([key, value]) => ({
+                group: key,
+                count: value,
+              }))}
+              xKey="group"
+              barKey="count"
+              barColor="#60a5fa"
+              title="Population Distribution"
+            />
+          </div>
+        )}
 
       </div>
     </div>
