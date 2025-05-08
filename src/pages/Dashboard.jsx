@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import { getDashboardData } from "../api/indicatorsAPI";
 import DashboardFilter from "../components/DashboardFilter";
-import CustomBarChart from "../components/CustomBarChart";
-import MapView from "../components/MapView";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 
@@ -15,29 +12,44 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    getDashboardData()
-      .then((res) => {
-        setData(res);
-        setTimeout(() => setShowSplash(false), 100);
-      })
-      .catch((err) => {
-        console.error("Failed to load dashboard data:", err);
-      });
+    const stored = localStorage.getItem("dashboardFormData");
+    let parsed = {};
+
+    if (stored) {
+      parsed = JSON.parse(stored);
+    }
+
+    const formattedData = {
+      population: {
+        male: Number(parsed.male || 0),
+        female: Number(parsed.female || 0),
+        children: Number(parsed.children || 0),
+        elderly: Number(parsed.elderly || 0),
+      },
+      hospitals: Number(parsed.hospitals || 0),
+      hotels: {
+        green_star: Number(parsed.hotelsGreen || 0),
+        non_green_star: Number(parsed.hotelsNotGreen || 0),
+      },
+      Diving_centres:
+        Number(parsed.divingCentersGreen || 0) +
+        Number(parsed.divingCentersNotGreen || 0),
+    };
+
+    setData(formattedData);
+    setShowSplash(false);
   }, []);
 
-  if (showSplash || !data) return <SplashScreen />;
+  if (showSplash) return <SplashScreen />;
 
   return (
     <>
       <Helmet>
-        <title>GIS Dashboard</title>
+        <title>لوحة مؤشرات نظم المعلومات الجغرافية</title>
       </Helmet>
 
-      <div className="flex flex-col h-fill-available space-y-4">
+      <div className="flex flex-col h-fill-available space-y-4" dir="rtl">
         <DashboardFilter data={data} filter={filter} setFilter={setFilter} />
-        <div className="flex-grow overflow-hidden">
-          <MapView data={data} />
-        </div>
       </div>
     </>
   );

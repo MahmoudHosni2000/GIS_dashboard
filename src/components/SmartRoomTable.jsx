@@ -1,12 +1,12 @@
 const SmartRoomTable = ({ data }) => (
-  <div className="bg-white p-4 rounded-xl shadow-lg w-full hover:shadow-xl transition">
-    <h2 className="text-lg font-semibold mb-2">Smart Room Energy</h2>
-    <table className="w-full text-sm">
+  <div className="bg-white p-4 rounded-xl shadow-lg w-full hover:shadow-xl transition" dir="rtl">
+    <h2 className="text-lg font-semibold mb-2 text-right">استهلاك الطاقة في الغرف الذكية</h2>
+    <table className="w-full text-sm text-right">
       <thead>
-        <tr className="text-left border-b">
-          <th>Room</th>
-          <th>Energy Usage</th>
-          <th>Status</th>
+        <tr className="border-b">
+          <th>الغرفة</th>
+          <th>استهلاك الطاقة</th>
+          <th>الحالة</th>
         </tr>
       </thead>
       <tbody>

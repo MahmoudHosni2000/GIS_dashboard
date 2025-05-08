@@ -1,54 +1,63 @@
 import { useEffect, useState } from "react";
 import StatCard from "../components/StatCard";
 import CustomPieChart from "../components/CustomPieChart";
-import { getTransportIndicators } from "../api/indicatorsAPI";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
+const defaultData = {
+  eBuses: "0",
+  cngStations: "0",
+  microbusesGasPercentage: "0",
+  electricVehicles: "0",
+  chargingPoints: "0",
+  bikeAndWalkTracksLength: "0",
+  bikeTripsCount: "0",
+  bikeSharingStations: "0",
+  gasTaxisPercentage: "0",
+  touristVehiclesCars: "0",
+  touristVehiclesMinibuses: "0",
+  touristVehiclesBuses: "0",
+};
+
 const Transport = () => {
-  const navigate = useNavigate(); // استخدام useNavigate بدلاً من useHistory
-  const [data, setData] = useState(null);
+  const navigate = useNavigate();
+  const [data, setData] = useState(defaultData);
   const [showSplash, setShowSplash] = useState(true);
-  const [filter, setFilter] = useState("all"); // Store the filter state
+  const [filter, setFilter] = useState("all");
 
   useEffect(() => {
-    getTransportIndicators()
-      .then((res) => {
-        setData(res);
-        setTimeout(() => setShowSplash(false), 200);
-      })
-      .catch((err) => {
-        console.error("Failed to load dashboard data:", err);
-      });
+    const saved = localStorage.getItem("transportData");
+    if (saved) {
+      setData(JSON.parse(saved));
+    }
+    setTimeout(() => setShowSplash(false), 200);
   }, []);
 
   if (showSplash) return <SplashScreen />;
 
-  // Tourist vehicle data
   const touristVehicleData = [
-    { name: "Cars", value: data.tourist_vehicles.cars },
-    { name: "Minibuses", value: data.tourist_vehicles.minibuses },
-    { name: "Buses", value: data.tourist_vehicles.buses },
+    { name: "سيارات", value: Number(data.touristVehiclesCars) },
+    { name: "ميكروباص", value: Number(data.touristVehiclesMinibuses) },
+    { name: "حافلات", value: Number(data.touristVehiclesBuses) },
   ];
 
-  // Filter data based on selected filter
   const filteredData = () => {
     if (filter === "electric") {
       return {
-        eBuses: data.public_e_buses,
-        electricVehicles: data.electric_vehicles,
-        chargingPoints: data.charging_points,
+        eBuses: data.eBuses,
+        electricVehicles: data.electricVehicles,
+        chargingPoints: data.chargingPoints,
       };
     }
     if (filter === "cars") {
       return {
-        cars: data.tourist_vehicles.cars,
-        minibuses: data.tourist_vehicles.minibuses,
-        buses: data.tourist_vehicles.buses,
+        touristVehiclesCars: data.touristVehiclesCars,
+        touristVehiclesMinibuses: data.touristVehiclesMinibuses,
+        touristVehiclesBuses: data.touristVehiclesBuses,
       };
     }
-    return data; // If filter is "all", return all data
+    return data;
   };
 
   const filtered = filteredData();
@@ -56,92 +65,70 @@ const Transport = () => {
   return (
     <>
       <Helmet>
-        <title>Transport | GIS Dashboard</title>
+        <title>النقل | لوحة مؤشرات نظم المعلومات الجغرافية</title>
       </Helmet>
 
-      {/* Filter dropdown */}
-      <div className="mb-4">
+      <div className="mb-4 flex flex-wrap gap-4">
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
           className="p-2 border rounded-md"
         >
-          <option value="all">Show All Data</option>
-          <option value="electric">Electric Transport</option>
-          <option value="cars">Tourist Vehicles (Cars)</option>
+          <option value="all">عرض كل البيانات</option>
+          <option value="electric">النقل الكهربائي</option>
+          <option value="cars">مركبات السياح (سيارات)</option>
         </select>
-        {/* زر التعديل */}
         <button
           onClick={() => navigate("/TransportForm")}
-          className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 mx-2"
+          className="bg-green-500 text-white p-2 rounded"
         >
-          Edit Transport Data
+          تعديل بيانات النقل
         </button>
       </div>
 
       <div className="space-y-6">
-        {/* Row 1 */}
         <div className="grid grid-cols-3 gap-4">
-          <StatCard title="e-Buses" value={filtered.eBuses || "-"} />
-          <StatCard title="CNG Stations" value={filtered.cng_stations || "-"} />
+          <StatCard title="عدد الحافلات الكهربائية (e-Buses)" value={filtered.eBuses || "-"} />
+          <StatCard title="عدد محطات وقود الغاز الطبيعي (CNG)" value={filtered.cngStations || "-"} />
           <StatCard
-            title="% Microbuses (CNG)"
+            title="نسبة الميكروباصات التي تعمل بالغاز الطبيعي"
             value={
-              filtered.microbuses_cng_percent
-                ? `${filtered.microbuses_cng_percent}%`
+              filtered.microbusesGasPercentage
+                ? `${filtered.microbusesGasPercentage}%`
                 : "-"
             }
           />
         </div>
 
-        {/* Row 2 */}
         <div className="grid grid-cols-3 gap-4">
+          <StatCard title="عدد المركبات الكهربائية" value={filtered.electricVehicles || "-"} />
+          <StatCard title="عدد نقاط شحن المركبات الكهربائية" value={filtered.chargingPoints || "-"} />
           <StatCard
-            title="Electric Vehicles"
-            value={filtered.electricVehicles || "-"}
-          />
-          <StatCard
-            title="Charging Points"
-            value={filtered.chargingPoints || "-"}
-          />
-          <StatCard
-            title="Bike&pedestrian infrastructure (km)"
-            value={filtered.bike_lanes_km || "-"}
+            title="طول مسارات المشاة والدراجات (كم)"
+            value={filtered.bikeAndWalkTracksLength || "-"}
           />
         </div>
 
-        {/* Row 3 */}
         <div className="grid grid-cols-3 gap-4">
+          <StatCard title="عدد رحلات الدراجات يوميًا" value={filtered.bikeTripsCount || "-"} />
+          <StatCard title="عدد محطات مشاركة الدراجات" value={filtered.bikeSharingStations || "-"} />
           <StatCard
-            title="Bike Trips / Day"
-            value={filtered.bike_trips_per_day || "-"}
-          />
-          <StatCard
-            title="Bike Trips (Total)"
-            value={filtered.bike_trips_total || "-"}
-          />
-          <StatCard
-            title="% Taxis (CNG)"
+            title="نسبة سيارات الأجرة العاملة بالغاز الطبيعي"
             value={
-              filtered.taxis_cng_percent
-                ? `${filtered.taxis_cng_percent}%`
+              filtered.gasTaxisPercentage
+                ? `${filtered.gasTaxisPercentage}%`
                 : "-"
             }
           />
         </div>
 
-        {/* Row 4 - Charts */}
         <div className="grid grid-cols-2 gap-4">
-          <StatCard
-            title="Bike Sharing Stations"
-            value={filtered.bike_sharing_stations || "-"}
-          />
           <CustomPieChart
             data={touristVehicleData}
             dataKey="value"
             nameKey="name"
             colors={["#60a5fa", "#34d399", "#f59e0b"]}
-            title="Number of tourists"
+            title="عدد السياح حسب وسيلة النقل"
           />
         </div>
       </div>

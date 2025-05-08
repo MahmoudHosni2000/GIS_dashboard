@@ -3,7 +3,6 @@ import StatCard from "../components/StatCard";
 import CustomBarChart from "../components/CustomBarChart";
 import CustomLineChart from "../components/CustomLineChart";
 import SplashScreen from "../components/SplashScreen";
-import { getHotelsData } from "../api/indicatorsAPI";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
@@ -18,17 +17,88 @@ const Hotels = () => {
   const [showSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
-    getHotelsData()
-      .then((res) => {
-        setData(res);
-        setFilteredHotels(res.hotels); // Default all hotels
-        setSelectedHotel(res.hotels[0]); // First hotel by default
-        setTimeout(() => setShowSplash(false), 200);
-      })
-      .catch((err) => {
-        console.error("Failed to load hotel data:", err);
-      });
+    const localData = localStorage.getItem("hotelFormData");
+
+    const defaultHotel = {
+      name: "غير معروف",
+      location: "غير محدد",
+      number_of_rooms: 0,
+      plane_trips: 0,
+      visitors: 0,
+      star_rating: "غير مصنف",
+      pv_capacity_kw: 0,
+      solar_water_heater: false,
+      has_desalination_plant: false,
+      has_treatment_plant: false,
+      separates_waste: false,
+      electricity_consumption_kw_per_year: {
+        2021: 0,
+        2022: 0,
+        2023: 0,
+        2024: 0,
+      },
+      accommodation_percentage: {
+        2021: 0,
+        2022: 0,
+        2023: 0,
+        2024: 0,
+      },
+    };
+
+    if (localData) {
+      try {
+        const parsed = JSON.parse(localData);
+        const hotelFromLocal = {
+          name: parsed.name || "غير معروف",
+          location: parsed.location || "غير محدد",
+          number_of_rooms: parsed.numberOfRooms || 0,
+          plane_trips: parsed.numberOfFlights || 0,
+          visitors: parsed.numberOfVisitors || 0,
+          star_rating: parsed.hotelCategory || "غير مصنف",
+          pv_capacity_kw: parsed.solarPowerCapacity || 0,
+          solar_water_heater: parsed.solarWaterHeater || false,
+          has_desalination_plant: parsed.desalinationPlant || false,
+          has_treatment_plant: parsed.treatmentPlant || false,
+          separates_waste: parsed.wasteSeparation || false,
+          electricity_consumption_kw_per_year: parsed.electricityBills || {
+            2021: 0,
+            2022: 0,
+            2023: 0,
+            2024: 0,
+          },
+          accommodation_percentage: parsed.occupancyRates || {
+            2021: 0,
+            2022: 0,
+            2023: 0,
+            2024: 0,
+          },
+        };
+
+        const mockData = {
+          hotels: [hotelFromLocal],
+        };
+
+        setData(mockData);
+        setFilteredHotels(mockData.hotels);
+        setSelectedHotel(mockData.hotels[0]);
+      } catch (error) {
+        console.error("خطأ في قراءة بيانات localStorage:", error);
+      }
+    } else {
+      // في حال عدم وجود بيانات
+      const mockData = {
+        hotels: [defaultHotel],
+      };
+
+      setData(mockData);
+      setFilteredHotels(mockData.hotels);
+      setSelectedHotel(mockData.hotels[0]);
+    }
+
+    setTimeout(() => setShowSplash(false), 200);
   }, []);
+
+
 
   const handleSearch = () => {
     if (!data?.hotels) return;
@@ -75,13 +145,13 @@ const Hotels = () => {
   return (
     <>
       <Helmet>
-        <title>Hotels | GIS Dashboard</title>
+        <title>الفنادق | لوحة المؤشرات الجغرافية</title>
       </Helmet>
 
       <div className="space-y-6">
-        {/* Hotel Selector */}
+        {/* اختيار الفندق */}
         <div className="flex flex-col sm:flex-row gap-4 mb-4">
-          {/* Sector Dropdown */}
+          {/* قائمة القطاعات */}
           <select
             className="border p-2 rounded"
             value={sectorFilter}
@@ -100,7 +170,7 @@ const Hotels = () => {
               setSelectedHotel(filtered[0] || null);
             }}
           >
-            <option value="">Select Sector</option>
+            <option value="">اختر القطاع</option>
             {/* جلب القطاعات بدون تكرار */}
             {[...new Set(data.hotels.map((h) => h.location))].map((sector) => (
               <option key={sector} value={sector}>
@@ -109,7 +179,8 @@ const Hotels = () => {
             ))}
           </select>
 
-          {/* Hotel Dropdown */}
+
+          {/* قائمة الفنادق */}
           {sectorFilter && filteredHotels.length > 0 && (
             <select
               className="border p-2 rounded"
@@ -134,54 +205,54 @@ const Hotels = () => {
               onClick={() => navigate("/HotelsForm")}
               className="bg-green-500 text-white p-2 rounded"
             >
-              Edit Hotels Data
+              تعديل بيانات الفنادق
             </button>
           )}
         </div>
 
-        {/* Stat Cards */}
+        {/* بطاقات الإحصائيات */}
         <div className="grid grid-cols-3 gap-4">
-          <StatCard title="Rooms" value={selectedHotel.number_of_rooms} />
-          <StatCard title="Plane Trips" value={selectedHotel.plane_trips} />
-          <StatCard title="Visitors" value={selectedHotel.visitors} />
-          <StatCard title="Hotel Rating" value={selectedHotel.star_rating} />
+          <StatCard title="عدد الغرف" value={selectedHotel.number_of_rooms} />
+          <StatCard title="رحلات الطيران" value={selectedHotel.plane_trips} />
+          <StatCard title="عدد الزوار" value={selectedHotel.visitors} />
+          <StatCard title="تقييم الفندق" value={selectedHotel.star_rating} />
           <StatCard
-            title="PV Capacity (kW)"
+            title="سعة الطاقة الشمسية (ك.و)"
             value={selectedHotel.pv_capacity_kw}
           />
           <StatCard
-            title="Solar Water Heater"
-            value={selectedHotel.solar_water_heater ? "Yes" : "No"}
+            title="سخان مياه شمسي"
+            value={selectedHotel.solar_water_heater ? "نعم" : "لا"}
           />
           <StatCard
-            title="Desalination Plant"
-            value={selectedHotel.has_desalination_plant ? "Yes" : "No"}
+            title="محطة تحلية"
+            value={selectedHotel.has_desalination_plant ? "نعم" : "لا"}
           />
           <StatCard
-            title="Treatment Plant"
-            value={selectedHotel.has_treatment_plant ? "Yes" : "No"}
+            title="محطة معالجة"
+            value={selectedHotel.has_treatment_plant ? "نعم" : "لا"}
           />
           <StatCard
-            title="Waste Separation"
-            value={selectedHotel.separates_waste ? "Yes" : "No"}
+            title="فصل النفايات"
+            value={selectedHotel.separates_waste ? "نعم" : "لا"}
           />
         </div>
 
-        {/* Charts */}
+        {/* الرسوم البيانية */}
         <div className="grid grid-cols-2 gap-4">
           <CustomBarChart
             data={electricityData}
             xKey="year"
             barKey="electricity"
             barColor="#f59e0b"
-            title="Electricity Consumption (kW/year)"
+            title="استهلاك الكهرباء (ك.و/سنة)"
           />
 
           <CustomLineChart
             data={accommodationData}
             xKey="year"
             yKeys={[{ name: "percentage", color: "#3b82f6" }]}
-            title="Accommodation Percentage Over Years"
+            title="نسبة الإشغال على مدار السنوات"
           />
         </div>
       </div>

@@ -1,26 +1,38 @@
 import { PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 
-const CustomPieChart = ({ data, dataKey = "value", nameKey = "name", colors = [], title = "Pie Chart" }) => {
+const DEFAULT_COLORS = ['#4ade80', '#f87171', '#60a5fa'];
+
+const renderCustomLabel = ({ percent, name }) =>
+  percent > 0.03 ? `${(percent * 100).toFixed(1)}%` : ''; // إخفاء القيم الأقل من 3%
+
+const CustomPieChart = ({
+  data,
+  dataKey = "value",
+  nameKey = "name",
+  colors = DEFAULT_COLORS,
+  title = "Pie Chart"
+}) => {
   return (
-    <div className="bg-white p-4 rounded shadow">
-      <h2 className="font-bold mb-2">{title}</h2>
-      <PieChart width={300} height={250}>
+    <div className="bg-white p-4 rounded-xl shadow">
+      <h2 className="font-bold mb-2 text-center">{title}</h2>
+      <PieChart width={400} height={300}>
         <Pie
           data={data}
           cx="50%"
           cy="50%"
-          outerRadius={80}
-          fill="#8884d8"
+          outerRadius={100}
+          labelLine={false}
+          label={renderCustomLabel}
           dataKey={dataKey}
           nameKey={nameKey}
-          label
+          minAngle={10}
         >
           {data.map((entry, index) => (
             <Cell key={`cell-${index}`} fill={colors[index % colors.length]} />
           ))}
         </Pie>
-        <Tooltip />
-        <Legend />
+        <Tooltip formatter={(value) => `${value} وحدة`} />
+        <Legend layout="horizontal" verticalAlign="bottom" align="center" />
       </PieChart>
     </div>
   );

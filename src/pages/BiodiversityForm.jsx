@@ -1,21 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
 const BiodiversityForm = () => {
-  const [formData, setFormData] = useState({
-    coralChange: "",
-    trainedCrew: "",
-    trainedGuides: "",
-    ecoFriendlySports: "",
-    sustainabilityIncentives: "",
-    reefSpeciesChange: "",
-    paTrainedPersonnel: "",
-    enforcementPatrols: "",
-    marineCleanups: "",
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState(() => {
+    const savedData = localStorage.getItem("biodiversityFormData");
+    return savedData ? JSON.parse(savedData) : initialFormData;
   });
-  const [category, setCategory] = useState("tourism");
-  const navigate = useNavigate();  // استخدام useNavigate بدلاً من useHistory
+
+  useEffect(() => {
+    localStorage.setItem("biodiversityFormData", JSON.stringify(formData));
+  }, [formData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -25,184 +22,112 @@ const BiodiversityForm = () => {
     }));
   };
 
-  const handleCategoryChange = (category) => {
-    setCategory(category);
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Submitted:", formData);
-    // You can add an API call to submit the data here
-    navigate.push("/thank-you"); // Redirect to a thank you page after submission
+    console.log("تم إرسال البيانات:", formData);
+    // هنا ممكن تبعت البيانات لـ API مستقبلاً
+    navigate("/biodiversity");
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-4 max-w-4xl mx-auto">
       <Helmet>
-        <title>Biodiversity Form | GIS Dashboard</title>
+        <title>نموذج التنوع البيولوجي | لوحة المعلومات</title>
       </Helmet>
 
-      <div className="mb-6">
-        {/* Category Filter Buttons */}
-        <div className="flex gap-4">
+      <h1 className="text-2xl font-bold text-center mb-4">نموذج التنوع البيولوجي</h1>
+
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {Object.entries(formData).map(([key, value]) => (
+          <div key={key} className="flex flex-col">
+            <label htmlFor={key} className="mb-1 font-medium">{labels[key]}</label>
+            <input
+              type="number"
+              name={key}
+              id={key}
+              value={value}
+              onChange={handleChange}
+              className="px-4 py-2 border rounded"
+              placeholder="أدخل القيمة"
+            />
+          </div>
+        ))}
+
+        <div className="md:col-span-2 text-center">
           <button
-            onClick={() => handleCategoryChange("tourism")}
-            className={`px-4 py-2 rounded ${
-              category === "tourism" ? "bg-green-600 text-white" : "bg-gray-200"
-            }`}
+            type="submit"
+            className="px-6 py-3 bg-blue-600 text-white rounded mt-4"
           >
-            Tourism
-          </button>
-          <button
-            onClick={() => handleCategoryChange("training")}
-            className={`px-4 py-2 rounded ${
-              category === "training"
-                ? "bg-yellow-500 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Training & Eco
-          </button>
-          <button
-            onClick={() => handleCategoryChange("reef")}
-            className={`px-4 py-2 rounded ${
-              category === "reef" ? "bg-purple-600 text-white" : "bg-gray-200"
-            }`}
-          >
-            Reef & Marine
-          </button>
-          <button
-            onClick={() => handleCategoryChange("conservation")}
-            className={`px-4 py-2 rounded ${
-              category === "conservation"
-                ? "bg-red-600 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            Conservation
+            إرسال
           </button>
         </div>
-      </div>
-
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Fields based on selected category */}
-        {category === "tourism" && (
-          <>
-            <div className="flex flex-col">
-              <label htmlFor="coralChange">Coral Change Percentage</label>
-              <input
-                type="number"
-                name="coralChange"
-                id="coralChange"
-                value={formData.coralChange}
-                onChange={handleChange}
-                className="px-4 py-2 border rounded"
-                placeholder="Enter Coral Change Percentage"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="sustainabilityIncentives">
-                Sustainability Incentives
-              </label>
-              <input
-                type="number"
-                name="sustainabilityIncentives"
-                id="sustainabilityIncentives"
-                value={formData.sustainabilityIncentives}
-                onChange={handleChange}
-                className="px-4 py-2 border rounded"
-                placeholder="Enter Sustainability Incentives"
-              />
-            </div>
-          </>
-        )}
-
-        {category === "training" && (
-          <>
-            <div className="flex flex-col">
-              <label htmlFor="trainedCrew">Trained Crew Percentage</label>
-              <input
-                type="number"
-                name="trainedCrew"
-                id="trainedCrew"
-                value={formData.trainedCrew}
-                onChange={handleChange}
-                className="px-4 py-2 border rounded"
-                placeholder="Enter Trained Crew Percentage"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="trainedGuides">Trained Guides Percentage</label>
-              <input
-                type="number"
-                name="trainedGuides"
-                id="trainedGuides"
-                value={formData.trainedGuides}
-                onChange={handleChange}
-                className="px-4 py-2 border rounded"
-                placeholder="Enter Trained Guides Percentage"
-              />
-            </div>
-          </>
-        )}
-
-        {category === "reef" && (
-          <>
-            <div className="flex flex-col">
-              <label htmlFor="reefSpeciesChange">
-                Reef Species Change Percentage
-              </label>
-              <input
-                type="number"
-                name="reefSpeciesChange"
-                id="reefSpeciesChange"
-                value={formData.reefSpeciesChange}
-                onChange={handleChange}
-                className="px-4 py-2 border rounded"
-                placeholder="Enter Reef Species Change Percentage"
-              />
-            </div>
-            <div className="flex flex-col">
-              <label htmlFor="enforcementPatrols">Enforcement Patrols</label>
-              <input
-                type="number"
-                name="enforcementPatrols"
-                id="enforcementPatrols"
-                value={formData.enforcementPatrols}
-                onChange={handleChange}
-                className="px-4 py-2 border rounded"
-                placeholder="Enter Enforcement Patrols"
-              />
-            </div>
-          </>
-        )}
-
-        {category === "conservation" && (
-          <>
-            <div className="flex flex-col">
-              <label htmlFor="marineCleanups">Marine Cleanups</label>
-              <input
-                type="number"
-                name="marineCleanups"
-                id="marineCleanups"
-                value={formData.marineCleanups}
-                onChange={handleChange}
-                className="px-4 py-2 border rounded"
-                placeholder="Enter Marine Cleanups"
-              />
-            </div>
-          </>
-        )}
-
-        <button
-          type="submit"
-          className="px-6 py-3 bg-blue-600 text-white rounded"
-        >
-          Submit
-        </button>
       </form>
     </div>
   );
+};
+
+// بيانات ابتدائية فارغة
+const initialFormData = {
+  dailyTouristBoats: "",
+  mooringPoints: "",
+  coralChange: "",
+  trainedCrew: "",
+  trainedGuides: "",
+  ecoWaterSports: "",
+  sustainabilityIncentives: "",
+  visitorsPerSite: "",
+  greenFinsMembers: "",
+  greenFinsIncentives: "",
+  reefSpeciesChange: "",
+  paTrainedPersonnel: "",
+  paBudgetIncrease: "",
+  enforcementPatrols: "",
+  patrolActions: "",
+  boatsWithSewageTanks: "",
+  seaNutrientDecrease: "",
+  boatsUsingLandFacilities: "",
+  dischargeSalinityDecrease: "",
+  greyWaterUseReduction: "",
+  operatorsPromotingSafeProducts: "",
+  marineCleanups: "",
+  coastalDamageReports: "",
+  illegalFishingReports: "",
+  birdMortalityDecrease: "",
+  birdRehabilitationCases: "",
+  turtleNestingSites: "",
+  turtlesRescued: "",
+};
+
+// تسميات عربية للحقول
+const labels = {
+  dailyTouristBoats: "عدد القوارب السياحية اليومية / لكل موقع",
+  mooringPoints: "عدد نقاط الرسو التشغيلية / لكل موقع",
+  coralChange: "نسبة التغير في الغطاء المرجاني والتنوع",
+  trainedCrew: "نسبة الطواقم البحرية المدربة",
+  trainedGuides: "نسبة الأدلاء السياحيين المدربين",
+  ecoWaterSports: "نسبة التحول نحو الرياضات المائية الصديقة للبيئة",
+  sustainabilityIncentives: "عدد الحوافز المقدمة للمشغلين المستدامين",
+  visitorsPerSite: "عدد الزوار / لكل موقع",
+  greenFinsMembers: "نسبة الزيادة في أعضاء Green Fins",
+  greenFinsIncentives: "عدد الحوافز المقدمة لمشغلي Green Fins",
+  reefSpeciesChange: "نسبة التغير في تنوع ووفرة الأنواع المرجانية الدالة",
+  paTrainedPersonnel: "نسبة الزيادة في عدد الموظفين المدربين في المناطق المحمية",
+  paBudgetIncrease: "نسبة الزيادة في ميزانية المناطق المحمية",
+  enforcementPatrols: "عدد الدوريات الرقابية",
+  patrolActions: "عدد الإجراءات الرقابية والدوريات",
+  boatsWithSewageTanks: "عدد القوارب المزودة بخزانات صرف صحي",
+  seaNutrientDecrease: "نسبة الانخفاض في مستويات المغذيات في مياه البحر",
+  boatsUsingLandFacilities: "عدد القوارب التي تستخدم مرافق تفريغ مياه الصرف في البر",
+  dischargeSalinityDecrease: "نسبة انخفاض ملوحة مياه الصرف ودرجة الحرارة وتركيزات المتبقيات",
+  greyWaterUseReduction: "نسبة تقليل استخدام المياه الرمادية للري الساحلي",
+  operatorsPromotingSafeProducts: "عدد المشغلين الذين يروجون لمنتجات آمنة للشعاب المرجانية",
+  marineCleanups: "عدد حملات التنظيف الساحلية والبحرية التطوعية",
+  coastalDamageReports: "عدد تقارير الأضرار الناتجة عن الإنشاءات الساحلية",
+  illegalFishingReports: "عدد البلاغات عن الصيد غير القانوني",
+  birdMortalityDecrease: "نسبة انخفاض الوفيات بين الطيور",
+  birdRehabilitationCases: "عدد حالات تأهيل الطيور",
+  turtleNestingSites: "عدد مواقع تعشيش السلاحف المحمية",
+  turtlesRescued: "عدد السلاحف التي تم علاجها وإنقاذها",
 };
 
 export default BiodiversityForm;

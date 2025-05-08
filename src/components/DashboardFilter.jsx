@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import { Users, Hospital, Hotel, BatteryCharging } from "lucide-react";
@@ -17,7 +17,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
     if (filter.section === "all") {
       return [
         {
-          label: "Population",
+          label: "عدد السكان",
           value:
             data.population.male +
             data.population.female +
@@ -26,17 +26,17 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
           icon: <Users className="w-6 h-6 text-orange-950" />,
         },
         {
-          label: "Hospitals",
+          label: "المستشفيات",
           value: data.hospitals,
           icon: <Hospital className="w-6 h-6 text-red-500" />,
         },
         {
-          label: "Hotels",
+          label: "الفنادق",
           value: data.hotels.green_star + data.hotels.non_green_star,
           icon: <Hotel className="w-6 h-6 text-green-500" />,
         },
         {
-          label: "Diving centers",
+          label: "مراكز الغوص",
           value: data.Diving_centres,
           icon: <BatteryCharging className="w-6 h-6 text-green-600" />,
         },
@@ -45,10 +45,17 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
 
     switch (filter.section) {
       case "population":
+        const populationLabels = {
+          male: "عدد الذكور",
+          female: "عدد الإناث",
+          children: "عدد الأطفال",
+          elderly: "عدد كبار السن",
+        };
+
         if (filter.population === "all") {
           return [
             {
-              label: "Population",
+              label: "عدد السكان",
               value:
                 data.population.male +
                 data.population.female +
@@ -60,9 +67,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
         } else {
           return [
             {
-              label: `${filter.population.charAt(0).toUpperCase() +
-                filter.population.slice(1)
-                } Population`,
+              label: populationLabels[filter.population] || "عدد السكان",
               value: data.population[filter.population],
               icon: <Users className="w-6 h-6 text-orange-950" />,
             },
@@ -72,7 +77,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
       case "hospitals":
         return [
           {
-            label: "Hospitals",
+            label: "المستشفيات",
             value: data.hospitals,
             icon: <Hospital className="w-6 h-6 text-red-500" />,
           },
@@ -81,7 +86,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
       case "hotels":
         return [
           {
-            label: "Hotels",
+            label: "الفنادق",
             value: data.hotels.green_star + data.hotels.non_green_star,
             icon: <Hotel className="w-6 h-6 text-green-500" />,
           },
@@ -90,7 +95,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
       case "Diving centres":
         return [
           {
-            label: "Diving centres",
+            label: "مراكز الغوص",
             value: data.Diving_centres,
             icon: <BatteryCharging className="w-6 h-6 text-green-600" />,
           },
@@ -111,11 +116,11 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
           onChange={handleChange}
           className="p-2 border border-gray-300 rounded"
         >
-          <option value="all">All</option>
-          <option value="population">Population</option>
-          <option value="hospitals">Hospitals</option>
-          <option value="hotels">Hotels</option>
-          <option value="Diving centres">Diving centers</option>
+          <option value="all">الكل</option>
+          <option value="population">عدد السكان</option>
+          <option value="hospitals">المستشفيات</option>
+          <option value="hotels">الفنادق</option>
+          <option value="Diving centres">مراكز الغوص</option>
         </select>
 
         {filter.section === "population" && (
@@ -125,55 +130,58 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
             onChange={handleChange}
             className="p-2 border border-gray-300 rounded"
           >
-            <option value="all">All</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
-            <option value="children">Children</option>
-            <option value="elderly">Elderly</option>
+            <option value="all">الكل</option>
+            <option value="male">ذكور</option>
+            <option value="female">إناث</option>
+            <option value="children">أطفال</option>
+            <option value="elderly">كبار السن</option>
           </select>
         )}
-        {/* زر التعديل */}
+
         <button
           onClick={() => navigate("/DashboardForm")}
           className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
         >
-          Edit Sustainability Data
+          تعديل البيانات
         </button>
       </form>
 
       {/* Cards and Bar Chart */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 xl:grid-cols-4 gap-4">
-        {getCardData().map((item, index) => {
-          const isPopulationCard = item.label
-            .toLowerCase()
-            .includes("population");
-          return (
-            <Card
-              key={index}
-              icon={item.icon}
-              value={item.value}
-              label={item.label}
-            />
-          );
-        })}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+        {getCardData().map((item, index) => (
+          <Card
+            key={index}
+            icon={item.icon}
+            value={item.value}
+            label={item.label}
+          />
+        ))}
 
-        {/* Population Bar Chart */}
-        {(filter.section === "population" || filter.section === "all") && (
-          <div className="col-span-1 sm:col-span-2 md:col-span-3 xl:col-span-4">
+        {data && (filter.section === "population" || filter.section === "all") && (
+          <div className="col-span-full">
             <CustomBarChart
-              data={Object.entries(data.population).map(([key, value]) => ({
-                group: key,
-                count: value,
-              }))}
+              data={
+                filter.section === "population" && filter.population !== "all"
+                  ? [
+                    {
+                      group: filter.population,
+                      count: data.population[filter.population],
+                    },
+                  ]
+                  : Object.entries(data.population).map(([key, value]) => ({
+                    group: key,
+                    count: value,
+                  }))
+              }
               xKey="group"
               barKey="count"
               barColor="#60a5fa"
-              title="Population Distribution"
+              title="توزيع السكان"
             />
           </div>
         )}
-
       </div>
+
     </div>
   );
 };

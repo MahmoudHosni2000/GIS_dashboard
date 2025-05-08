@@ -1,5 +1,6 @@
 {
   "pv_capacity_mwp": 18.5,
+  "pv_capacity_change": 2.8,
   "monthly_generation_mwh": [
     1000,
     1050,
@@ -7,6 +8,14 @@
     950,
     1020,
     1080
+  ],
+  "monthly_generation_change": [
+    0,
+    5,
+    4.76,
+    -13.64,
+    7.37,
+    5.88
   ],
   "monthly_consumption_mwh": [
     1200,
@@ -16,40 +25,76 @@
     1230,
     1220
   ],
+  "monthly_consumption_change": [
+    0,
+    -4.17,
+    2.61,
+    5.93,
+    -1.6,
+    -0.81
+  ],
+  "solar_energy_production": 6200,
+  "solar_energy_production_change": 3.5,
+  "electricity_consumption": 7230,
+  "electricity_consumption_change": -1.9,
   "energy_coverage_percent": 38,
+  "solar_coverage_percent": 38,
+  "solar_coverage_change": 1.2,
+  "daily_consumption_per_guest": 4.3,
+  "daily_consumption_change": -0.6,
   "smart_rooms": 72,
+  "smart_rooms_change": 5.9,
   "dimmable_area_percent": 65,
+  "dimmable_area_change": 2.5,
   "smart_room_energy": [
     {
       "room": "Nabq Bay",
       "energy_usage": "42 kWh",
       "status": "Optimized",
-      "coords": [27.9739, 34.4647]
+      "coords": [
+        27.9739,
+        34.4647
+      ]
     },
     {
       "room": "Naama Bay",
       "energy_usage": "37 kWh",
       "status": "Moderate",
-      "coords": [27.9153, 34.3236]
+      "coords": [
+        27.9153,
+        34.3236
+      ]
     },
     {
       "room": "Sharm El Sheikh City Centre",
       "energy_usage": "50 kWh",
       "status": "High",
-      "coords": [27.9400, 34.3370]
+      "coords": [
+        27.94,
+        34.337
+      ]
     }
   ],
   "geolocation": [
     {
-      "coords": [27.9153, 34.3236], 
+      "coords": [
+        27.9153,
+        34.3236
+      ],
       "place": "Naama Bay"
     },
     {
-      "coords": [27.9400, 34.3370],
+      "coords": [
+        27.94,
+        34.337
+      ],
       "place": "Sharm Old Market"
     },
     {
-      "coords": [27.9262, 34.3450], 
+      "coords": [
+        27.9262,
+        34.345
+      ],
       "place": "Nabq Bay"
     }
   ]

@@ -1,10 +1,19 @@
-import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from 'recharts';
+import {
+  ResponsiveContainer,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+} from 'recharts';
 
-const CustomLineChart = ({ data, xKey = "month", yKeys = [] }) => {
+const CustomLineChart = ({ data, xKey = "month", yKeys = [], title = "الرسم البياني" }) => {
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg w-full hover:shadow-xl transition">
-      <h2 className="font-bold mb-2">PV vs Consumption</h2>
-      <div className="w-full h-[10rem]"> {/* التحكم في الارتفاع */}
+      <h2 className="font-bold mb-2">{title}</h2>
+      <div className="w-full h-[10rem]">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={data}>
             <CartesianGrid stroke="#eee" strokeDasharray="5 5" />

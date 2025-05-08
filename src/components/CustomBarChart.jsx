@@ -4,7 +4,7 @@ const CustomBarChart = ({ data, xKey = "day", barKey = "waste", barColor = "#888
   return (
     <div className="bg-white p-4 rounded-xl shadow-lg w-full hover:shadow-xl transition">
       <h2 className="font-bold mb-2">{title}</h2>
-      <div className="w-full h-[10rem]">
+      <div dir="ltr"  className="w-full h-[10rem]">
         <ResponsiveContainer width="100%" height="100%">
           <BarChart data={data}>
             <CartesianGrid strokeDasharray="3 3" />

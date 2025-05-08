@@ -6,7 +6,7 @@
       "number_of_rooms": 250,
       "plane_trips": 580,
       "visitors": 12500,
-      "star_rating": 5,
+      "star_rating": 0,
       "pv_capacity_kw": 120,
       "solar_water_heater": true,
       "has_desalination_plant": true,
