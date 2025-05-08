@@ -98,8 +98,6 @@ const Hotels = () => {
     setTimeout(() => setShowSplash(false), 200);
   }, []);
 
-
-
   const handleSearch = () => {
     if (!data?.hotels) return;
 
@@ -148,9 +146,12 @@ const Hotels = () => {
         <title>الفنادق | لوحة المؤشرات الجغرافية</title>
       </Helmet>
 
-      <div className="space-y-6">
+      <div className="flex flex-col space-y-4 text-right rtl">
+        <h1 className="mx-auto text-3xl font-extrabold">
+          لوحة مؤشرات الأداء العام للفنادق
+        </h1>
         {/* اختيار الفندق */}
-        <div className="flex flex-col sm:flex-row gap-4 mb-4">
+        <div className="flex flex-col space-y-4 text-right rtl">
           {/* قائمة القطاعات */}
           <select
             className="border p-2 rounded"
@@ -179,7 +180,6 @@ const Hotels = () => {
             ))}
           </select>
 
-
           {/* قائمة الفنادق */}
           {sectorFilter && filteredHotels.length > 0 && (
             <select
@@ -200,14 +200,12 @@ const Hotels = () => {
           )}
 
           {/* زر تعديل البيانات */}
-          {selectedHotel && (
-            <button
-              onClick={() => navigate("/HotelsForm")}
-              className="bg-green-500 text-white p-2 rounded"
-            >
-              تعديل بيانات الفنادق
-            </button>
-          )}
+          {/* <button
+            onClick={() => navigate("/HotelsForm")}
+            className="bg-green-500 text-white p-2 rounded"
+          >
+            تعديل بيانات الفنادق
+          </button> */}
         </div>
 
         {/* بطاقات الإحصائيات */}

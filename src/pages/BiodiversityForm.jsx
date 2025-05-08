@@ -30,17 +30,28 @@ const BiodiversityForm = () => {
   };
 
   return (
-    <div className="space-y-8 p-4 max-w-4xl mx-auto">
+    <div className="space-y-8 p-5" dir="rtl">
       <Helmet>
         <title>نموذج التنوع البيولوجي | لوحة المعلومات</title>
       </Helmet>
+      <img
+        class="form-logo"
+        src="https://img.icons8.com/?size=100&id=115365&format=png&color=000000"
+        alt="Logo"
+      />
+      <h1 className="text-2xl font-bold text-center mb-4">
+        تطبيق إضافة وتحديث بيانات التنوع البيولوجي
+      </h1>
 
-      <h1 className="text-2xl font-bold text-center mb-4">نموذج التنوع البيولوجي</h1>
-
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <form
+        onSubmit={handleSubmit}
+        className="grid grid-cols-1 md:grid-cols-2 gap-4"
+      >
         {Object.entries(formData).map(([key, value]) => (
           <div key={key} className="flex flex-col">
-            <label htmlFor={key} className="mb-1 font-medium">{labels[key]}</label>
+            <label htmlFor={key} className="mb-1 font-medium">
+              {labels[key]}
+            </label>
             <input
               type="number"
               name={key}
@@ -53,12 +64,13 @@ const BiodiversityForm = () => {
           </div>
         ))}
 
-        <div className="md:col-span-2 text-center">
+        <div className="text-center">
           <button
+            onClick={() => navigate("/biodiversity")}
             type="submit"
-            className="px-6 py-3 bg-blue-600 text-white rounded mt-4"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
           >
-            إرسال
+            حفظ
           </button>
         </div>
       </form>
@@ -111,16 +123,20 @@ const labels = {
   greenFinsMembers: "نسبة الزيادة في أعضاء Green Fins",
   greenFinsIncentives: "عدد الحوافز المقدمة لمشغلي Green Fins",
   reefSpeciesChange: "نسبة التغير في تنوع ووفرة الأنواع المرجانية الدالة",
-  paTrainedPersonnel: "نسبة الزيادة في عدد الموظفين المدربين في المناطق المحمية",
+  paTrainedPersonnel:
+    "نسبة الزيادة في عدد الموظفين المدربين في المناطق المحمية",
   paBudgetIncrease: "نسبة الزيادة في ميزانية المناطق المحمية",
   enforcementPatrols: "عدد الدوريات الرقابية",
   patrolActions: "عدد الإجراءات الرقابية والدوريات",
   boatsWithSewageTanks: "عدد القوارب المزودة بخزانات صرف صحي",
   seaNutrientDecrease: "نسبة الانخفاض في مستويات المغذيات في مياه البحر",
-  boatsUsingLandFacilities: "عدد القوارب التي تستخدم مرافق تفريغ مياه الصرف في البر",
-  dischargeSalinityDecrease: "نسبة انخفاض ملوحة مياه الصرف ودرجة الحرارة وتركيزات المتبقيات",
+  boatsUsingLandFacilities:
+    "عدد القوارب التي تستخدم مرافق تفريغ مياه الصرف في البر",
+  dischargeSalinityDecrease:
+    "نسبة انخفاض ملوحة مياه الصرف ودرجة الحرارة وتركيزات المتبقيات",
   greyWaterUseReduction: "نسبة تقليل استخدام المياه الرمادية للري الساحلي",
-  operatorsPromotingSafeProducts: "عدد المشغلين الذين يروجون لمنتجات آمنة للشعاب المرجانية",
+  operatorsPromotingSafeProducts:
+    "عدد المشغلين الذين يروجون لمنتجات آمنة للشعاب المرجانية",
   marineCleanups: "عدد حملات التنظيف الساحلية والبحرية التطوعية",
   coastalDamageReports: "عدد تقارير الأضرار الناتجة عن الإنشاءات الساحلية",
   illegalFishingReports: "عدد البلاغات عن الصيد غير القانوني",

@@ -21,14 +21,14 @@ const HotelsForm = () => {
     2021: "",
     2022: "",
     2023: "",
-    2024: ""
+    2024: "",
   });
 
   const [occupancyRates, setOccupancyRates] = useState({
     2021: "",
     2022: "",
     2023: "",
-    2024: ""
+    2024: "",
   });
 
   const navigate = useNavigate();
@@ -66,52 +66,79 @@ const HotelsForm = () => {
       electricityBills,
       occupancyRates,
     };
-    
 
     localStorage.setItem("hotelFormData", JSON.stringify(hotelData));
     console.log("تم حفظ البيانات في localStorage:", hotelData);
     navigate("/Hotels");
   };
 
-
   return (
-    <>
+    <div className="space-y-8 p-5" dir="rtl">
       <Helmet>
         <title>نموذج الفنادق | لوحة المعلومات الجغرافية</title>
       </Helmet>
-
-      <div className="max-w-4xl mx-auto space-y-6">
-        <h1 className="text-2xl font-bold text-center">نموذج بيانات الفنادق</h1>
-
+      <img
+        class="form-logo"
+        src="https://img.icons8.com/?size=100&id=64714&format=png&color=000000"
+        alt="Logo"
+      />
+      <h1 className="text-2xl font-bold text-center">
+        نموذج إضافة وتحديث بيانات الفنادق
+      </h1>
+      <div className="max-w-4xl space-y-6">
         <form className="space-y-6">
           {/* اسم الفندق */}
           <div className="flex flex-col">
             <label className="font-semibold">اسم الفندق</label>
-            <input type="text" value={name} onChange={(e) => setName(e.target.value)} className="border p-2 rounded mt-1" />
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="border p-2 rounded mt-1"
+            />
           </div>
 
           {/* عدد الغرف */}
           <div className="flex flex-col">
             <label className="font-semibold">عدد الغرف</label>
-            <input type="number" value={numberOfRooms} onChange={(e) => setNumberOfRooms(e.target.value)} className="border p-2 rounded mt-1" />
+            <input
+              type="number"
+              value={numberOfRooms}
+              onChange={(e) => setNumberOfRooms(e.target.value)}
+              className="border p-2 rounded mt-1"
+            />
           </div>
 
           {/* عدد الرحلات الجوية */}
           <div className="flex flex-col">
             <label className="font-semibold">عدد الرحلات الجوية</label>
-            <input type="number" value={numberOfFlights} onChange={(e) => setNumberOfFlights(e.target.value)} className="border p-2 rounded mt-1" />
+            <input
+              type="number"
+              value={numberOfFlights}
+              onChange={(e) => setNumberOfFlights(e.target.value)}
+              className="border p-2 rounded mt-1"
+            />
           </div>
 
           {/* عدد الزوار */}
           <div className="flex flex-col">
             <label className="font-semibold">عدد الزوار</label>
-            <input type="number" value={numberOfVisitors} onChange={(e) => setNumberOfVisitors(e.target.value)} className="border p-2 rounded mt-1" />
+            <input
+              type="number"
+              value={numberOfVisitors}
+              onChange={(e) => setNumberOfVisitors(e.target.value)}
+              className="border p-2 rounded mt-1"
+            />
           </div>
 
           {/* تصنيف الفندق */}
           <div className="flex flex-col">
             <label className="font-semibold">تصنيف الفندق</label>
-            <select value={hotelCategory} onChange={(e) => setHotelCategory(e.target.value)} className="border p-2 rounded mt-1">
+            <select
+              value={hotelCategory}
+              onChange={(e) => setHotelCategory(e.target.value)}
+              className="border p-2 rounded mt-1"
+            >
               <option value="5 نجوم">5 نجوم</option>
               <option value="4 نجوم">4 نجوم</option>
               <option value="3 نجوم">3 نجوم</option>
@@ -130,40 +157,64 @@ const HotelsForm = () => {
             />
           </div>
 
-
           {/* قدرة الطاقة الشمسية */}
           <div className="flex flex-col">
-            <label className="font-semibold">قدرة الطاقة الشمسية (كيلوواط)</label>
-            <input type="number" value={solarPowerCapacity} onChange={(e) => setSolarPowerCapacity(e.target.value)} className="border p-2 rounded mt-1" />
+            <label className="font-semibold">
+              قدرة الطاقة الشمسية (كيلوواط)
+            </label>
+            <input
+              type="number"
+              value={solarPowerCapacity}
+              onChange={(e) => setSolarPowerCapacity(e.target.value)}
+              className="border p-2 rounded mt-1"
+            />
           </div>
 
           {/* سخانات المياه الشمسية */}
           <div className="flex items-center space-x-2">
-            <input type="checkbox" checked={solarWaterHeater} onChange={() => setSolarWaterHeater(!solarWaterHeater)} />
+            <input
+              type="checkbox"
+              checked={solarWaterHeater}
+              onChange={() => setSolarWaterHeater(!solarWaterHeater)}
+            />
             <label className="font-semibold">سخانات مياه شمسية</label>
           </div>
 
           {/* محطة تحلية */}
           <div className="flex items-center space-x-2">
-            <input type="checkbox" checked={desalinationPlant} onChange={() => setDesalinationPlant(!desalinationPlant)} />
+            <input
+              type="checkbox"
+              checked={desalinationPlant}
+              onChange={() => setDesalinationPlant(!desalinationPlant)}
+            />
             <label className="font-semibold">يوجد محطة تحلية</label>
           </div>
 
           {/* محطة معالجة */}
           <div className="flex items-center space-x-2">
-            <input type="checkbox" checked={treatmentPlant} onChange={() => setTreatmentPlant(!treatmentPlant)} />
+            <input
+              type="checkbox"
+              checked={treatmentPlant}
+              onChange={() => setTreatmentPlant(!treatmentPlant)}
+            />
             <label className="font-semibold">يوجد محطة معالجة</label>
           </div>
 
           {/* فصل النفايات */}
           <div className="flex items-center space-x-2">
-            <input type="checkbox" checked={wasteSeparation} onChange={() => setWasteSeparation(!wasteSeparation)} />
+            <input
+              type="checkbox"
+              checked={wasteSeparation}
+              onChange={() => setWasteSeparation(!wasteSeparation)}
+            />
             <label className="font-semibold">يتم فصل النفايات</label>
           </div>
 
           {/* الكهرباء المستهلكة */}
           <div>
-            <h2 className="font-semibold mt-4 mb-2">كمية الكهرباء المستهلكة (كيلوواط/سنة)</h2>
+            <h2 className="font-semibold mt-4 mb-2">
+              كمية الكهرباء المستهلكة (كيلوواط/سنة)
+            </h2>
             {Object.keys(electricityBills).map((year) => (
               <div key={year} className="flex flex-col">
                 <label>{year}</label>
@@ -171,7 +222,10 @@ const HotelsForm = () => {
                   type="number"
                   value={electricityBills[year]}
                   onChange={(e) =>
-                    setElectricityBills({ ...electricityBills, [year]: e.target.value })
+                    setElectricityBills({
+                      ...electricityBills,
+                      [year]: e.target.value,
+                    })
                   }
                   className="border p-2 rounded mt-1"
                 />
@@ -189,7 +243,10 @@ const HotelsForm = () => {
                   type="number"
                   value={occupancyRates[year]}
                   onChange={(e) =>
-                    setOccupancyRates({ ...occupancyRates, [year]: e.target.value })
+                    setOccupancyRates({
+                      ...occupancyRates,
+                      [year]: e.target.value,
+                    })
                   }
                   className="border p-2 rounded mt-1"
                 />
@@ -209,7 +266,7 @@ const HotelsForm = () => {
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

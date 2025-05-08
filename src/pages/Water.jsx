@@ -85,7 +85,10 @@ const Water = () => {
         <title>المياه | لوحة تحكم GIS</title>
       </Helmet>
 
-      <div className="space-y-6">
+      <div className="flex flex-col h-fill-available space-y-4 text-right rtl">
+        <h1 className="mx-auto text-3xl font-extrabold">
+          لوحة مؤشرات الأداء العام للمياة
+        </h1>
         {/* الفلاتر */}
         <div className="flex gap-4 mb-4">
           <select
@@ -113,12 +116,12 @@ const Water = () => {
         </div>
 
         {/* زر التحرير */}
-        <button
+        {/* <button
           onClick={() => navigate("/WaterForm")}
           className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2"
         >
           تعديل بيانات المياه
-        </button>
+        </button> */}
 
         {/* بطاقات الإحصائيات */}
         <div className="grid grid-cols-2 gap-4">
@@ -126,10 +129,7 @@ const Water = () => {
             title="استهلاك المياه"
             value={data.waterConsumption + " م³/سنة"}
           />
-          <StatCard
-            title="نسبة التسرب"
-            value={data.leakagePercent + " %"}
-          />
+          <StatCard title="نسبة التسرب" value={data.leakagePercent + " %"} />
         </div>
 
         {/* الرسوم البيانية */}

@@ -20,31 +20,47 @@ const Energy = () => {
 
   useEffect(() => {
     const localData = localStorage.getItem("energyFormData");
-  
+
     if (localData) {
       const parsed = JSON.parse(localData);
-  
+
       // تحويل القيم إلى أرقام
       const dataObj = {
         pv_capacity_mwp: parseFloat(parsed.pv_capacity_mwp),
         pv_capacity_change: parseFloat(parsed.pv_capacity_change),
-        solar_energy_production: Array(6).fill(parseFloat(parsed.solar_energy_production)),
-        solar_energy_production_change: Array(6).fill(parseFloat(parsed.solar_energy_production_change)),
-        electricity_consumption: Array(6).fill(parseFloat(parsed.electricity_consumption)),
-        electricity_consumption_change: Array(6).fill(parseFloat(parsed.electricity_consumption_change)),
+        solar_energy_production: Array(6).fill(
+          parseFloat(parsed.solar_energy_production)
+        ),
+        solar_energy_production_change: Array(6).fill(
+          parseFloat(parsed.solar_energy_production_change)
+        ),
+        electricity_consumption: Array(6).fill(
+          parseFloat(parsed.electricity_consumption)
+        ),
+        electricity_consumption_change: Array(6).fill(
+          parseFloat(parsed.electricity_consumption_change)
+        ),
         solar_coverage_percent: parseFloat(parsed.solar_coverage_percent),
         solar_coverage_change: parseFloat(parsed.solar_coverage_change),
-        daily_consumption_per_guest: parseFloat(parsed.daily_consumption_per_guest),
+        daily_consumption_per_guest: parseFloat(
+          parsed.daily_consumption_per_guest
+        ),
         daily_consumption_change: parseFloat(parsed.daily_consumption_change),
         smart_rooms: parseInt(parsed.smart_rooms),
         smart_rooms_change: parseInt(parsed.smart_rooms_change),
         dimmable_area_percent: parseFloat(parsed.dimmable_area_percent),
         dimmable_area_change: parseFloat(parsed.dimmable_area_change),
-        monthly_generation_mwh: Array(6).fill(parseFloat(parsed.solar_energy_production)), // أو ضع قيمة مستقلة إن توفرت
-        monthly_generation_change: Array(6).fill(parseFloat(parsed.solar_energy_production_change)),
-        monthly_consumption_change: Array(6).fill(parseFloat(parsed.electricity_consumption_change)),
+        monthly_generation_mwh: Array(6).fill(
+          parseFloat(parsed.solar_energy_production)
+        ), // أو ضع قيمة مستقلة إن توفرت
+        monthly_generation_change: Array(6).fill(
+          parseFloat(parsed.solar_energy_production_change)
+        ),
+        monthly_consumption_change: Array(6).fill(
+          parseFloat(parsed.electricity_consumption_change)
+        ),
       };
-  
+
       setData(dataObj);
     } else {
       // إذا لم توجد بيانات في localStorage
@@ -68,11 +84,9 @@ const Energy = () => {
         monthly_consumption_change: [0, 0, 0, 0, 0, 0],
       });
     }
-  
+
     setTimeout(() => setShowSplash(false), 200);
   }, []);
-  
-
 
   const handleFilterChange = (e) => {
     setSelectedCategory(e.target.value);
@@ -81,17 +95,41 @@ const Energy = () => {
   if (showSplash || !data) return <SplashScreen />;
 
   const cards = [
-    { label: "القدرة الشمسية المركبة", value: `${data.pv_capacity_mwp} ميغاواط بيك`, icon: <Zap className="w-6 h-6 text-yellow-500" /> },
-    { label: "نسبة التغطية بالطاقة الشمسية", value: `${data.solar_coverage_percent}%`, icon: <Zap className="w-6 h-6 text-green-600" /> },
-    { label: "متوسط استهلاك النزيل", value: `${data.daily_consumption_per_guest} ك.و.س/يوم`, icon: <Zap className="w-6 h-6 text-blue-600" /> },
-    { label: "عدد الغرف الذكية", value: data.smart_rooms, icon: <Lightbulb className="w-6 h-6 text-blue-500" /> },
-    { label: "نسبة المساحات القابلة للتعتيم", value: `${data.dimmable_area_percent}%`, icon: <LayoutGrid className="w-6 h-6 text-green-500" /> },
+    {
+      label: "القدرة الشمسية المركبة",
+      value: `${data.pv_capacity_mwp} ميغاواط بيك`,
+      icon: <Zap className="w-6 h-6 text-yellow-500" />,
+    },
+    {
+      label: "نسبة التغطية بالطاقة الشمسية",
+      value: `${data.solar_coverage_percent}%`,
+      icon: <Zap className="w-6 h-6 text-green-600" />,
+    },
+    {
+      label: "متوسط استهلاك النزيل",
+      value: `${data.daily_consumption_per_guest} ك.و.س/يوم`,
+      icon: <Zap className="w-6 h-6 text-blue-600" />,
+    },
+    {
+      label: "عدد الغرف الذكية",
+      value: data.smart_rooms,
+      icon: <Lightbulb className="w-6 h-6 text-blue-500" />,
+    },
+    {
+      label: "نسبة المساحات القابلة للتعتيم",
+      value: `${data.dimmable_area_percent}%`,
+      icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
+    },
   ];
 
   const barData = data.monthly_generation_mwh.map((_, index) => ({
     month: months[index],
-    "تغير الإنتاج (%)": parseFloat(data.monthly_generation_change[index].toFixed(2)),
-    "تغير الاستهلاك (%)": parseFloat(data.monthly_consumption_change[index].toFixed(2)),
+    "تغير الإنتاج (%)": parseFloat(
+      data.monthly_generation_change[index].toFixed(2)
+    ),
+    "تغير الاستهلاك (%)": parseFloat(
+      data.monthly_consumption_change[index].toFixed(2)
+    ),
   }));
 
   const pieData = [
@@ -105,16 +143,12 @@ const Energy = () => {
       <Helmet>
         <title>الطاقة | لوحة المؤشرات</title>
       </Helmet>
-      <div className="flex flex-col h-fill-available space-y-4 text-right rtl px-4 py-2">
-
+      <div className="flex flex-col space-y-4 text-right rtl">
+        <h1 className="mx-auto text-3xl font-extrabold">
+          لوحة مؤشرات الأداء العام للطاقة
+        </h1>
         {/* فلتر الصفحة */}
-        <div className="flex gap-1 justify-end mb-4">
-          <button
-            onClick={() => navigate("/EnergyForm")}
-            className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
-          >
-            تعديل بيانات الطاقة
-          </button>
+        <div className="flex flex-col space-y-4 text-right rtl">
           <select
             className="border p-2 rounded-lg"
             value={selectedCategory}
@@ -125,14 +159,24 @@ const Energy = () => {
             <option value="monthly">التغير الشهري فقط</option>
             <option value="distribution">نسب وتوزيع الطاقة فقط</option>
           </select>
-
+          {/* <button
+            onClick={() => navigate("/EnergyForm")}
+            className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
+          >
+            تعديل بيانات الطاقة
+          </button> */}
         </div>
 
         {/* عرض الكروت فقط إذا كانت كل البيانات مطلوبة */}
         {selectedCategory === "all" && (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {cards.map((item, i) => (
-              <Card key={i} icon={item.icon} value={item.value} label={item.label} />
+              <Card
+                key={i}
+                icon={item.icon}
+                value={item.value}
+                label={item.label}
+              />
             ))}
           </div>
         )}
@@ -144,7 +188,8 @@ const Energy = () => {
               data={years.map((year, i) => ({
                 month: year,
                 "إنتاج الطاقة السنوي (MWh)": data.solar_energy_production[i],
-                "استهلاك الكهرباء السنوي (MWh)": data.electricity_consumption[i],
+                "استهلاك الكهرباء السنوي (MWh)":
+                  data.electricity_consumption[i],
               }))}
               xKey="month"
               yKeys={[
@@ -157,7 +202,8 @@ const Energy = () => {
             <CustomLineChart
               data={years.map((year, i) => ({
                 month: year,
-                "تغير الإنتاج السنوي (%)": data.solar_energy_production_change[i],
+                "تغير الإنتاج السنوي (%)":
+                  data.solar_energy_production_change[i],
               }))}
               xKey="month"
               yKeys={[{ name: "تغير الإنتاج السنوي (%)", color: "#22c55e" }]}

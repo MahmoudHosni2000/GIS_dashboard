@@ -68,7 +68,10 @@ const Transport = () => {
         <title>النقل | لوحة مؤشرات نظم المعلومات الجغرافية</title>
       </Helmet>
 
-      <div className="mb-4 flex flex-wrap gap-4">
+      <div className="flex flex-col space-y-4 text-right rtl mb-4 flex-wrap gap-4">
+      <h1 className="mx-auto text-3xl font-extrabold">
+          لوحة مؤشرات الأداء العام للنقل
+        </h1>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
@@ -78,12 +81,12 @@ const Transport = () => {
           <option value="electric">النقل الكهربائي</option>
           <option value="cars">مركبات السياح (سيارات)</option>
         </select>
-        <button
+        {/* <button
           onClick={() => navigate("/TransportForm")}
-          className="bg-green-500 text-white p-2 rounded"
+          className="bg-green-500 text-white p-2 rounded m-0"
         >
           تعديل بيانات النقل
-        </button>
+        </button> */}
       </div>
 
       <div className="space-y-6">

@@ -87,9 +87,10 @@ const Sustainability = () => {
         <title>الاستدامة | لوحة المعلومات الجغرافية</title>
       </Helmet>
 
-      <div className="p-6 space-y-8 text-right">
-        <h2 className="text-xl font-bold mb-2">مؤشرات الاستدامة والمرونة المناخية</h2>
-
+      <div className="flex flex-col space-y-4 text-right rtl">
+        <h1 className="mx-auto text-3xl font-extrabold mb-5">
+          لوحة مؤشرات الأداء العام للاستدامة والمرونة المناخية
+        </h1>
         {/* خيارات عرض المؤشرات */}
         <div className="mb-4 grid grid-cols-2 md:grid-cols-4 gap-2">
           {[
@@ -111,12 +112,12 @@ const Sustainability = () => {
               <span>{label}</span>
             </label>
           ))}
-          <button
+          {/* <button
             onClick={() => navigate("/SustainabilityForm")}
             className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
           >
             تعديل بيانات الاستدامة
-          </button>
+          </button> */}
         </div>
 
         {/* بطاقات الإحصائيات والمخططات */}

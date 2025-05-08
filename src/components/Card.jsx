@@ -2,7 +2,7 @@ const Card = ({ icon, value, label, onClick}) => {
   return (
     <div
       onClick={onClick}
-      className={`bg-white rounded-xl shadow-lg flex items-center justify-between p-4 hover:shadow-xl transition`}
+      className={`bg-white h-auto rounded-xl shadow-lg flex items-center justify-between p-4 hover:shadow-xl transition`}
     >
       <div className="w-16 h-16 flex items-center justify-center bg-gray-100 rounded-full">
         {icon}

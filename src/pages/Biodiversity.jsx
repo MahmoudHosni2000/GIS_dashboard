@@ -34,7 +34,8 @@ const Biodiversity = () => {
       boats_with_holding_tanks: parsed.boatsWithSewageTanks || "0",
       nutrient_level_reduction_percent: parsed.seaNutrientDecrease || "0",
       pump_out_facility_boats: parsed.boatsUsingLandFacilities || "0",
-      effluent_quality_improvement_percent: parsed.dischargeSalinityDecrease || "0",
+      effluent_quality_improvement_percent:
+        parsed.dischargeSalinityDecrease || "0",
       grey_water_reduction_percent: parsed.greyWaterUseReduction || "0",
       reef_safe_product_operators: parsed.operatorsPromotingSafeProducts || "0",
       marine_cleanups: parsed.marineCleanups || "0",
@@ -43,7 +44,7 @@ const Biodiversity = () => {
       bird_mortality_decrease_percent: parsed.birdMortalityDecrease || "0",
       bird_rehab_actions: parsed.birdRehabilitationCases || "0",
       protected_turtle_sites: parsed.turtleNestingSites || "0",
-      rescued_turtles: parsed.turtlesRescued || "0"
+      rescued_turtles: parsed.turtlesRescued || "0",
     };
 
     setData(transformed);
@@ -52,9 +53,15 @@ const Biodiversity = () => {
 
   if (showSplash || !data) return <SplashScreen />;
 
-  const boatsData = Object.entries(data.tourism_boats_daily).map(([site, value]) => ({ site, value }));
-  const mooringsData = Object.entries(data.operational_moorings).map(([site, value]) => ({ site, value }));
-  const visitorsData = Object.entries(data.visitors_per_site).map(([site, value]) => ({ site, value }));
+  const boatsData = Object.entries(data.tourism_boats_daily).map(
+    ([site, value]) => ({ site, value })
+  );
+  const mooringsData = Object.entries(data.operational_moorings).map(
+    ([site, value]) => ({ site, value })
+  );
+  const visitorsData = Object.entries(data.visitors_per_site).map(
+    ([site, value]) => ({ site, value })
+  );
 
   return (
     <>
@@ -62,53 +69,61 @@ const Biodiversity = () => {
         <title>التنوع البيولوجي | لوحة المؤشرات الجغرافية</title>
       </Helmet>
 
-      <div className="space-y-6">
+      <div className="flex flex-col space-y-4 text-right rtl">
+        <h1 className="mx-auto text-3xl font-extrabold">
+          لوحة مؤشرات الأداء العام للتنوع البيولوجي
+        </h1>
         {/* أزرار الفلترة */}
         <div className="flex flex-wrap gap-4 mb-6">
           <button
             onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded ${filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded ${
+              filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"
+            }`}
           >
             الكل
           </button>
           <button
             onClick={() => setFilter("tourism")}
-            className={`px-4 py-2 rounded ${filter === "tourism" ? "bg-green-600 text-white" : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded ${
+              filter === "tourism" ? "bg-green-600 text-white" : "bg-gray-200"
+            }`}
           >
             السياحة
           </button>
           <button
             onClick={() => setFilter("training")}
-            className={`px-4 py-2 rounded ${filter === "training" ? "bg-yellow-500 text-white" : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded ${
+              filter === "training" ? "bg-yellow-500 text-white" : "bg-gray-200"
+            }`}
           >
             التدريب والممارسات البيئية
           </button>
           <button
             onClick={() => setFilter("reef")}
-            className={`px-4 py-2 rounded ${filter === "reef" ? "bg-purple-600 text-white" : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded ${
+              filter === "reef" ? "bg-purple-600 text-white" : "bg-gray-200"
+            }`}
           >
             الشعاب البحرية
           </button>
           <button
             onClick={() => setFilter("conservation")}
-            className={`px-4 py-2 rounded ${filter === "conservation"
-              ? "bg-red-600 text-white"
-              : "bg-gray-200"
-              }`}
+            className={`px-4 py-2 rounded ${
+              filter === "conservation"
+                ? "bg-red-600 text-white"
+                : "bg-gray-200"
+            }`}
           >
             جهود الحماية
           </button>
           {/* زر التعديل */}
-          <button
+          {/* <button
             onClick={() => navigate("/BiodiversityForm")}
             className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
           >
             تعديل بيانات الاستدامة
-          </button>
+          </button> */}
         </div>
 
         {/* المواقع السياحية */}
@@ -238,7 +253,10 @@ const Biodiversity = () => {
           <>
             <h2 className="text-xl font-bold">إجراءات الحماية</h2>
             <div className="grid grid-cols-4 gap-4">
-              <StatCard title="تنظيفات ساحلية وبحرية تطوعية" value={data.marine_cleanups} />
+              <StatCard
+                title="تنظيفات ساحلية وبحرية تطوعية"
+                value={data.marine_cleanups}
+              />
               <StatCard
                 title="بلاغات الأضرار الساحلية"
                 value={data.coastal_damage_reports}

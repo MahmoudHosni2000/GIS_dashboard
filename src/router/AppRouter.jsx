@@ -31,16 +31,16 @@ const AppRouter = () => (
         <Route path="/biodiversity" element={<Biodiversity />} />
         <Route path="/sustainability" element={<Sustainability />} />
         <Route path="/Settings" element={<Settings />} />
-        <Route path="/DashboardForm" element={<DashboardForm />} />
-        <Route path="/SustainabilityForm" element={<SustainabilityForm />} />
-        <Route path="/BiodiversityForm" element={<BiodiversityForm />} />
-        <Route path="/HotelsForm" element={<HotelsForm />} />{" "}
-        <Route path="/WasteForm" element={<WasteForm />} />{" "}
-        <Route path="/TransportForm" element={<TransportForm />} /> 
-        <Route path="/WaterForm" element={<WaterForm />} />
-        <Route path="/EnergyForm" element={<EnergyForm />} />
-        <Route path="*" element={<div>404 Not Found</div>} />
       </Route>
+      <Route path="/DashboardForm" element={<DashboardForm />} />
+      <Route path="/SustainabilityForm" element={<SustainabilityForm />} />
+      <Route path="/BiodiversityForm" element={<BiodiversityForm />} />
+      <Route path="/HotelsForm" element={<HotelsForm />} />{" "}
+      <Route path="/WasteForm" element={<WasteForm />} />{" "}
+      <Route path="/TransportForm" element={<TransportForm />} />
+      <Route path="/WaterForm" element={<WaterForm />} />
+      <Route path="/EnergyForm" element={<EnergyForm />} />
+      <Route path="*" element={<div>404 Not Found</div>} />
     </Routes>
   </Router>
 );

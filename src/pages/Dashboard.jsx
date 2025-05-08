@@ -45,10 +45,13 @@ const Dashboard = () => {
   return (
     <>
       <Helmet>
-        <title>لوحة مؤشرات نظم المعلومات الجغرافية</title>
+        <title>لوحة مؤشرات الأداء العام للإجماليات</title>
       </Helmet>
 
-      <div className="flex flex-col h-fill-available space-y-4" dir="rtl">
+      <div className="flex flex-col space-y-4 text-right rtl" dir="rtl">
+        <h1 className="mx-auto text-3xl font-extrabold">
+          لوحة مؤشرات الأداء العام للإجماليات
+        </h1>
         <DashboardFilter data={data} filter={filter} setFilter={setFilter} />
       </div>
     </>

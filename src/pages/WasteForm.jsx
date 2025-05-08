@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
 const WasteForm = () => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
   // تحميل البيانات من localStorage إذا كانت موجودة
   const getStoredData = () => {
     const storedData = localStorage.getItem("wasteFormData");
@@ -34,13 +34,20 @@ const WasteForm = () => {
   };
 
   return (
-    <>
+    <div className="space-y-8 p-5" dir="rtl">
       <Helmet>
         <title>نموذج إدارة النفايات | لوحة معلومات GIS</title>
       </Helmet>
 
-      <div className="max-w-4xl rounded-lg mt-10">
-        <h2 className="text-3xl font-bold mb-6">نموذج إدارة النفايات</h2>
+      <div className="max-w-4xl rounded-lg">
+      <img
+          class="form-logo"
+          src="https://img.icons8.com/?size=100&id=XnbI8TA0Z0ug&format=png&color=000000"
+          alt="Logo"
+        />
+        <h1 className="text-2xl font-bold text-center mb-5">
+          تطبيق إضافة وتحديث بيانات النفايات
+        </h1>{" "}
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
@@ -58,7 +65,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="cndWaste" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="cndWaste"
+                className="block text-lg font-semibold mb-2"
+              >
                 نفايات الإنشاء (طن/يوم)
               </label>
               <input
@@ -72,7 +82,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="otherWaste" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="otherWaste"
+                className="block text-lg font-semibold mb-2"
+              >
                 نفايات أخرى (طن/يوم)
               </label>
               <input
@@ -86,7 +99,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="recyclableWaste" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="recyclableWaste"
+                className="block text-lg font-semibold mb-2"
+              >
                 النفايات القابلة لإعادة التدوير المنتجة (طن/يوم)
               </label>
               <input
@@ -100,7 +116,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="collectionEfficiency" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="collectionEfficiency"
+                className="block text-lg font-semibold mb-2"
+              >
                 كفاءة الجمع (%)
               </label>
               <input
@@ -114,7 +133,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="overflowRate" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="overflowRate"
+                className="block text-lg font-semibold mb-2"
+              >
                 معدل فيضان الحاويات المفتوحة (%)
               </label>
               <input
@@ -128,7 +150,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="diversionRate" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="diversionRate"
+                className="block text-lg font-semibold mb-2"
+              >
                 معدل التحويل الكلي (%)
               </label>
               <input
@@ -142,7 +167,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="biodiesel" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="biodiesel"
+                className="block text-lg font-semibold mb-2"
+              >
                 إنتاج البيوديزل من زيت الطهي المستخدم (لتر/شهر)
               </label>
               <input
@@ -156,7 +184,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="recyclingRate" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="recyclingRate"
+                className="block text-lg font-semibold mb-2"
+              >
                 معدل إعادة التدوير الكلي (%)
               </label>
               <input
@@ -170,7 +201,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="sourceSegregation" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="sourceSegregation"
+                className="block text-lg font-semibold mb-2"
+              >
                 أداء الفرز من المصدر - معدل المشاركة (%)
               </label>
               <input
@@ -184,7 +218,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="compostingRate" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="compostingRate"
+                className="block text-lg font-semibold mb-2"
+              >
                 معدل تسميد النفايات العضوية (%)
               </label>
               <input
@@ -198,7 +235,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="medicalWaste" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="medicalWaste"
+                className="block text-lg font-semibold mb-2"
+              >
                 النفايات الطبية المجموعة (طن/شهر)
               </label>
               <input
@@ -212,7 +252,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="weeeCollected" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="weeeCollected"
+                className="block text-lg font-semibold mb-2"
+              >
                 النفايات الإلكترونية (WEEE) المجموعة (طن/شهر)
               </label>
               <input
@@ -226,7 +269,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="hazardousWasteRecyclingRate" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="hazardousWasteRecyclingRate"
+                className="block text-lg font-semibold mb-2"
+              >
                 معدل إعادة تدوير النفايات الخطرة (%)
               </label>
               <input
@@ -240,7 +286,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="hazardousWasteRemovalRate" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="hazardousWasteRemovalRate"
+                className="block text-lg font-semibold mb-2"
+              >
                 نسبة المواد الخطرة التي تمت إزالتها (%)
               </label>
               <input
@@ -254,7 +303,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="localInitiatives" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="localInitiatives"
+                className="block text-lg font-semibold mb-2"
+              >
                 عدد المبادرات المحلية النشطة
               </label>
               <input
@@ -268,7 +320,10 @@ const WasteForm = () => {
               />
             </div>
             <div>
-              <label htmlFor="communityEvents" className="block text-lg font-semibold mb-2">
+              <label
+                htmlFor="communityEvents"
+                className="block text-lg font-semibold mb-2"
+              >
                 عدد فعاليات المشاركة المجتمعية
               </label>
               <input
@@ -287,14 +342,14 @@ const WasteForm = () => {
             <button
               onClick={() => navigate("/waste")}
               type="submit"
-              className="bg-green-500 text-white p-3 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500"
+              className="bg-blue-600 hover:bg-blue-700 text-white p-3 rounded-lg  focus:outline-none focus:ring-2"
             >
-              إرسال
+              حفظ
             </button>
           </div>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

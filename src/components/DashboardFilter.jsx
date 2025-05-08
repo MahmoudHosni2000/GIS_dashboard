@@ -109,7 +109,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
   return (
     <div className="space-y-6">
       {/* Filters */}
-      <form className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+      <form className="flex flex-col space-y-4 text-right rtl">
         <select
           name="section"
           value={filter.section}
@@ -138,12 +138,12 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
           </select>
         )}
 
-        <button
+        {/* <button
           onClick={() => navigate("/DashboardForm")}
           className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
         >
           تعديل البيانات
-        </button>
+        </button> */}
       </form>
 
       {/* Cards and Bar Chart */}

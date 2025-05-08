@@ -41,28 +41,69 @@ const EnergyForm = () => {
   };
 
   return (
-    <div className="space-y-8" dir="rtl">
+    <div className="space-y-8 p-5" dir="rtl">
       <Helmet>
         <title>تعديل بيانات الطاقة | لوحة مؤشرات نظم المعلومات الجغرافية</title>
       </Helmet>
-
-      <h2 className="text-2xl font-bold mb-6 text-right">تعديل بيانات الطاقة</h2>
+      <img
+        class="form-logo"
+        src="https://img.icons8.com/?size=100&id=64162&format=png&color=000000"
+        alt="Logo"
+      />
+      <h1 className="text-2xl font-bold text-center mb-5">
+        تطبيق إضافة وتحديث بيانات الطاقة
+      </h1>
       <form onSubmit={handleSubmit} className="space-y-4">
-
         {[
-          { name: "pv_capacity_mwp", label: "إجمالي القدرة المركبة للطاقة الشمسية (MWp)" },
+          {
+            name: "pv_capacity_mwp",
+            label: "إجمالي القدرة المركبة للطاقة الشمسية (MWp)",
+          },
           { name: "pv_capacity_change", label: "التغير عن القيمة السابقة" },
-          { name: "solar_energy_production", label: "الطاقة الكهربائية المنتجة من الطاقة الشمسية (MWh/سنة أو شهر)" },
-          { name: "solar_energy_production_change", label: "التغير عن القيمة السابقة" },
-          { name: "electricity_consumption", label: "استهلاك الطاقة الكهربائية (MWh/سنة أو شهر)" },
-          { name: "electricity_consumption_change", label: "التغير عن القيمة السابقة" },
-          { name: "solar_coverage_percent", label: "نسبة استهلاك الكهرباء المغطاة بالطاقة الشمسية (%)" },
+          {
+            name: "solar_energy_production",
+            label:
+              "الطاقة الكهربائية المنتجة من الطاقة الشمسية (MWh/سنة أو شهر)",
+          },
+          {
+            name: "solar_energy_production_change",
+            label: "التغير عن القيمة السابقة",
+          },
+          {
+            name: "electricity_consumption",
+            label: "استهلاك الطاقة الكهربائية (MWh/سنة أو شهر)",
+          },
+          {
+            name: "electricity_consumption_change",
+            label: "التغير عن القيمة السابقة",
+          },
+          {
+            name: "solar_coverage_percent",
+            label: "نسبة استهلاك الكهرباء المغطاة بالطاقة الشمسية (%)",
+          },
           { name: "solar_coverage_change", label: "التغير عن القيمة السابقة" },
-          { name: "daily_consumption_per_guest", label: "متوسط استهلاك الكهرباء اليومي لكل نزيل (kWh/نزيل/يوم)" },
-          { name: "daily_consumption_change", label: "التغير عن القيمة السابقة" },
-          { name: "smart_rooms", label: "عدد الغرف المزودة بأنظمة إدارة طاقة ذكية", step: 1 },
-          { name: "smart_rooms_change", label: "التغير عن القيمة السابقة", step: 1 },
-          { name: "dimmable_area_percent", label: "نسبة المساحات المزودة بإضاءة قابلة للتعتيم (%)" },
+          {
+            name: "daily_consumption_per_guest",
+            label: "متوسط استهلاك الكهرباء اليومي لكل نزيل (kWh/نزيل/يوم)",
+          },
+          {
+            name: "daily_consumption_change",
+            label: "التغير عن القيمة السابقة",
+          },
+          {
+            name: "smart_rooms",
+            label: "عدد الغرف المزودة بأنظمة إدارة طاقة ذكية",
+            step: 1,
+          },
+          {
+            name: "smart_rooms_change",
+            label: "التغير عن القيمة السابقة",
+            step: 1,
+          },
+          {
+            name: "dimmable_area_percent",
+            label: "نسبة المساحات المزودة بإضاءة قابلة للتعتيم (%)",
+          },
           { name: "dimmable_area_change", label: "التغير عن القيمة السابقة" },
         ].map(({ name, label, step = "any" }) => (
           <div key={name}>
@@ -82,9 +123,13 @@ const EnergyForm = () => {
           </div>
         ))}
 
-        <div className="flex justify-between">
-          <button type="submit" className="px-6 py-3 bg-blue-600 text-white rounded">
-            إرسال
+        <div className="text-center">
+          <button
+            onClick={() => navigate("/energy")}
+            type="submit"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
+          >
+            حفظ
           </button>
         </div>
       </form>

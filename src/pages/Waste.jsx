@@ -142,19 +142,49 @@ const Waste = () => {
     <section>
       <h2 className="text-2xl font-bold mb-4">I. إنتاج وجمع النفايات</h2>
       <div className="grid grid-cols-3 gap-4 mb-4">
-        <StatCard title="نفايات بلدية (طن/يوم)" value={data.generation_collection.total_generated_tpd.MSW} />
-        <StatCard title="مخلفات البناء والهدم (طن/يوم)" value={data.generation_collection.total_generated_tpd["C&D"]} />
-        <StatCard title="نفايات أخرى (طن/يوم)" value={data.generation_collection.total_generated_tpd.other} />
+        <StatCard
+          title="نفايات بلدية (طن/يوم)"
+          value={data.generation_collection.total_generated_tpd.MSW}
+        />
+        <StatCard
+          title="مخلفات البناء والهدم (طن/يوم)"
+          value={data.generation_collection.total_generated_tpd["C&D"]}
+        />
+        <StatCard
+          title="نفايات أخرى (طن/يوم)"
+          value={data.generation_collection.total_generated_tpd.other}
+        />
       </div>
       <div className="grid grid-cols-2 gap-4">
-        <StatCard title="كفاءة الجمع" value={data.generation_collection.collection_efficiency_percent + "%"} />
-        <StatCard title="نسبة امتلاء الحاويات المفتوحة" value={data.generation_collection.open_container_overflow_rate_percent + "%"} />
+        <StatCard
+          title="كفاءة الجمع"
+          value={data.generation_collection.collection_efficiency_percent + "%"}
+        />
+        <StatCard
+          title="نسبة امتلاء الحاويات المفتوحة"
+          value={
+            data.generation_collection.open_container_overflow_rate_percent +
+            "%"
+          }
+        />
       </div>
       <div className="mt-6">
-        <CustomPieChart data={recyclableData} dataKey="value" nameKey="name" title="أنواع النفايات القابلة للتدوير" colors={["#4ade80", "#60a5fa", "#facc15", "#f87171"]} />
+        <CustomPieChart
+          data={recyclableData}
+          dataKey="value"
+          nameKey="name"
+          title="أنواع النفايات القابلة للتدوير"
+          colors={["#4ade80", "#60a5fa", "#facc15", "#f87171"]}
+        />
       </div>
       <div className="mt-6">
-        <CustomBarChart data={ucoMonthlyData} xKey="name" barKey="value" barColor="#3b82f6" title="زيت الطهي المستخدم المُجمع شهريًا" />
+        <CustomBarChart
+          data={ucoMonthlyData}
+          xKey="name"
+          barKey="value"
+          barColor="#3b82f6"
+          title="زيت الطهي المستخدم المُجمع شهريًا"
+        />
       </div>
     </section>
   );
@@ -163,13 +193,33 @@ const Waste = () => {
     <section>
       <h2 className="text-2xl font-bold mb-4">II. معالجة وتحويل النفايات</h2>
       <div className="grid grid-cols-3 gap-4">
-        <StatCard title="معدل التحويل" value={data.processing_diversion.overall_diversion_rate_percent + "%"} />
-        <StatCard title="وقود حيوي من زيت الطهي" value={data.processing_diversion.biodiesel_from_uco_liters + " لتر"} />
-        <StatCard title="معدل التدوير العام" value={data.processing_diversion.overall_recycling_rate_percent + "%"} />
+        <StatCard
+          title="معدل التحويل"
+          value={data.processing_diversion.overall_diversion_rate_percent + "%"}
+        />
+        <StatCard
+          title="وقود حيوي من زيت الطهي"
+          value={data.processing_diversion.biodiesel_from_uco_liters + " لتر"}
+        />
+        <StatCard
+          title="معدل التدوير العام"
+          value={data.processing_diversion.overall_recycling_rate_percent + "%"}
+        />
       </div>
       <div className="grid grid-cols-2 gap-4 mt-4">
-        <StatCard title="مشاركة فصل المصدر" value={data.processing_diversion.source_segregation.participation_rate_percent + "%"} />
-        <StatCard title="معدل التسميد للنفايات العضوية" value={data.processing_diversion.organic_waste_composting_percent + "%"} />
+        <StatCard
+          title="مشاركة فصل المصدر"
+          value={
+            data.processing_diversion.source_segregation
+              .participation_rate_percent + "%"
+          }
+        />
+        <StatCard
+          title="معدل التسميد للنفايات العضوية"
+          value={
+            data.processing_diversion.organic_waste_composting_percent + "%"
+          }
+        />
       </div>
     </section>
   );
@@ -178,21 +228,47 @@ const Waste = () => {
     <section>
       <h2 className="text-2xl font-bold mb-4">III. إدارة النفايات الخطرة</h2>
       <div className="grid grid-cols-2 gap-4">
-        <StatCard title="نفايات طبية (طن/شهر)" value={data.hazardous_waste.medical_waste_tpm} />
-        <StatCard title="معدات إلكترونية مجمعة (طن/شهر)" value={data.hazardous_waste.weee_collected_tpm} />
+        <StatCard
+          title="نفايات طبية (طن/شهر)"
+          value={data.hazardous_waste.medical_waste_tpm}
+        />
+        <StatCard
+          title="معدات إلكترونية مجمعة (طن/شهر)"
+          value={data.hazardous_waste.weee_collected_tpm}
+        />
       </div>
       <div className="mt-6">
-        <CustomPieChart data={weeeProcessingData} dataKey="value" nameKey="name" title="معالجة النفايات الإلكترونية" colors={["#0ea5e9", "#f97316"]} />
+        <CustomPieChart
+          data={weeeProcessingData}
+          dataKey="value"
+          nameKey="name"
+          title="معالجة النفايات الإلكترونية"
+          colors={["#0ea5e9", "#f97316"]}
+        />
       </div>
     </section>
   );
 
   const renderCircularSection = () => (
     <section>
-      <h2 className="text-2xl font-bold mb-4">IV. الاقتصاد الدائري والمشاركة</h2>
+      <h2 className="text-2xl font-bold mb-4">
+        IV. الاقتصاد الدائري والمشاركة
+      </h2>
       <div className="grid grid-cols-2 gap-4">
-        <StatCard title="المبادرات المحلية النشطة" value={data.circular_economy_community_engagement.number_of_active_local_initiatives} />
-        <StatCard title="عدد الفعاليات" value={data.circular_economy_community_engagement.stakeholder_engagement.events_count} />
+        <StatCard
+          title="المبادرات المحلية النشطة"
+          value={
+            data.circular_economy_community_engagement
+              .number_of_active_local_initiatives
+          }
+        />
+        <StatCard
+          title="عدد الفعاليات"
+          value={
+            data.circular_economy_community_engagement.stakeholder_engagement
+              .events_count
+          }
+        />
       </div>
       <div className="mt-6">
         <CustomBarChart
@@ -207,14 +283,15 @@ const Waste = () => {
   );
 
   return (
-    <div dir="rtl">
+    <>
       <Helmet>
         <title>لوحة مؤشرات النفايات</title>
       </Helmet>
 
-      <h1 className="text-3xl font-semibold mb-6">لوحة مؤشرات النفايات</h1>
-
-      <div className="mb-6 flex gap-1">
+      <div className="flex flex-col space-y-4 text-right rtl">
+        <h1 className="m-auto text-3xl font-semibold mb-6">
+          لوحة مؤشرات الأداء العام للنفايات
+        </h1>
         <select
           value={filter}
           onChange={(e) => setFilter(e.target.value)}
@@ -226,16 +303,16 @@ const Waste = () => {
           <option value="hazardous">نفايات خطرة</option>
           <option value="circular">الاقتصاد الدائري</option>
         </select>
-        <button
+        {/* <button
           onClick={() => navigate("/WasteForm")}
           className="bg-green-500 text-white p-2 rounded"
         >
           تعديل بيانات النفايات
-        </button>
+        </button> */}
       </div>
 
       {filteredData()}
-    </div>
+    </>
   );
 };
 
