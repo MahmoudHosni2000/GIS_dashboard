@@ -10,6 +10,25 @@ const Dashboard = () => {
     population: "all",
     section: "all",
   });
+  const theme = localStorage.getItem("theme") || "dark";
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+
+    const html = document.documentElement;
+
+    if (theme === "dark") {
+      html.classList.add("dark");
+      html.classList.remove("light");
+    } else if (theme === "light") {
+      html.classList.remove("dark");
+      html.classList.add("light");
+    } else {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      html.classList.toggle("dark", isDark);
+      html.classList.toggle("light", !isDark);
+    }
+  }, [theme]);
 
   useEffect(() => {
     const stored = localStorage.getItem("dashboardFormData");
@@ -21,19 +40,20 @@ const Dashboard = () => {
 
     const formattedData = {
       population: {
-        male: Number(parsed.male || 0),
-        female: Number(parsed.female || 0),
-        children: Number(parsed.children || 0),
-        elderly: Number(parsed.elderly || 0),
+        ذكور: Number(parsed.male || 0),
+        إناث: Number(parsed.female || 0),
+        أطفال: Number(parsed.children || 0),
+        مُسنين: Number(parsed.elderly || 0),
       },
       hospitals: Number(parsed.hospitals || 0),
       hotels: {
         green_star: Number(parsed.hotelsGreen || 0),
         non_green_star: Number(parsed.hotelsNotGreen || 0),
       },
-      Diving_centres:
-        Number(parsed.divingCentersGreen || 0) +
-        Number(parsed.divingCentersNotGreen || 0),
+      Diving_centres: {
+        divingCentersGreen: Number(parsed.divingCentersGreen || 0),
+        divingCentersNotGreen: Number(parsed.divingCentersNotGreen || 0),
+      },
     };
 
     setData(formattedData);
@@ -47,8 +67,7 @@ const Dashboard = () => {
       <Helmet>
         <title>لوحة مؤشرات الأداء العام للإجماليات</title>
       </Helmet>
-
-      <div className="flex flex-col space-y-4 text-right rtl" dir="rtl">
+      <div className="flex flex-col h-fill-available space-y-4" dir="rtl">
         <h1 className="mx-auto text-3xl font-extrabold">
           لوحة مؤشرات الأداء العام للإجماليات
         </h1>

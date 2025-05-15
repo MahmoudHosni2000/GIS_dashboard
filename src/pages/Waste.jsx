@@ -1,92 +1,114 @@
 import { useEffect, useState } from "react";
-import StatCard from "../components/StatCard";
-import CustomBarChart from "../components/CustomBarChart";
-import CustomPieChart from "../components/CustomPieChart";
-import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
+import StatCard from "../components/StatCard";
+import CustomPieChart from "../components/CustomPieChart";
+import CustomBarChart from "../components/CustomBarChart";
+import MapView from "../components/MapView";
+import SplashScreen from "../components/SplashScreen";
 import { useNavigate } from "react-router-dom";
 
 const Waste = () => {
+  const [data, setData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
+  const [selectedCity, setSelectedCity] = useState("");
+  const theme = localStorage.getItem("theme") || "dark";
   const navigate = useNavigate();
 
-  const [data, setData] = useState(null);
-  const [showSplash, setShowSplash] = useState(true);
-  const [filter, setFilter] = useState("all");
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+
+    const html = document.documentElement;
+
+    if (theme === "dark") {
+      html.classList.add("dark");
+      html.classList.remove("light");
+    } else if (theme === "light") {
+      html.classList.remove("dark");
+      html.classList.add("light");
+    } else {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      html.classList.toggle("dark", isDark);
+      html.classList.toggle("light", !isDark);
+    }
+  }, [theme]);
 
   useEffect(() => {
-    const stored = localStorage.getItem("wasteFormData");
-    const parsed = stored ? JSON.parse(stored) : {};
+    const localData = localStorage.getItem("wasteFormData");
 
-    setData({
-      generation_collection: {
-        total_generated_tpd: {
-          MSW: Number(parsed.msw) || 0,
-          "C&D": Number(parsed.cndWaste) || 0,
-          other: Number(parsed.otherWaste) || 0,
-        },
-        recyclable_generated_tpd: {
-          بلاستيك: Number(parsed.recyclableWaste) || 0,
-        },
-        collection_efficiency_percent: Number(parsed.collectionEfficiency) || 0,
-        open_container_overflow_rate_percent: Number(parsed.overflowRate) || 0,
-        collected_uco_liters_month: {
-          يناير: Number(parsed.biodiesel) || 0,
-        },
-        collected_uco_liters: {
-          يناير: Number(parsed.biodiesel) || 0,
-        },
-      },
-      processing_diversion: {
-        overall_diversion_rate_percent: Number(parsed.diversionRate) || 0,
-        biodiesel_from_uco_liters: Number(parsed.biodiesel) || 0,
-        overall_recycling_rate_percent: Number(parsed.recyclingRate) || 0,
-        source_segregation: {
-          participation_rate_percent: Number(parsed.sourceSegregation) || 0,
-        },
-        organic_waste_composting_percent: Number(parsed.compostingRate) || 0,
-      },
-      hazardous_waste: {
-        medical_waste_tpm: Number(parsed.medicalWaste) || 0,
-        weee_collected_tpm: Number(parsed.weeeCollected) || 0,
-        weee_processing: {
-          recycled_refurbished_percent:
-            Number(parsed.hazardousWasteRecyclingRate) || 0,
-          hazardous_material_removed_percent:
-            Number(parsed.hazardousWasteRemovalRate) || 0,
-        },
-      },
-      circular_economy_community_engagement: {
-        number_of_active_local_initiatives:
-          Number(parsed.localInitiatives) || 0,
-        stakeholder_engagement: {
-          events_count: Number(parsed.communityEvents) || 0,
-          estimated_participants: 0,
-        },
-      },
-    });
-
-    setTimeout(() => setShowSplash(false), 200);
+    if (localData) {
+      try {
+        const parsed = JSON.parse(localData);
+        if (Array.isArray(parsed)) {
+          setData(parsed);
+          setFilteredData(parsed);
+        } else {
+          console.warn("بيانات localStorage غير صحيحة، استخدام مصفوفة فارغة.");
+        }
+      } catch (error) {
+        console.error("خطأ في تحليل بيانات localStorage:", error);
+      }
+    } else {
+      console.log("لا توجد بيانات في localStorage.");
+    }
   }, []);
 
-  if (showSplash || !data) return <SplashScreen />;
+  const handleCityChange = (event) => {
+    const city = event.target.value;
+    setSelectedCity(city);
+    if (city) {
+      setFilteredData(data.filter((item) => item.city === city));
+    } else {
+      setFilteredData(data);
+    }
+  };
 
+  // إذا البيانات لسة مش جاهزة أو مش مصفوفة
+  if (!Array.isArray(filteredData)) {
+    return (
+      <div>
+        {" "}
+        <SplashScreen />{" "}
+      </div>
+    );
+  }
+
+  const cities = Array.from(new Set(data.map((item) => item.city)));
+
+  // تصفية المدن التي لا تحتوي على قيمة فارغة
+  const filteredCities = cities.filter((city) => city);
+
+  useEffect(() => {
+    if (filteredCities.length > 0 && !selectedCity) {
+      setSelectedCity(filteredCities[0]);
+      setFilteredData(data.filter((item) => item.city === filteredCities[0]));
+    }
+  }, [filteredCities, selectedCity, data]);
+
+  // تجهيز بيانات الرسوم
   const recyclableData = Object.entries(
-    data.generation_collection.recyclable_generated_tpd
-  ).map(([key, value]) => ({ name: key, value }));
+    filteredData[0]?.generation_collection?.recyclable_generated_tpd || {}
+  ).map(([name, value]) => ({ name, value }));
+
+  const ucoData = Object.entries(
+    filteredData[0]?.generation_collection?.collected_uco_liters || {}
+  ).map(([name, value]) => ({ name, value }));
 
   const ucoMonthlyData = Object.entries(
-    data.generation_collection.collected_uco_liters_month
-  ).map(([month, value]) => ({ name: month, value }));
+    filteredData[0]?.generation_collection?.collected_uco_liters_month || {}
+  ).map(([name, value]) => ({ name, value }));
 
   const weeeProcessingData = [
     {
-      name: "تم التدوير/التجديد",
-      value: data.hazardous_waste.weee_processing.recycled_refurbished_percent,
+      name: "مُعاد تدويره/مُجدد",
+      value:
+        filteredData[0]?.hazardous_waste?.weee_processing
+          ?.recycled_refurbished_percent ?? 0,
     },
     {
       name: "تمت إزالة المواد الخطرة",
       value:
-        data.hazardous_waste.weee_processing.hazardous_material_removed_percent,
+        filteredData[0]?.hazardous_waste?.weee_processing
+          ?.hazardous_material_removed_percent ?? 0,
     },
   ];
 
@@ -94,224 +116,249 @@ const Waste = () => {
     {
       name: "المبادرات المحلية",
       value:
-        data.circular_economy_community_engagement
-          .number_of_active_local_initiatives,
+        filteredData[0]?.circular_economy_community_engagement
+          ?.number_of_active_local_initiatives ?? 0,
     },
     {
-      name: "فعاليات التوعية",
+      name: "أحداث المشاركة",
       value:
-        data.circular_economy_community_engagement.stakeholder_engagement
-          .events_count,
+        filteredData[0]?.circular_economy_community_engagement
+          ?.stakeholder_engagement?.events_count ?? 0,
     },
     {
-      name: "عدد المشاركين",
+      name: "مشاركون",
       value:
-        data.circular_economy_community_engagement.stakeholder_engagement
-          .estimated_participants,
+        filteredData[0]?.circular_economy_community_engagement
+          ?.stakeholder_engagement?.estimated_participants ?? 0,
     },
   ];
-
-  const filteredData = () => {
-    if (filter === "generation") {
-      return renderGenerationSection();
-    }
-    if (filter === "processing") {
-      return renderProcessingSection();
-    }
-    if (filter === "hazardous") {
-      return renderHazardousSection();
-    }
-    if (filter === "circular") {
-      return renderCircularSection();
-    }
-    // default to all
-    return (
-      <>
-        {renderGenerationSection()}
-        <br />
-        {renderProcessingSection()}
-        <br />
-        {renderHazardousSection()}
-        <br />
-        {renderCircularSection()}
-      </>
-    );
-  };
-
-  const renderGenerationSection = () => (
-    <section>
-      <h2 className="text-2xl font-bold mb-4">I. إنتاج وجمع النفايات</h2>
-      <div className="grid grid-cols-3 gap-4 mb-4">
-        <StatCard
-          title="نفايات بلدية (طن/يوم)"
-          value={data.generation_collection.total_generated_tpd.MSW}
-        />
-        <StatCard
-          title="مخلفات البناء والهدم (طن/يوم)"
-          value={data.generation_collection.total_generated_tpd["C&D"]}
-        />
-        <StatCard
-          title="نفايات أخرى (طن/يوم)"
-          value={data.generation_collection.total_generated_tpd.other}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4">
-        <StatCard
-          title="كفاءة الجمع"
-          value={data.generation_collection.collection_efficiency_percent + "%"}
-        />
-        <StatCard
-          title="نسبة امتلاء الحاويات المفتوحة"
-          value={
-            data.generation_collection.open_container_overflow_rate_percent +
-            "%"
-          }
-        />
-      </div>
-      <div className="mt-6">
-        <CustomPieChart
-          data={recyclableData}
-          dataKey="value"
-          nameKey="name"
-          title="أنواع النفايات القابلة للتدوير"
-          colors={["#4ade80", "#60a5fa", "#facc15", "#f87171"]}
-        />
-      </div>
-      <div className="mt-6">
-        <CustomBarChart
-          data={ucoMonthlyData}
-          xKey="name"
-          barKey="value"
-          barColor="#3b82f6"
-          title="زيت الطهي المستخدم المُجمع شهريًا"
-        />
-      </div>
-    </section>
-  );
-
-  const renderProcessingSection = () => (
-    <section>
-      <h2 className="text-2xl font-bold mb-4">II. معالجة وتحويل النفايات</h2>
-      <div className="grid grid-cols-3 gap-4">
-        <StatCard
-          title="معدل التحويل"
-          value={data.processing_diversion.overall_diversion_rate_percent + "%"}
-        />
-        <StatCard
-          title="وقود حيوي من زيت الطهي"
-          value={data.processing_diversion.biodiesel_from_uco_liters + " لتر"}
-        />
-        <StatCard
-          title="معدل التدوير العام"
-          value={data.processing_diversion.overall_recycling_rate_percent + "%"}
-        />
-      </div>
-      <div className="grid grid-cols-2 gap-4 mt-4">
-        <StatCard
-          title="مشاركة فصل المصدر"
-          value={
-            data.processing_diversion.source_segregation
-              .participation_rate_percent + "%"
-          }
-        />
-        <StatCard
-          title="معدل التسميد للنفايات العضوية"
-          value={
-            data.processing_diversion.organic_waste_composting_percent + "%"
-          }
-        />
-      </div>
-    </section>
-  );
-
-  const renderHazardousSection = () => (
-    <section>
-      <h2 className="text-2xl font-bold mb-4">III. إدارة النفايات الخطرة</h2>
-      <div className="grid grid-cols-2 gap-4">
-        <StatCard
-          title="نفايات طبية (طن/شهر)"
-          value={data.hazardous_waste.medical_waste_tpm}
-        />
-        <StatCard
-          title="معدات إلكترونية مجمعة (طن/شهر)"
-          value={data.hazardous_waste.weee_collected_tpm}
-        />
-      </div>
-      <div className="mt-6">
-        <CustomPieChart
-          data={weeeProcessingData}
-          dataKey="value"
-          nameKey="name"
-          title="معالجة النفايات الإلكترونية"
-          colors={["#0ea5e9", "#f97316"]}
-        />
-      </div>
-    </section>
-  );
-
-  const renderCircularSection = () => (
-    <section>
-      <h2 className="text-2xl font-bold mb-4">
-        IV. الاقتصاد الدائري والمشاركة
-      </h2>
-      <div className="grid grid-cols-2 gap-4">
-        <StatCard
-          title="المبادرات المحلية النشطة"
-          value={
-            data.circular_economy_community_engagement
-              .number_of_active_local_initiatives
-          }
-        />
-        <StatCard
-          title="عدد الفعاليات"
-          value={
-            data.circular_economy_community_engagement.stakeholder_engagement
-              .events_count
-          }
-        />
-      </div>
-      <div className="mt-6">
-        <CustomBarChart
-          data={circularEngagementData}
-          xKey="name"
-          barKey="value"
-          barColor="#d97706"
-          title="مشاركة المجتمع في الاقتصاد الدائري"
-        />
-      </div>
-    </section>
-  );
 
   return (
     <>
       <Helmet>
-        <title>لوحة مؤشرات النفايات</title>
+        <title>لوحة معلومات مؤشرات النفايات</title>
       </Helmet>
 
-      <div className="flex flex-col space-y-4 text-right rtl">
-        <h1 className="m-auto text-3xl font-semibold mb-6">
+      <div className="flex flex-col space-y-4 text-right rtl" dir="rtl">
+        <h1 className="mx-auto text-3xl font-extrabold">
           لوحة مؤشرات الأداء العام للنفايات
         </h1>
-        <select
-          value={filter}
-          onChange={(e) => setFilter(e.target.value)}
-          className="p-2 border rounded"
-        >
-          <option value="all">الكل</option>
-          <option value="generation">إنتاج النفايات</option>
-          <option value="processing">المعالجة والتحويل</option>
-          <option value="hazardous">نفايات خطرة</option>
-          <option value="circular">الاقتصاد الدائري</option>
-        </select>
-        {/* <button
-          onClick={() => navigate("/WasteForm")}
-          className="bg-green-500 text-white p-2 rounded"
-        >
-          تعديل بيانات النفايات
-        </button> */}
-      </div>
+        <section>
+          {/* اختيار المدينة */}
+          <div className="flex flex-col space-y-4 text-right rtl" dir="rtl">
+            <select
+              onChange={handleCityChange}
+              value={selectedCity}
+              className="p-2 border rounded-md dark:bg-gray-600 dark:text-white bg-white"
+              style={{ width: "-webkit-fill-available" }}
+            >
+              <option disabled value="">
+                اختر مدينة
+              </option>
+              {filteredCities.map((city, idx) => (
+                <option key={idx} value={city}>
+                  {city}
+                </option>
+              ))}
+            </select>
+            {/* زر التعديل */}
+            <button
+              onClick={() => navigate("/WasteForm")}
+              className="bg-green-500 text-white px-4 py-2 rounded"
+            >
+              تعديل بيانات النفايات
+            </button>
+          </div>
 
-      {filteredData()}
+          {/* عرض البيانات */}
+          {filteredData.length > 0 ? (
+            filteredData.map((item, index) => {
+              return (
+                <div key={index}>
+                  {/* I. توليد النفايات وجمعها */}
+                  <section>
+                    <h2 className="text-2xl font-bold mb-4">
+                      I. توليد النفايات وجمعها
+                    </h2>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <StatCard
+                        title="النفايات الصلبة (طن/يوم)"
+                        value={
+                          item.generation_collection?.total_generated_tpd
+                            ?.MSW ?? 0
+                        }
+                      />
+                      <StatCard
+                        title="نفايات البناء والهدم (طن/يوم)"
+                        value={
+                          item.generation_collection?.total_generated_tpd?.[
+                            "C&D"
+                          ] ?? 0
+                        }
+                      />
+                      <StatCard
+                        title="النفايات الأخرى (طن/يوم)"
+                        value={
+                          item.generation_collection?.total_generated_tpd
+                            ?.other ?? 0
+                        }
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <StatCard
+                        title="كفاءة التحصيل"
+                        value={`${
+                          item.generation_collection
+                            ?.collection_efficiency_percent ?? 0
+                        }%`}
+                      />
+                      <StatCard
+                        title="معدل فيضان الحاوية المفتوحة"
+                        value={`${
+                          item.generation_collection
+                            ?.open_container_overflow_rate_percent ?? 0
+                        }%`}
+                      />
+                    </div>
+                    <div className="grid grid-cols-3 gap-4">
+                      <CustomPieChart
+                        data={recyclableData}
+                        dataKey="value"
+                        nameKey="name"
+                        title="النفايات القابلة لإعادة التدوير"
+                      />
+                      <CustomBarChart
+                        data={ucoMonthlyData}
+                        xKey="name"
+                        barKey="value"
+                        title="UCO المُجمّع بمرور الوقت"
+                      />
+                      <CustomBarChart
+                        data={ucoData}
+                        xKey="name"
+                        barKey="value"
+                        title="الديزل الحيوي المُنتج من UCO"
+                      />
+                    </div>
+                  </section>
+
+                  {/* II. معالجة النفايات وتحويلها */}
+                  <section className="mt-10">
+                    <h2 className="text-2xl font-bold mb-4">
+                      II. معالجة النفايات وتحويلها
+                    </h2>
+                    <div className="grid grid-cols-3 gap-4 mb-4">
+                      <StatCard
+                        title="معدل التحويل"
+                        value={`${
+                          item.processing_diversion
+                            ?.overall_diversion_rate_percent ?? 0
+                        }%`}
+                      />
+                      <StatCard
+                        title="وقود الديزل الحيوي من UCO"
+                        value={`${
+                          item.processing_diversion
+                            ?.biodiesel_from_uco_liters ?? 0
+                        } L`}
+                      />
+                      <StatCard
+                        title="معدل إعادة التدوير الإجمالي"
+                        value={`${
+                          item.processing_diversion
+                            ?.overall_recycling_rate_percent ?? 0
+                        }%`}
+                      />
+                    </div>
+                    <div className="grid grid-cols-2 gap-4">
+                      <StatCard
+                        title="مشاركة فصل المصدر"
+                        value={`${
+                          item.processing_diversion?.source_segregation
+                            ?.participation_rate_percent ?? 0
+                        }%`}
+                      />
+                      <StatCard
+                        title="تحويل النفايات العضوية إلى سماد"
+                        value={`${
+                          item.processing_diversion
+                            ?.organic_waste_composting_percent ?? 0
+                        }%`}
+                      />
+                    </div>
+                  </section>
+
+                  {/* III. إدارة النفايات الخطرة */}
+                  <section className="mt-10">
+                    <h2 className="text-2xl font-bold mb-4">
+                      III. إدارة النفايات الخطرة
+                    </h2>
+
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <div className="grid grid-cols-1 gap-4 mb-4 h-fit">
+                        <StatCard
+                          title="النفايات الطبية (طن/شهر)"
+                          value={item.hazardous_waste?.medical_waste_tpm ?? 0}
+                        />
+                        <StatCard
+                          title="النفايات الكهربائية والإلكترونية (طن/شهر)"
+                          value={item.hazardous_waste?.weee_collected_tpm ?? 0}
+                        />
+                      </div>
+                      <CustomPieChart
+                        data={weeeProcessingData}
+                        dataKey="value"
+                        nameKey="name"
+                        title="معالجة النفايات الإلكترونية والكهربائية"
+                      />
+                    </div>
+                  </section>
+
+                  {/* IV. المشاركة في الاقتصاد الدائري */}
+                  <section className="mt-10">
+                    <h2 className="text-2xl font-bold mb-4">
+                      IV. المشاركة في الاقتصاد الدائري
+                    </h2>
+                    <div className="grid grid-cols-2 gap-4 mb-4">
+                      <CustomBarChart
+                        data={circularEngagementData}
+                        xKey="name"
+                        barKey="value"
+                        title="مؤشرات المشاركة المجتمعية"
+                      />{" "}
+                      <div className="grid grid-cols-1 gap-4 mb-4 h-fit">
+                        <StatCard
+                          title="المبادرات المحلية النشطة"
+                          value={
+                            item.circular_economy_community_engagement
+                              ?.number_of_active_local_initiatives ?? 0
+                          }
+                        />
+                        <StatCard
+                          title="أحداث المشاركة"
+                          value={
+                            item.circular_economy_community_engagement
+                              ?.stakeholder_engagement?.events_count ?? 0
+                          }
+                        />
+                      </div>
+                    </div>
+                  </section>
+                  {/* V. عرض الإحداثيات */}
+                  <section className="mt-10">
+                    <h2 className="text-2xl font-bold mb-4">
+                      V. عرض الإحداثيات
+                    </h2>
+                    <MapView data={item} />
+                  </section>
+                </div>
+              );
+            })
+          ) : (
+            <p>لا توجد بيانات لعرضها لهذه المدينة.</p>
+          )}
+        </section>
+      </div>
     </>
   );
 };

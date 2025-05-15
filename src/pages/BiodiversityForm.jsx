@@ -5,11 +5,13 @@ import { useNavigate } from "react-router-dom";
 const BiodiversityForm = () => {
   const navigate = useNavigate();
 
+  // استرجاع البيانات من localStorage (إذا كانت موجودة)
   const [formData, setFormData] = useState(() => {
     const savedData = localStorage.getItem("biodiversityFormData");
     return savedData ? JSON.parse(savedData) : initialFormData;
   });
 
+  // حفظ البيانات في localStorage عند التغيير
   useEffect(() => {
     localStorage.setItem("biodiversityFormData", JSON.stringify(formData));
   }, [formData]);
@@ -34,46 +36,247 @@ const BiodiversityForm = () => {
       <Helmet>
         <title>نموذج التنوع البيولوجي | لوحة المعلومات</title>
       </Helmet>
-      <img
-        class="form-logo"
-        src="https://img.icons8.com/?size=100&id=115365&format=png&color=000000"
-        alt="Logo"
-      />
-      <h1 className="text-2xl font-bold text-center mb-4">
-        تطبيق إضافة وتحديث بيانات التنوع البيولوجي
-      </h1>
+      <div className="container mx-auto">
+        <img
+          className="form-logo"
+          src="https://img.icons8.com/?size=100&id=115365&format=png&color=000000"
+          alt="Logo"
+        />
+        <h1 className="text-2xl font-bold text-center mb-5 form-title">
+          تطبيق إضافة وتحديث بيانات التنوع البيولوجي
+        </h1>
 
-      <form
-        onSubmit={handleSubmit}
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        {Object.entries(formData).map(([key, value]) => (
-          <div key={key} className="flex flex-col">
-            <label htmlFor={key} className="mb-1 font-medium">
-              {labels[key]}
-            </label>
-            <input
-              type="number"
-              name={key}
-              id={key}
-              value={value}
-              onChange={handleChange}
-              className="px-4 py-2 border rounded"
-              placeholder="أدخل القيمة"
-            />
+        <form
+          onSubmit={handleSubmit}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          {/* القسم الأول: بيانات عامة */}
+          <div className="col-span-2 space-y-4 form !pt-0">
+            <h2 className="col-span-2 text-xl font-semibold mb-4">
+              البيانات العامة
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                "dailyTouristBoats",
+                "mooringPoints",
+                "coralChange",
+                "trainedCrew",
+                "trainedGuides",
+              ].map((key) => (
+                <div key={key} className="flex flex-col">
+                  <label htmlFor={key} className="mb-1 font-medium">
+                    {labels[key]}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    id={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="px-4 py-2 border rounded"
+                    placeholder="أدخل القيمة"
+                  />
+                </div>
+              ))}
+            </div>
           </div>
-        ))}
 
-        <div className="text-center">
-          <button
-            onClick={() => navigate("/biodiversity")}
-            type="submit"
-            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-lg transition duration-200"
-          >
-            حفظ
-          </button>
-        </div>
-      </form>
+          {/* القسم الثاني: الأنشطة البيئية */}
+          <div className="col-span-2 space-y-4 form !pt-0">
+            <h2 className="col-span-2 text-xl font-semibold mb-4">
+              الأنشطة البيئية
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                "ecoWaterSports",
+                "sustainabilityIncentives",
+                "visitorsPerSite",
+                "greenFinsMembers",
+                "greenFinsIncentives",
+              ].map((key) => (
+                <div key={key} className="flex flex-col">
+                  <label htmlFor={key} className="mb-1 font-medium">
+                    {labels[key]}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    id={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="px-4 py-2 border rounded"
+                    placeholder="أدخل القيمة"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* القسم الثالث: أنواع الشعاب */}
+          <div className="col-span-2 space-y-4 form !pt-0">
+            <h2 className="col-span-2 text-xl font-semibold mb-4">
+              أنواع الشعاب المرجانية
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                "reefSpeciesChange",
+                "paTrainedPersonnel",
+                "paBudgetIncrease",
+                "enforcementPatrols",
+                "patrolActions",
+              ].map((key) => (
+                <div key={key} className="flex flex-col">
+                  <label htmlFor={key} className="mb-1 font-medium">
+                    {labels[key]}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    id={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="px-4 py-2 border rounded"
+                    placeholder="أدخل القيمة"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* القسم الرابع: الإدارة والتدريب */}
+          <div className="col-span-2 space-y-4 form !pt-0">
+            <h2 className="col-span-2 text-xl font-semibold mb-4">
+              الإدارة والتدريب
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                "boatsWithSewageTanks",
+                "seaNutrientDecrease",
+                "boatsUsingLandFacilities",
+                "dischargeSalinityDecrease",
+                "greyWaterUseReduction",
+              ].map((key) => (
+                <div key={key} className="flex flex-col">
+                  <label htmlFor={key} className="mb-1 font-medium">
+                    {labels[key]}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    id={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="px-4 py-2 border rounded"
+                    placeholder="أدخل القيمة"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* القسم الخامس: المشغلين والنظافة */}
+          <div className="col-span-2 space-y-4 form !pt-0">
+            <h2 className="col-span-2 text-xl font-semibold mb-4">
+              المشغلين والنظافة
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                "operatorsPromotingSafeProducts",
+                "marineCleanups",
+                "coastalDamageReports",
+                "illegalFishingReports",
+                "birdMortalityDecrease",
+              ].map((key) => (
+                <div key={key} className="flex flex-col">
+                  <label htmlFor={key} className="mb-1 font-medium">
+                    {labels[key]}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    id={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="px-4 py-2 border rounded"
+                    placeholder="أدخل القيمة"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* القسم السادس: الحيوانات البحرية */}
+          <div className="col-span-2 space-y-4 form !pt-0">
+            <h2 className="col-span-2 text-xl font-semibold mb-4">
+              الحيوانات البحرية
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {[
+                "birdRehabilitationCases",
+                "turtleNestingSites",
+                "turtlesRescued",
+              ].map((key) => (
+                <div key={key} className="flex flex-col">
+                  <label htmlFor={key} className="mb-1 font-medium">
+                    {labels[key]}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    id={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="px-4 py-2 border rounded"
+                    placeholder="أدخل القيمة"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* قسم الموقع الجغرافي */}
+          <div className="col-span-2 space-y-4 form !pt-0">
+            <h2 className="col-span-2 text-xl font-semibold mb-4">
+              قسم الموقع الجغرافي
+            </h2>
+            <div className="grid grid-cols-2 gap-4">
+              {["longitude", "latitude"].map((key) => (
+                <div key={key} className="flex flex-col">
+                  <label htmlFor={key} className="mb-1 font-medium">
+                    {labels[key]}
+                  </label>
+                  <input
+                    type="number"
+                    name={key}
+                    id={key}
+                    value={formData[key]}
+                    onChange={handleChange}
+                    className="px-4 py-2 border rounded"
+                    placeholder="أدخل القيمة"
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+          <div></div>
+          <div className="text-center flex flex-col sm:flex-row justify-end">
+            <button
+              onClick={() => navigate("/")}
+              type="submit"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-r-lg transition duration-200"
+            >
+              حفظ
+            </button>
+
+            <button
+              type="button"
+              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-l-lg transition duration-200"
+            >
+              إرسال البيانات (Excel)
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };
@@ -108,6 +311,8 @@ const initialFormData = {
   birdRehabilitationCases: "",
   turtleNestingSites: "",
   turtlesRescued: "",
+  longitude: "", // 🆕 خط الطول
+  latitude: "", // 🆕 خط العرض
 };
 
 // تسميات عربية للحقول
@@ -144,6 +349,8 @@ const labels = {
   birdRehabilitationCases: "عدد حالات تأهيل الطيور",
   turtleNestingSites: "عدد مواقع تعشيش السلاحف المحمية",
   turtlesRescued: "عدد السلاحف التي تم علاجها وإنقاذها",
+  longitude: "خط الطول", // 🆕
+  latitude: "خط العرض", // 🆕
 };
 
 export default BiodiversityForm;

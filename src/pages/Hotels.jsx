@@ -5,140 +5,103 @@ import CustomLineChart from "../components/CustomLineChart";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import MapView from "../components/MapView";
 
 const Hotels = () => {
-  const navigate = useNavigate(); // استخدام useNavigate بدلاً من useHistory
-
   const [data, setData] = useState(null);
-  const [filteredHotels, setFilteredHotels] = useState([]);
   const [selectedHotel, setSelectedHotel] = useState(null);
-  const [nameFilter, setNameFilter] = useState("");
-  const [sectorFilter, setSectorFilter] = useState("");
-  const [showSplash, setShowSplash] = useState(true);
+  const [selectedLocation, setSelectedLocation] = useState(""); // لحفظ القطاع المختار
+  const [filteredHotels, setFilteredHotels] = useState([]); // لحفظ الفنادق المصفاة
+  const theme = localStorage.getItem("theme") || "dark";
 
   useEffect(() => {
-    const localData = localStorage.getItem("hotelFormData");
+    localStorage.setItem("theme", theme);
 
-    const defaultHotel = {
-      name: "غير معروف",
-      location: "غير محدد",
-      number_of_rooms: 0,
-      plane_trips: 0,
-      visitors: 0,
-      star_rating: "غير مصنف",
-      pv_capacity_kw: 0,
-      solar_water_heater: false,
-      has_desalination_plant: false,
-      has_treatment_plant: false,
-      separates_waste: false,
-      electricity_consumption_kw_per_year: {
-        2021: 0,
-        2022: 0,
-        2023: 0,
-        2024: 0,
-      },
-      accommodation_percentage: {
-        2021: 0,
-        2022: 0,
-        2023: 0,
-        2024: 0,
-      },
-    };
+    const html = document.documentElement;
 
-    if (localData) {
-      try {
-        const parsed = JSON.parse(localData);
-        const hotelFromLocal = {
-          name: parsed.name || "غير معروف",
-          location: parsed.location || "غير محدد",
-          number_of_rooms: parsed.numberOfRooms || 0,
-          plane_trips: parsed.numberOfFlights || 0,
-          visitors: parsed.numberOfVisitors || 0,
-          star_rating: parsed.hotelCategory || "غير مصنف",
-          pv_capacity_kw: parsed.solarPowerCapacity || 0,
-          solar_water_heater: parsed.solarWaterHeater || false,
-          has_desalination_plant: parsed.desalinationPlant || false,
-          has_treatment_plant: parsed.treatmentPlant || false,
-          separates_waste: parsed.wasteSeparation || false,
-          electricity_consumption_kw_per_year: parsed.electricityBills || {
-            2021: 0,
-            2022: 0,
-            2023: 0,
-            2024: 0,
-          },
-          accommodation_percentage: parsed.occupancyRates || {
-            2021: 0,
-            2022: 0,
-            2023: 0,
-            2024: 0,
-          },
-        };
-
-        const mockData = {
-          hotels: [hotelFromLocal],
-        };
-
-        setData(mockData);
-        setFilteredHotels(mockData.hotels);
-        setSelectedHotel(mockData.hotels[0]);
-      } catch (error) {
-        console.error("خطأ في قراءة بيانات localStorage:", error);
-      }
+    if (theme === "dark") {
+      html.classList.add("dark");
+      html.classList.remove("light");
+    } else if (theme === "light") {
+      html.classList.remove("dark");
+      html.classList.add("light");
     } else {
-      // في حال عدم وجود بيانات
-      const mockData = {
-        hotels: [defaultHotel],
-      };
-
-      setData(mockData);
-      setFilteredHotels(mockData.hotels);
-      setSelectedHotel(mockData.hotels[0]);
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      html.classList.toggle("dark", isDark);
+      html.classList.toggle("light", !isDark);
     }
-
-    setTimeout(() => setShowSplash(false), 200);
+  }, [theme]);
+  
+  const navigate = useNavigate();
+  useEffect(() => {
+    const localData = localStorage.getItem("hotelFormData");
+    if (localData) {
+      const parsedData = JSON.parse(localData);
+      setData(parsedData);
+      const locations = [...new Set(parsedData.map((hotel) => hotel.location))];
+      setSelectedLocation(locations[0] || ""); // تعيين أول قطاع كاختيار افتراضي
+      setFilteredHotels(
+        parsedData.filter((hotel) => hotel.location === locations[0])
+      ); // تصفية الفنادق بناءً على أول قطاع
+      setSelectedHotel(
+        parsedData.find((hotel) => hotel.location === locations[0])
+      ); // تعيين أول فندق من القطاع المختار
+    }
   }, []);
 
-  const handleSearch = () => {
-    if (!data?.hotels) return;
+  // استخراج الفئات (القطاعات) الفريدة
+  const locations = [...new Set(data?.map((hotel) => hotel.location))];
 
-    const query = nameFilter.toLowerCase(); // نستخدم هذا ككلمة بحث عامة
-
-    const filtered = data.hotels.filter((hotel) => {
-      // تحويل جميع القيم إلى string للبحث السلس
-      return (
-        hotel.name.toLowerCase().includes(query) ||
-        hotel.location.toLowerCase().includes(query) ||
-        String(hotel.number_of_rooms).includes(query) ||
-        String(hotel.plane_trips).includes(query) ||
-        String(hotel.visitors).includes(query) ||
-        String(hotel.star_rating).includes(query) ||
-        String(hotel.pv_capacity_kw).includes(query) ||
-        (hotel.solar_water_heater ? "yes" : "no").includes(query) ||
-        (hotel.has_desalination_plant ? "yes" : "no").includes(query) ||
-        (hotel.has_treatment_plant ? "yes" : "no").includes(query) ||
-        (hotel.separates_waste ? "yes" : "no").includes(query)
+  // تصفية الفنادق بناءً على القطاع المختار
+  useEffect(() => {
+    if (selectedLocation) {
+      setFilteredHotels(
+        data?.filter((hotel) => hotel.location === selectedLocation)
       );
-    });
+      setSelectedHotel(
+        data?.find((hotel) => hotel.location === selectedLocation)
+      );
+    }
+  }, [selectedLocation, data]);
 
-    setFilteredHotels(filtered);
-    setSelectedHotel(filtered[0] || null);
-  };
+  // إذا لم تكن هناك بيانات أو الفندق المختار غير موجود
+  // if (!data || !selectedHotel) {
+  //   return <SplashScreen />;
+  // }
 
-  if (showSplash || !selectedHotel) return <SplashScreen />;
-
+  // استخراج بيانات الكهرباء والإشغال
   const electricityData = Object.entries(
-    selectedHotel.electricity_consumption_kw_per_year
-  ).map(([year, value]) => ({
+    selectedHotel?.electricityBills || {}
+  ).map(([year, bill]) => ({
     year,
-    electricity: value,
+    electricity: parseInt(bill, 10),
   }));
 
   const accommodationData = Object.entries(
-    selectedHotel.accommodation_percentage
-  ).map(([year, value]) => ({
+    selectedHotel?.occupancyRates || {}
+  ).map(([year, rate]) => ({
     year,
-    percentage: value,
+    percentage: parseInt(rate, 10),
   }));
+
+  // قيم ابتدائية في حال عدم وجود بيانات
+  const defaultHotel = {
+    name: "غير معروف",
+    numberOfRooms: 0,
+    numberOfFlights: 0,
+    numberOfVisitors: 0,
+    hotelCategory: "غير متوفر",
+    solarPowerCapacity: 0,
+    solarWaterHeater: false,
+    desalinationPlant: false,
+    treatmentPlant: false,
+    wasteSeparation: false,
+    electricityBills: {},
+    occupancyRates: {},
+    location: "غير معروف",
+  };
+
+  const hotel = selectedHotel || defaultHotel;
 
   return (
     <>
@@ -146,112 +109,129 @@ const Hotels = () => {
         <title>الفنادق | لوحة المؤشرات الجغرافية</title>
       </Helmet>
 
-      <div className="flex flex-col space-y-4 text-right rtl">
+      <div className="flex flex-col space-y-6 text-right rtl" dir="rtl">
         <h1 className="mx-auto text-3xl font-extrabold">
           لوحة مؤشرات الأداء العام للفنادق
         </h1>
-        {/* اختيار الفندق */}
-        <div className="flex flex-col space-y-4 text-right rtl">
-          {/* قائمة القطاعات */}
-          <select
-            className="border p-2 rounded"
-            value={sectorFilter}
-            onChange={(e) => {
-              const selectedSector = e.target.value;
-              setSectorFilter(selectedSector);
 
-              // تصفية الفنادق بناءً على القطاع
-              const filtered = data.hotels.filter((hotel) =>
-                hotel.location
-                  .toLowerCase()
-                  .includes(selectedSector.toLowerCase())
-              );
-
-              setFilteredHotels(filtered);
-              setSelectedHotel(filtered[0] || null);
-            }}
-          >
-            <option value="">اختر القطاع</option>
-            {/* جلب القطاعات بدون تكرار */}
-            {[...new Set(data.hotels.map((h) => h.location))].map((sector) => (
-              <option key={sector} value={sector}>
-                {sector}
-              </option>
-            ))}
-          </select>
-
-          {/* قائمة الفنادق */}
-          {sectorFilter && filteredHotels.length > 0 && (
+        {/* فلتر القطاع */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex flex-col">
+            <label htmlFor="locationSelect">اختر القطاع :</label>
             <select
-              className="border p-2 rounded"
-              value={selectedHotel?.name || ""}
-              onChange={(e) =>
-                setSelectedHotel(
-                  filteredHotels.find((h) => h.name === e.target.value)
-                )
-              }
+              id="locationSelect"
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)} // تغيير القطاع المختار
+              className="p-2 rounded-md border border-gray-300 dark:bg-gray-600 dark:text-white bg-white"
             >
-              {filteredHotels.map((hotel) => (
-                <option key={hotel.name} value={hotel.name}>
+              <option value="">جميع القطاعات</option>
+              {locations.map((location, index) => (
+                <option key={index} value={location}>
+                  {location}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex flex-col">
+            <label htmlFor="hotelSelect">اختر الفندق :</label>
+            <select
+              id="hotelSelect"
+              value={selectedHotel?.name || ""}
+              onChange={(e) => {
+                const selected = filteredHotels.find(
+                  (hotel) => hotel.name === e.target.value
+                );
+                setSelectedHotel(selected); // تغيير الفندق المختار
+              }}
+              className="p-2 rounded-md border border-gray-300 dark:bg-gray-600 dark:text-white bg-white"
+            >
+              <option value="">اختر فندقاً</option>
+              {filteredHotels.map((hotel, index) => (
+                <option key={index} value={hotel.name}>
                   {hotel.name}
                 </option>
               ))}
             </select>
-          )}
-
-          {/* زر تعديل البيانات */}
-          {/* <button
-            onClick={() => navigate("/HotelsForm")}
-            className="bg-green-500 text-white p-2 rounded"
-          >
-            تعديل بيانات الفنادق
-          </button> */}
+          </div>
+        </div>
+        <button
+          onClick={() => navigate("/HotelsForm")}
+          className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
+        >
+          تعديل بيانات الفنادق
+        </button>
+        {/* قسم معلومات الفندق */}
+        <div>
+          <h2 className="text-xl font-bold mb-4">معلومات الفندق</h2>
+          <div className="grid grid-cols-2 gap-4">
+            <StatCard title="اسم الفندق" value={hotel.name} />
+            <StatCard title="عدد الغرف" value={hotel.numberOfRooms} />
+            <StatCard title="عدد الزوار" value={hotel.numberOfVisitors} />
+            <StatCard title="تقييم الفندق" value={hotel.hotelCategory} />
+          </div>
         </div>
 
-        {/* بطاقات الإحصائيات */}
-        <div className="grid grid-cols-3 gap-4">
-          <StatCard title="عدد الغرف" value={selectedHotel.number_of_rooms} />
-          <StatCard title="رحلات الطيران" value={selectedHotel.plane_trips} />
-          <StatCard title="عدد الزوار" value={selectedHotel.visitors} />
-          <StatCard title="تقييم الفندق" value={selectedHotel.star_rating} />
-          <StatCard
-            title="سعة الطاقة الشمسية (ك.و)"
-            value={selectedHotel.pv_capacity_kw}
-          />
-          <StatCard
-            title="سخان مياه شمسي"
-            value={selectedHotel.solar_water_heater ? "نعم" : "لا"}
-          />
-          <StatCard
-            title="محطة تحلية"
-            value={selectedHotel.has_desalination_plant ? "نعم" : "لا"}
-          />
-          <StatCard
-            title="محطة معالجة"
-            value={selectedHotel.has_treatment_plant ? "نعم" : "لا"}
-          />
-          <StatCard
-            title="فصل النفايات"
-            value={selectedHotel.separates_waste ? "نعم" : "لا"}
-          />
+        {/* قسم كمية الكهرباء المستهلكة */}
+        <div>
+          <h2 className="text-xl font-bold mb-4">
+            كمية الكهرباء المستهلكة (كيلوواط/سنة)
+          </h2>
+          <div className="grid grid-cols-1 gap-4">
+            <CustomBarChart
+              data={electricityData}
+              xKey="year"
+              barKey="electricity"
+              barColor="#f59e0b"
+              title="استهلاك الكهرباء (ك.و/سنة)"
+            />
+          </div>
         </div>
 
-        {/* الرسوم البيانية */}
-        <div className="grid grid-cols-2 gap-4">
-          <CustomBarChart
-            data={electricityData}
-            xKey="year"
-            barKey="electricity"
-            barColor="#f59e0b"
-            title="استهلاك الكهرباء (ك.و/سنة)"
-          />
+        {/* قسم متوسط نسبة الإشغال */}
+        <div>
+          <h2 className="text-xl font-bold mb-4">متوسط نسبة الإشغال</h2>
+          <div className="grid grid-cols-1 gap-4">
+            <CustomLineChart
+              data={accommodationData}
+              xKey="year"
+              yKeys={[{ name: "percentage", color: "#3b82f6" }]}
+              title="نسبة الإشغال على مدار السنوات"
+            />
+          </div>
+        </div>
 
-          <CustomLineChart
-            data={accommodationData}
-            xKey="year"
-            yKeys={[{ name: "percentage", color: "#3b82f6" }]}
-            title="نسبة الإشغال على مدار السنوات"
-          />
+        {/* قسم الخصائص البيئية */}
+        <div>
+          <h2 className="text-xl font-bold mb-4">الخصائص البيئية</h2>
+          <div className="grid grid-cols-3 gap-4">
+            <StatCard
+              title="سعة الطاقة الشمسية (ك.و)"
+              value={hotel.solarPowerCapacity}
+            />
+            <StatCard
+              title="سخان مياه شمسي"
+              value={hotel.solarWaterHeater ? "نعم" : "لا"}
+            />
+            <StatCard
+              title="محطة تحلية"
+              value={hotel.desalinationPlant ? "نعم" : "لا"}
+            />
+            <StatCard
+              title="محطة معالجة"
+              value={hotel.treatmentPlant ? "نعم" : "لا"}
+            />
+            <StatCard
+              title="فصل النفايات"
+              value={hotel.wasteSeparation ? "نعم" : "لا"}
+            />
+          </div>
+        </div>
+
+        {/* قسم الموقع الجغرافي */}
+        <div>
+          <h2 className="text-xl font-bold mb-4">الموقع الجغرافي</h2>
+          <MapView data={hotel} />
         </div>
       </div>
     </>

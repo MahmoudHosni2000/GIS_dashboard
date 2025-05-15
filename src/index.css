@@ -23,10 +23,35 @@ body {
     box-sizing: border-box;
     box-shadow: 7px 7px 10px #cbced1, -7px -7px 10px white;
 }
+
 .form-title {
     margin-top: 10px;
     font-weight: 900;
     font-size: 1.8rem;
     color: #1DA1F2;
     letter-spacing: 1px;
+}
+
+/* ************************************************* */
+
+/* الشريط نفسه */
+::-webkit-scrollbar {
+    width: 5px;
+    /* عرض الشريط الجانبي */
+}
+
+/* الجزء الخلفي (الخلفية) */
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+/* الجزء اللي بيتحرك (السكروول نفسه) */
+::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+}
+
+/* عند الـ hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
 }

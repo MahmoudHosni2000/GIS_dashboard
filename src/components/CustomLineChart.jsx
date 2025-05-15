@@ -11,7 +11,7 @@ import {
 
 const CustomLineChart = ({ data, xKey = "month", yKeys = [], title = "الرسم البياني" }) => {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-lg w-full hover:shadow-xl transition">
+    <div className="dark:bg-gray-600 dark:text-white bg-white p-4 rounded-xl shadow-lg w-full hover:shadow-xl transition">
       <h2 className="font-bold mb-2">{title}</h2>
       <div className="w-full h-[10rem]">
         <ResponsiveContainer width="100%" height="100%">

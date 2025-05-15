@@ -2,20 +2,35 @@ import { useEffect, useState } from "react";
 import Card from "../components/Card";
 import { Zap, Lightbulb, LayoutGrid } from "lucide-react";
 import MapView from "../components/MapView";
-import CustomLineChart from "../components/CustomLineChart";
-import CustomBarChart from "../components/CustomBarChart";
-import CustomPieChart from "../components/CustomPieChart";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
-
-const months = ["يناير", "فبراير", "مارس", "أبريل", "مايو", "يونيو"];
-const years = ["2019", "2020", "2021", "2022", "2023", "2024"];
 
 const Energy = () => {
   const [data, setData] = useState(null);
   const [showSplash, setShowSplash] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
+  const [diffs, setDiffs] = useState({});
+  const theme = localStorage.getItem("theme") || "dark";
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+
+    const html = document.documentElement;
+
+    if (theme === "dark") {
+      html.classList.add("dark");
+      html.classList.remove("light");
+    } else if (theme === "light") {
+      html.classList.remove("dark");
+      html.classList.add("light");
+    } else {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      html.classList.toggle("dark", isDark);
+      html.classList.toggle("light", !isDark);
+    }
+  }, [theme]);
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,66 +42,45 @@ const Energy = () => {
       // تحويل القيم إلى أرقام
       const dataObj = {
         pv_capacity_mwp: parseFloat(parsed.pv_capacity_mwp),
-        pv_capacity_change: parseFloat(parsed.pv_capacity_change),
-        solar_energy_production: Array(6).fill(
-          parseFloat(parsed.solar_energy_production)
-        ),
-        solar_energy_production_change: Array(6).fill(
-          parseFloat(parsed.solar_energy_production_change)
-        ),
-        electricity_consumption: Array(6).fill(
-          parseFloat(parsed.electricity_consumption)
-        ),
-        electricity_consumption_change: Array(6).fill(
-          parseFloat(parsed.electricity_consumption_change)
-        ),
+        latitude: parseFloat(parsed.latitude),
+        longitude: parseFloat(parsed.longitude),
+        solar_energy_production: parseFloat(parsed.solar_energy_production),
+        electricity_consumption: parseFloat(parsed.electricity_consumption),
         solar_coverage_percent: parseFloat(parsed.solar_coverage_percent),
-        solar_coverage_change: parseFloat(parsed.solar_coverage_change),
         daily_consumption_per_guest: parseFloat(
           parsed.daily_consumption_per_guest
         ),
-        daily_consumption_change: parseFloat(parsed.daily_consumption_change),
         smart_rooms: parseInt(parsed.smart_rooms),
-        smart_rooms_change: parseInt(parsed.smart_rooms_change),
         dimmable_area_percent: parseFloat(parsed.dimmable_area_percent),
-        dimmable_area_change: parseFloat(parsed.dimmable_area_change),
-        monthly_generation_mwh: Array(6).fill(
-          parseFloat(parsed.solar_energy_production)
-        ), // أو ضع قيمة مستقلة إن توفرت
-        monthly_generation_change: Array(6).fill(
-          parseFloat(parsed.solar_energy_production_change)
-        ),
-        monthly_consumption_change: Array(6).fill(
-          parseFloat(parsed.electricity_consumption_change)
-        ),
       };
+      console.log("Data from localStorage:", dataObj);
 
       setData(dataObj);
     } else {
       // إذا لم توجد بيانات في localStorage
       setData({
         pv_capacity_mwp: 0,
-        pv_capacity_change: 0,
-        solar_energy_production: [0, 0, 0, 0, 0, 0],
-        solar_energy_production_change: [0, 0, 0, 0, 0, 0],
-        electricity_consumption: [0, 0, 0, 0, 0, 0],
-        electricity_consumption_change: [0, 0, 0, 0, 0, 0],
+        solar_energy_production: 0,
+        electricity_consumption: 0,
         solar_coverage_percent: 0,
-        solar_coverage_change: 0,
         daily_consumption_per_guest: 0,
-        daily_consumption_change: 0,
         smart_rooms: 0,
-        smart_rooms_change: 0,
         dimmable_area_percent: 0,
-        dimmable_area_change: 0,
-        monthly_generation_mwh: [0, 0, 0, 0, 0, 0],
-        monthly_generation_change: [0, 0, 0, 0, 0, 0],
-        monthly_consumption_change: [0, 0, 0, 0, 0, 0],
+        monthly_generation_mwh: 0,
       });
     }
 
     setTimeout(() => setShowSplash(false), 200);
   }, []);
+
+  useEffect(() => {
+    const storedDiffs = JSON.parse(localStorage.getItem("energyFormDataDiff"));
+    if (storedDiffs) {
+      setDiffs(storedDiffs);
+    }
+  }, []);
+
+  console.log("Diffs from localStorage:", diffs);
 
   const handleFilterChange = (e) => {
     setSelectedCategory(e.target.value);
@@ -94,155 +88,161 @@ const Energy = () => {
 
   if (showSplash || !data) return <SplashScreen />;
 
-  const cards = [
+  // تقسيم الكروت حسب الفئة
+  const solarEnergyCards = [
     {
       label: "القدرة الشمسية المركبة",
       value: `${data.pv_capacity_mwp} ميغاواط بيك`,
       icon: <Zap className="w-6 h-6 text-yellow-500" />,
+      percentage: diffs.pv_capacity_mwp,
     },
     {
       label: "نسبة التغطية بالطاقة الشمسية",
       value: `${data.solar_coverage_percent}%`,
       icon: <Zap className="w-6 h-6 text-green-600" />,
+      percentage: diffs.solar_coverage_percent,
+    },
+    {
+      label: "الطاقة الكهربائية المنتجة من الطاقة الشمسية (MWh/سنة أو شهر)",
+      value: `${data.solar_energy_production}%`,
+      icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
+      percentage: diffs.solar_energy_production,
+    },
+  ];
+
+  const electricityCards = [
+    {
+      label: "استهلاك الطاقة الكهربائية (MWh/سنة أو شهر)",
+      value: `${data.electricity_consumption}%`,
+      icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
+      percentage: diffs.electricity_consumption,
     },
     {
       label: "متوسط استهلاك النزيل",
       value: `${data.daily_consumption_per_guest} ك.و.س/يوم`,
       icon: <Zap className="w-6 h-6 text-blue-600" />,
+      percentage: diffs.daily_consumption_per_guest,
     },
+  ];
+
+  const smartRoomCards = [
     {
       label: "عدد الغرف الذكية",
       value: data.smart_rooms,
       icon: <Lightbulb className="w-6 h-6 text-blue-500" />,
+      percentage: diffs.smart_rooms,
     },
     {
       label: "نسبة المساحات القابلة للتعتيم",
       value: `${data.dimmable_area_percent}%`,
       icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
+      percentage: diffs.dimmable_area_percent,
     },
   ];
 
-  const barData = data.monthly_generation_mwh.map((_, index) => ({
-    month: months[index],
-    "تغير الإنتاج (%)": parseFloat(
-      data.monthly_generation_change[index].toFixed(2)
-    ),
-    "تغير الاستهلاك (%)": parseFloat(
-      data.monthly_consumption_change[index].toFixed(2)
-    ),
-  }));
-
-  const pieData = [
-    { name: "القدرة الشمسية", value: data.pv_capacity_mwp },
-    { name: "إجمالي الاستهلاك", value: data.electricity_consumption },
-    { name: "إجمالي الإنتاج", value: data.solar_energy_production },
-  ];
+  console.log(diffs.dimmable_area_percent);
 
   return (
     <>
       <Helmet>
         <title>الطاقة | لوحة المؤشرات</title>
       </Helmet>
-      <div className="flex flex-col space-y-4 text-right rtl">
+      <div className="flex flex-col space-y-4 text-right" dir="rtl">
         <h1 className="mx-auto text-3xl font-extrabold">
           لوحة مؤشرات الأداء العام للطاقة
         </h1>
         {/* فلتر الصفحة */}
         <div className="flex flex-col space-y-4 text-right rtl">
           <select
-            className="border p-2 rounded-lg"
+            dir="rtl"
+            className="border p-2 rounded-lg dark:bg-gray-600 dark:text-white bg-white"
             value={selectedCategory}
             onChange={handleFilterChange}
           >
             <option value="all">عرض الكل</option>
-            <option value="yearly">الإجمالي السنوي فقط</option>
-            <option value="monthly">التغير الشهري فقط</option>
-            <option value="distribution">نسب وتوزيع الطاقة فقط</option>
+            <option value="solar_energy">الطاقة الشمسية</option>
+            <option value="electricity_consunption">استهلاك الكهرباء</option>
+            <option value="smart_rooms">
+              الغرف الذكية والمساحات القابلة للتعتيم
+            </option>
+            <option value="map">عرض الإحداثيات</option>
           </select>
-          {/* <button
+          <button
             onClick={() => navigate("/EnergyForm")}
             className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
           >
             تعديل بيانات الطاقة
-          </button> */}
+          </button>
         </div>
 
-        {/* عرض الكروت فقط إذا كانت كل البيانات مطلوبة */}
-        {selectedCategory === "all" && (
-          <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {cards.map((item, i) => (
-              <Card
-                key={i}
-                icon={item.icon}
-                value={item.value}
-                label={item.label}
-              />
-            ))}
-          </div>
+        {/* كروت الطاقة الشمسية */}
+        {(selectedCategory === "all" ||
+          selectedCategory === "solar_energy") && (
+          <>
+            <h2 className="text-2xl font-bold text-right rtl mt-6">
+              I. الطاقة الشمسية
+            </h2>
+            <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {solarEnergyCards.map((item, i) => (
+                <Card
+                  key={i}
+                  icon={item.icon}
+                  value={item.value}
+                  label={item.label}
+                  percentage={item.percentage}
+                />
+              ))}
+            </div>
+          </>
         )}
 
-        {/* عرض المخططات السنوية */}
-        {selectedCategory === "all" || selectedCategory === "yearly" ? (
+        {/* كروت استهلاك الكهرباء */}
+        {(selectedCategory === "all" ||
+          selectedCategory === "electricity_consunption") && (
           <>
-            <CustomLineChart
-              data={years.map((year, i) => ({
-                month: year,
-                "إنتاج الطاقة السنوي (MWh)": data.solar_energy_production[i],
-                "استهلاك الكهرباء السنوي (MWh)":
-                  data.electricity_consumption[i],
-              }))}
-              xKey="month"
-              yKeys={[
-                { name: "إنتاج الطاقة السنوي (MWh)", color: "#22c55e" },
-                { name: "استهلاك الكهرباء السنوي (MWh)", color: "#ef4444" },
-              ]}
-              title="إجمالي إنتاج واستهلاك الطاقة السنوي (MWh)"
-            />
-
-            <CustomLineChart
-              data={years.map((year, i) => ({
-                month: year,
-                "تغير الإنتاج السنوي (%)":
-                  data.solar_energy_production_change[i],
-              }))}
-              xKey="month"
-              yKeys={[{ name: "تغير الإنتاج السنوي (%)", color: "#22c55e" }]}
-              title="تغير الإنتاج السنوي من الطاقة الشمسية (%)"
-            />
+            <h2 className="text-2xl font-bold text-right rtl mt-6">
+              II. استهلاك الكهرباء
+            </h2>
+            <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {electricityCards.map((item, i) => (
+                <Card
+                  key={i}
+                  icon={item.icon}
+                  value={item.value}
+                  label={item.label}
+                  percentage={item.percentage}
+                />
+              ))}
+            </div>
           </>
-        ) : null}
+        )}
 
-        {/* عرض التغير الشهري */}
-        {selectedCategory === "all" || selectedCategory === "monthly" ? (
+        {/* كروت الغرف الذكية والتعتيم */}
+        {(selectedCategory === "all" || selectedCategory === "smart_rooms") && (
           <>
-            <CustomBarChart
-              data={barData}
-              xKey="month"
-              barKey="تغير الإنتاج (%)"
-              title="تغير شهري في إنتاج الطاقة (%)"
-            />
-            <CustomBarChart
-              data={barData}
-              xKey="month"
-              barKey="تغير الاستهلاك (%)"
-              title="تغير شهري في استهلاك الكهرباء (%)"
-            />
+            <h2 className="text-2xl font-bold text-right rtl mt-6">
+              III. الغرف الذكية والمساحات القابلة للتعتيم
+            </h2>
+            <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {smartRoomCards.map((item, i) => (
+                <Card
+                  key={i}
+                  icon={item.icon}
+                  value={item.value}
+                  label={item.label}
+                  percentage={item.percentage}
+                />
+              ))}
+            </div>
           </>
-        ) : null}
+        )}
 
-        {/* عرض الرسم الدائري */}
-        {selectedCategory === "all" || selectedCategory === "distribution" ? (
-          <CustomPieChart
-            data={pieData}
-            dataKey="value"
-            nameKey="name"
-            title="توزيع الطاقة بين الإنتاج والاستهلاك والقدرة الشمسية"
-            colors={["#4ade80", "#f87171", "#60a5fa"]}
-          />
-        ) : null}
-
-        {/* عرض الخريطة فقط مع "عرض الكل" */}
-        {selectedCategory === "all" && <MapView data={data} />}
+        {(selectedCategory === "all" || selectedCategory === "map") && (
+          <>
+            <h2 className="text-2xl font-bold mb-4">IV. عرض الإحداثيات</h2>
+            <MapView data={data} />
+          </>
+        )}
       </div>
     </>
   );

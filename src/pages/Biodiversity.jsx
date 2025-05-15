@@ -4,12 +4,32 @@ import CustomBarChart from "../components/CustomBarChart";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import MapView from "../components/MapView";
 
 const Biodiversity = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [showSplash, setShowSplash] = useState(true);
   const [filter, setFilter] = useState("all");
+  const theme = localStorage.getItem("theme") || "dark";
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+
+    const html = document.documentElement;
+
+    if (theme === "dark") {
+      html.classList.add("dark");
+      html.classList.remove("light");
+    } else if (theme === "light") {
+      html.classList.remove("dark");
+      html.classList.add("light");
+    } else {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      html.classList.toggle("dark", isDark);
+      html.classList.toggle("light", !isDark);
+    }
+  }, [theme]);
 
   useEffect(() => {
     const storedData = localStorage.getItem("biodiversityFormData");
@@ -20,6 +40,8 @@ const Biodiversity = () => {
       operational_moorings: { siteA: Number(parsed.mooringPoints || 0) },
       visitors_per_site: { siteA: Number(parsed.visitorsPerSite || 0) },
       coral_change_percent: parsed.coralChange || "0",
+      latitude: parsed.latitude || "",
+      longitude: parsed.longitude || "",
       trained_crew_percent: parsed.trainedCrew || "0",
       trained_guides_percent: parsed.trainedGuides || "0",
       eco_friendly_sports_percent: parsed.ecoWaterSports || "0",
@@ -62,6 +84,7 @@ const Biodiversity = () => {
   const visitorsData = Object.entries(data.visitors_per_site).map(
     ([site, value]) => ({ site, value })
   );
+  console.log(data);
 
   return (
     <>
@@ -74,56 +97,26 @@ const Biodiversity = () => {
           لوحة مؤشرات الأداء العام للتنوع البيولوجي
         </h1>
         {/* أزرار الفلترة */}
-        <div className="flex flex-wrap gap-4 mb-6">
-          <button
-            onClick={() => setFilter("all")}
-            className={`px-4 py-2 rounded ${
-              filter === "all" ? "bg-blue-600 text-white" : "bg-gray-200"
-            }`}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6" dir="rtl">
+          <select
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+            className="px-4 py-2 rounded border border-gray-300 focus:outline-none dark:bg-gray-600 dark:text-white bg-white"
           >
-            الكل
-          </button>
-          <button
-            onClick={() => setFilter("tourism")}
-            className={`px-4 py-2 rounded ${
-              filter === "tourism" ? "bg-green-600 text-white" : "bg-gray-200"
-            }`}
-          >
-            السياحة
-          </button>
-          <button
-            onClick={() => setFilter("training")}
-            className={`px-4 py-2 rounded ${
-              filter === "training" ? "bg-yellow-500 text-white" : "bg-gray-200"
-            }`}
-          >
-            التدريب والممارسات البيئية
-          </button>
-          <button
-            onClick={() => setFilter("reef")}
-            className={`px-4 py-2 rounded ${
-              filter === "reef" ? "bg-purple-600 text-white" : "bg-gray-200"
-            }`}
-          >
-            الشعاب البحرية
-          </button>
-          <button
-            onClick={() => setFilter("conservation")}
-            className={`px-4 py-2 rounded ${
-              filter === "conservation"
-                ? "bg-red-600 text-white"
-                : "bg-gray-200"
-            }`}
-          >
-            جهود الحماية
-          </button>
+            <option value="all">الكل</option>
+            <option value="tourism">السياحة</option>
+            <option value="training">التدريب والممارسات البيئية</option>
+            <option value="reef">الشعاب البحرية</option>
+            <option value="conservation">جهود الحماية</option>
+          </select>
+
           {/* زر التعديل */}
-          {/* <button
+          <button
             onClick={() => navigate("/BiodiversityForm")}
-            className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
+            className="bg-green-500 text-white px-4 py-2 rounded"
           >
-            تعديل بيانات الاستدامة
-          </button> */}
+            تعديل بيانات التنوع البيولوجي
+          </button>
         </div>
 
         {/* المواقع السياحية */}
@@ -287,6 +280,9 @@ const Biodiversity = () => {
             </div>
           </>
         )}
+        <div className="grid grid-cols-1 gap-4">
+          <MapView data={data} />
+        </div>
       </div>
     </>
   );
