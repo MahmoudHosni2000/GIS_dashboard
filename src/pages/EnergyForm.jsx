@@ -8,7 +8,9 @@ const EnergyForm = () => {
   const [formData, setFormData] = useState({
     pv_capacity_mwp: "",
     solar_energy_production: "",
+    solar_energy_unit: "year",
     electricity_consumption: "",
+    electricity_consumption_unit: "year",
     solar_coverage_percent: "",
     daily_consumption_per_guest: "",
     smart_rooms: "",
@@ -106,6 +108,31 @@ const EnergyForm = () => {
                     className="w-full px-4 py-2 border rounded text-right"
                     required
                   />
+
+                  {name === "solar_energy_production" && (
+                    <div className="mt-2 flex gap-4 justify-end">
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="radio"
+                          name="solar_energy_unit"
+                          value="year"
+                          checked={formData.solar_energy_unit === "year"}
+                          onChange={handleChange}
+                        />
+                        <span>سنة</span>
+                      </label>
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="radio"
+                          name="solar_energy_unit"
+                          value="month"
+                          checked={formData.solar_energy_unit === "month"}
+                          onChange={handleChange}
+                        />
+                        <span>شهر</span>
+                      </label>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
@@ -146,6 +173,35 @@ const EnergyForm = () => {
                     className="w-full px-4 py-2 border rounded text-right"
                     required
                   />
+
+                  {name === "electricity_consumption" && (
+                    <div className="mt-2 flex gap-4 justify-end">
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="radio"
+                          name="electricity_consumption_unit"
+                          value="year"
+                          checked={
+                            formData.electricity_consumption_unit === "year"
+                          }
+                          onChange={handleChange}
+                        />
+                        <span>سنة</span>
+                      </label>
+                      <label className="flex items-center gap-1">
+                        <input
+                          type="radio"
+                          name="electricity_consumption_unit"
+                          value="month"
+                          checked={
+                            formData.electricity_consumption_unit === "month"
+                          }
+                          onChange={handleChange}
+                        />
+                        <span>شهر</span>
+                      </label>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

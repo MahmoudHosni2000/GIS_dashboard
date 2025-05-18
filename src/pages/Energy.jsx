@@ -41,6 +41,8 @@ const Energy = () => {
 
       // تحويل القيم إلى أرقام
       const dataObj = {
+        solar_energy_unit: parsed.solar_energy_unit,
+        electricity_consumption_unit: parsed.electricity_consumption_unit,
         pv_capacity_mwp: parseFloat(parsed.pv_capacity_mwp),
         latitude: parseFloat(parsed.latitude),
         longitude: parseFloat(parsed.longitude),
@@ -59,6 +61,8 @@ const Energy = () => {
     } else {
       // إذا لم توجد بيانات في localStorage
       setData({
+        solar_energy_unit: "year",
+        electricity_consumption_unit: "year",
         pv_capacity_mwp: 0,
         solar_energy_production: 0,
         electricity_consumption: 0,
@@ -103,7 +107,9 @@ const Energy = () => {
       percentage: diffs.solar_coverage_percent,
     },
     {
-      label: "الطاقة الكهربائية المنتجة من الطاقة الشمسية (MWh/سنة أو شهر)",
+      label: `الطاقة الكهربائية المنتجة من الطاقة الشمسية (MWh/${
+        data.solar_energy_unit === "month" ? "شهر" : "سنة"
+      })`,
       value: `${data.solar_energy_production}%`,
       icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
       percentage: diffs.solar_energy_production,
@@ -112,10 +118,19 @@ const Energy = () => {
 
   const electricityCards = [
     {
-      label: "استهلاك الطاقة الكهربائية (MWh/سنة أو شهر)",
-      value: `${data.electricity_consumption}%`,
-      icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
+      label: `استهلاك الطاقة الكهربائية (MWh/${
+        data.electricity_consumption_unit === "month" ? "شهر" : "سنة"
+      })`,
+      value: `${data.electricity_consumption}`,
+      icon: <Zap className="w-6 h-6 text-green-500" />,
       percentage: diffs.electricity_consumption,
+    },
+    {
+      label:
+        "النسبة المئوية لاستهلاك الطاقة الكهربائية التي تغطيها الطاقة الكهروضوئية (%)",
+      value: `${data.solar_coverage_percent}%`,
+      icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
+      percentage: diffs.solar_coverage_percent,
     },
     {
       label: "متوسط استهلاك النزيل",

@@ -189,7 +189,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
             name="diving_centres"
             value={filter.diving_centres}
             onChange={handleChange}
-            className="p-2 border border-gray-300 rounded"
+            className="p-2 border border-gray-300 rounded dark:bg-gray-600 dark:text-white bg-white"
           >
             <option value="all">الكل</option>
             <option value="green">زعانف خضراء</option>

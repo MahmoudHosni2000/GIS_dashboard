@@ -4,7 +4,6 @@
   "private": true,
   "dependencies": {
     "@material-tailwind/react": "^2.1.10",
-    "axios": "^1.9.0",
     "leaflet": "^1.9.4",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.506.0",
