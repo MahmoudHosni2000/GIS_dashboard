@@ -1,9 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet";
 
 const EnergyForm = () => {
   const navigate = useNavigate();
+  const theme = localStorage.getItem("theme") || "dark";
+
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+
+    const html = document.documentElement;
+
+    if (theme === "dark") {
+      html.classList.add("dark");
+      html.classList.remove("light");
+    } else if (theme === "light") {
+      html.classList.remove("dark");
+      html.classList.add("light");
+    } else {
+      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      html.classList.toggle("dark", isDark);
+      html.classList.toggle("light", !isDark);
+    }
+  }, [theme]);
 
   const [formData, setFormData] = useState({
     pv_capacity_mwp: "",

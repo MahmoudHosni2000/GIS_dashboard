@@ -122,7 +122,7 @@ const Transport = () => {
             value={filtered.cngStations || "-"}
           />
           <StatCard
-            title="نسبة الميكروباصات التي تعمل بالغاز الطبيعي"
+            title="نسبة الحافلات الصغيرة التي تعمل بالغاز الطبيعي"
             value={
               filtered.microbusesGasPercentage
                 ? `${filtered.microbusesGasPercentage}%`

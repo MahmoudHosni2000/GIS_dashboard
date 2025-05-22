@@ -4,7 +4,13 @@
 
 body {
     background: #ecf0f3;
+    transition: background 0.3s ease;
 }
+
+.dark body {
+    background: #1e1e1ee0;
+}
+
 
 .form {
     border-radius: 20px;
@@ -12,20 +18,42 @@ body {
     box-sizing: border-box;
     background: #ecf0f3;
     box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white;
+    transition: all 0.3s ease;
+}
+
+.dark .form {
+    background: #1e1e1e;
+    box-shadow: 14px 14px 20px #141414, -14px -14px 20px #2a2a2a;
+    color: #f0f0f0 !important;
+}
+
+.dark .form * {
+    color: #f0f0f0 !important;
+}
+
+.dark .form input {
+    background: black;
 }
 
 .form-logo {
-    height: 100px;
-    width: 100px;
+    block-size: 100px;
+    inline-size: 100px;
     background: url(https://img.icons8.com/?size=100&id=114622&format=png&color=000000);
     margin: auto;
     border-radius: 50%;
     box-sizing: border-box;
     box-shadow: 7px 7px 10px #cbced1, -7px -7px 10px white;
+    transition: all 0.3s ease;
 }
 
+.dark .form-logo {
+    box-shadow: 7px 7px 10px #141414, -7px -7px 10px #2a2a2a;
+    background-color: #333;
+}
+
+
 .form-title {
-    margin-top: 10px;
+    margin-block-start: 10px;
     font-weight: 900;
     font-size: 1.8rem;
     color: #1DA1F2;
@@ -36,8 +64,7 @@ body {
 
 /* الشريط نفسه */
 ::-webkit-scrollbar {
-    width: 5px;
-    /* عرض الشريط الجانبي */
+    inline-size: 5px;
 }
 
 /* الجزء الخلفي (الخلفية) */

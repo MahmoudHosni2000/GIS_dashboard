@@ -3,8 +3,6 @@ import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 import { Helmet } from "react-helmet";
 
 const Settings = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
   const [language, setLanguage] = useState("ar");
   const [emailNotifications, setEmailNotifications] = useState(false);
   const [theme, setTheme] = useState(() => {
@@ -28,6 +26,12 @@ const Settings = () => {
       html.classList.toggle("light", !isDark);
     }
   }, [theme]);
+
+  useEffect(() => {
+    localStorage.setItem("lang", language);
+  }, [language]);
+
+  console.log(language);
 
   return (
     <>

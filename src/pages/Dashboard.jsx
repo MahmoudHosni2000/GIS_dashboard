@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import DashboardFilter from "../components/DashboardFilter";
+import DashboardFilter from "./DashboardFilter";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 
@@ -10,25 +10,7 @@ const Dashboard = () => {
     population: "all",
     section: "all",
   });
-  const theme = localStorage.getItem("theme") || "dark";
 
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-
-    const html = document.documentElement;
-
-    if (theme === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-    } else if (theme === "light") {
-      html.classList.remove("dark");
-      html.classList.add("light");
-    } else {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      html.classList.toggle("dark", isDark);
-      html.classList.toggle("light", !isDark);
-    }
-  }, [theme]);
 
   useEffect(() => {
     const stored = localStorage.getItem("dashboardFormData");

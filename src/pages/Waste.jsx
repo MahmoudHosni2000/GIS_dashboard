@@ -295,14 +295,16 @@ const Waste = () => {
                     </h2>
 
                     <div className="grid grid-cols-2 gap-4 mb-4">
-                      <div className="grid grid-cols-1 gap-4 mb-4 h-fit">
+                      <div className="grid grid-cols-1 gap-4 h-auto">
                         <StatCard
                           title="النفايات الطبية (طن/شهر)"
                           value={item.hazardous_waste?.medical_waste_tpm ?? 0}
+                          className="flex items-center justify-center flex-col"
                         />
                         <StatCard
                           title="النفايات الكهربائية والإلكترونية (طن/شهر)"
                           value={item.hazardous_waste?.weee_collected_tpm ?? 0}
+                          className="flex items-center justify-center flex-col"
                         />
                       </div>
                       <CustomPieChart
@@ -326,7 +328,7 @@ const Waste = () => {
                         barKey="value"
                         title="مؤشرات المشاركة المجتمعية"
                       />{" "}
-                      <div className="grid grid-cols-1 gap-4 mb-4 h-fit">
+                      <div className="grid grid-cols-1 gap-4 h-auto">
                         <StatCard
                           title="المبادرات المحلية النشطة"
                           value={

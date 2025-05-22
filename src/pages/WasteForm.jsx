@@ -105,7 +105,11 @@ export default function WasteForm() {
 
     try {
       const parsed = JSON.parse(existingDataRaw);
-      existingData = Array.isArray(parsed) ? parsed : [parsed];
+      if (Array.isArray(parsed)) {
+        existingData = parsed;
+      } else if (parsed !== null && typeof parsed === "object") {
+        existingData = [parsed]; // لو كان object واحد بس
+      }
     } catch {
       existingData = [];
     }
@@ -117,7 +121,7 @@ export default function WasteForm() {
     localStorage.setItem("wasteFormData", JSON.stringify(updatedData));
 
     console.log("تم حفظ البيانات:", formData);
-    navigate("/water"); // تأكد من التنقل بعد الحفظ إذا ده هو المطلوب
+    navigate("/waste");
   };
 
   return (
