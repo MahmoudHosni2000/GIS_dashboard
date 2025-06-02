@@ -1,76 +1,57 @@
 import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
+import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 // أيقونة مخصصة للماركر
 const gifIcon = L.icon({
-  iconUrl: "/assets/Marker.png", // تأكد إن الصورة موجودة في public/assets
+  iconUrl: "/assets/marker.png", // تأكد إن الصورة موجودة في public/assets
   iconSize: [40, 40],
   iconAnchor: [20, 40],
   popupAnchor: [0, -40],
 });
 
-// مكون لإعادة تركيز الخريطة عند تغيير الإحداثيات
-const RecenterMap = ({ coords }) => {
-  const map = useMap();
-  useEffect(() => {
-    if (coords) {
-      map.setView(coords, 12);
-    }
-  }, [coords, map]);
+// مكون لتحديث الإحداثيات بناءً على نقر المستخدم
+const LocationPicker = ({ setCoords }) => {
+  useMapEvents({
+    click(e) {
+      setCoords([e.latlng.lat, e.latlng.lng]);
+    },
+  });
   return null;
 };
 
-const MapView = ({ data }) => {
+const MapView = ({ initialData, onLocationSelect }) => {
   const defaultCoords = [27.9125, 34.308]; // شرم الشيخ
   const [coords, setCoords] = useState(null);
 
-  // تحديث الإحداثيات بناءً على البيانات
+  // أول مرة: لو فيه بيانات مبدئية
   useEffect(() => {
-    if (data?.latitude && data?.longitude) {
-      setCoords([parseFloat(data.latitude), parseFloat(data.longitude)]);
+    if (initialData?.latitude && initialData?.longitude) {
+      setCoords([
+        parseFloat(initialData.latitude),
+        parseFloat(initialData.longitude),
+      ]);
     }
-  }, [data]);
+  }, [initialData]);
 
-  // جلب اسم المدينة (اختياري)
+  // كل ما تتغير الإحداثيات، ابعتها للمكون الأب
   useEffect(() => {
-    const fetchCityName = async () => {
-      if (data?.latitude && data?.longitude) {
-        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${data.latitude}&lon=${data.longitude}`;
-        try {
-          const response = await fetch(url);
-          const result = await response.json();
-          if (result && result.address) {
-            console.log(
-              "City Name:",
-              result.address.city ||
-                result.address.town ||
-                result.address.village
-            );
-          }
-        } catch (error) {
-          console.error("Error fetching city name:", error);
-        }
-      }
-    };
-
-    fetchCityName();
-  }, [data]);
+    if (coords && onLocationSelect) {
+      onLocationSelect({ latitude: coords[0], longitude: coords[1] });
+    }
+  }, [coords, onLocationSelect]);
 
   return (
-    <div className="w-full h-96 relative pb-1">
-      <MapContainer
-        center={coords || defaultCoords}
-        zoom={12}
-        className="w-full h-full rounded-xl shadow-lg"
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-
-        {coords && <Marker position={coords} icon={gifIcon} />}
-        {coords && <RecenterMap coords={coords} />}
-      </MapContainer>
-    </div>
+    <MapContainer
+      center={coords || defaultCoords}
+      zoom={12}
+      className="w-full h-full rounded-l-[20px] shadow-lg"
+    >
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      {coords && <Marker position={coords} icon={gifIcon} />}
+      <LocationPicker setCoords={setCoords} />
+    </MapContainer>
   );
 };
 

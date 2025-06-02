@@ -38,8 +38,13 @@ const Settings = () => {
       <Helmet>
         <title>الإعدادات | لوحة معلومات نظم المعلومات الجغرافية</title>
       </Helmet>
-      <div className="max-w-2xl space-y-8 text-right" dir="rtl">
-        <h2 className="text-2xl font-bold">تسجيل الدخول أو إنشاء حساب جديد</h2>
+      <div
+        className="max-w-2xl space-y-8 text-right bg-dark p-10 rounded-3xl"
+        dir="rtl"
+      >
+        <h2 className="flex justify-center text-2xl font-bold">
+          تسجيل الدخول أو إنشاء حساب جديد
+        </h2>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <button className="w-full flex items-center justify-center gap-2 border p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -91,7 +96,12 @@ const Settings = () => {
         <div className="space-y-4">
           <select
             value={theme}
-            onChange={(e) => setTheme(e.target.value)}
+            onChange={(e) => {
+              const newTheme = e.target.value;
+              setTheme(newTheme);
+              localStorage.setItem("theme", newTheme);
+              window.location.reload(); // لإجبار التطبيق على تطبيق التغيير من البداية
+            }}
             className="w-full border p-2 rounded dark:bg-gray-900 dark:text-white"
           >
             <option value="light">فاتح</option>

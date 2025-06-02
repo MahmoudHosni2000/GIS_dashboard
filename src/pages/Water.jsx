@@ -12,26 +12,7 @@ const Water = () => {
   const [data, setData] = useState([]);
   const [selectedCity, setSelectedCity] = useState("cityA");
   const [selectedYear, setSelectedYear] = useState("all");
-  const theme = localStorage.getItem("theme") || "dark";
 
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-
-    const html = document.documentElement;
-
-    if (theme === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-    } else if (theme === "light") {
-      html.classList.remove("dark");
-      html.classList.add("light");
-    } else {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      html.classList.toggle("dark", isDark);
-      html.classList.toggle("light", !isDark);
-    }
-  }, [theme]);
-  
   const cities = ["cityA", "cityB", "cityC"];
   const years = ["2021", "2022", "2023", "2024", "all"];
 
@@ -63,8 +44,8 @@ const Water = () => {
   ];
 
   const productionCapacityData = [
-    { name: "(للمدينة)", value: getValue("productionCapacityCities") },
-    { name: "(للفنادق)", value: getValue("productionCapacityHotels") },
+    { name: "للمدينة", value: getValue("productionCapacityCities") },
+    { name: "للفنادق", value: getValue("productionCapacityHotels") },
   ];
 
   const Desalination_plants = [
@@ -127,14 +108,20 @@ const Water = () => {
         <title>المياه | لوحة تحكم GIS</title>
       </Helmet>
 
-      <div className="flex flex-col h-full space-y-4 text-right rtl">
-        <section className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">اختيار المدينة والسنة</h2>
-          <div className="flex gap-4">
+      <div
+        className="flex flex-col space-y-6 text-right h-[-webkit-fill-available]"
+        dir="rtl"
+      >
+        <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
+          لوحة مؤشرات الأداء العام للمياة
+        </h1>{" "}
+        <div className="flex flex-col gap-2 text-right rtl">
+          {" "}
+          <div className="flex gap-2">
             <select
               dir="rtl"
               name="city"
-              className="border p-2 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white"
+              className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
             >
@@ -148,7 +135,7 @@ const Water = () => {
             <select
               dir="rtl"
               name="year"
-              className="border p-2 rounded basis-1/4 dark:bg-gray-600 dark:text-white bg-white"
+              className="border p-1 rounded basis-1/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
               value={selectedYear}
               onChange={(e) => setSelectedYear(e.target.value)}
             >
@@ -159,97 +146,99 @@ const Water = () => {
               ))}
             </select>
           </div>
-
-          <button
-            onClick={() => navigate("/WaterForm")}
-            className="bg-green-500 text-white p-2 rounded col-span-2 mt-4"
-          >
-            تعديل بيانات المياه
-          </button>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">
-            استهلاك المياه ونسبة التسرب
-          </h2>
-          <div className="grid grid-cols-2 gap-4">
-            <StatCard
-              title="استهلاك المياه"
-              value={`${getValue("waterConsumption")} م³/سنة`}
-            />
-            <StatCard
-              title="نسبة التسرب"
-              value={`${getValue("leakagePercent")} %`}
-            />
-          </div>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">محطات التحلية</h2>
-          <div className="flex gap-6">
-            <div className="w-1/2">
-              <CustomBarChart
-                data={desalinationCapacityData}
-                xKey="name"
-                barKey="value"
-                barColor="#60a5fa"
-                title="سعة التحلية"
-              />
+        <button
+          onClick={() => navigate("/WaterForm")}
+          className="bg-green-500 text-white p-1 rounded text-[10px] sm:text-xs md:text-sm"
+        >
+          تعديل بيانات المياه
+        </button>
+        </div>
+        <div className="grid grid-cols-3 gap-2 flex-1 h-0">
+          {/* الجزء الأول: 1/3 */}
+          <div className="col-span-1 overflow-y-auto pr-2 h-full" dir="ltr">
+            <div>
+              <h2 className="text-lg font-bold mb-2">
+                استهلاك المياه ونسبة التسرب
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                <StatCard
+                  title="استهلاك المياه"
+                  value={`${getValue("waterConsumption")} م³/سنة`}
+                />
+                <StatCard
+                  title="نسبة التسرب"
+                  value={`${getValue("leakagePercent")} %`}
+                />
+              </div>
             </div>
-            <div className="w-1/2">
-              <CustomBarChart
-                data={productionCapacityData}
-                xKey="name"
-                barKey="value"
-                barColor="#34d399"
-                title="القدرة الإنتاجية"
-              />
+
+            <div>
+              <h2 className="text-lg font-bold mb-2">محطات التحلية</h2>
+              <div className="gap-3 grid grid-cols-1">
+                <div>
+                  <CustomBarChart
+                    data={desalinationCapacityData}
+                    xKey="name"
+                    barKey="value"
+                    barColor="#60a5fa"
+                    title="سعة التحلية"
+                  />
+                </div>
+                <div>
+                  <CustomBarChart
+                    data={productionCapacityData}
+                    xKey="name"
+                    barKey="value"
+                    barColor="#34d399"
+                    title="القدرة الإنتاجية"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-lg font-bold mb-2">
+                محطات المعالجة مقابل التحلية
+              </h2>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <CustomPieChart
+                    data={treatmentVsDesalination}
+                    dataKey="value"
+                    nameKey="name"
+                    colors={["#34d399", "#facc15"]}
+                    title="المعالجة مقابل التحلية"
+                  />
+                </div>
+                <div>
+                  <CustomPieChart
+                    data={Desalination_plants}
+                    dataKey="value"
+                    nameKey="name"
+                    colors={["#34d399", "#facc15"]}
+                    title="عدد محطات المعالجه مقابل التحليه"
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <h2 className="text-lg font-bold mb-2">كمية مياه الصرف الصحي</h2>
+              <div className="grid grid-cols-1 gap-4">
+                <StatCard
+                  title="كمية مياه الصرف"
+                  value={`${getSewageVolume()} م³/سنة`}
+                />
+              </div>
             </div>
           </div>
-        </section>
 
-        <section className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">
-            محطات المعالجة مقابل التحلية
-          </h2>
-          <div className="flex gap-6">
-            <div className="w-1/2">
-              <CustomPieChart
-                data={treatmentVsDesalination}
-                dataKey="value"
-                nameKey="name"
-                colors={["#34d399", "#facc15"]}
-                title="المعالجة مقابل التحلية"
-              />
-            </div>
-            <div className="w-1/2">
-              <CustomPieChart
-                data={Desalination_plants}
-                dataKey="value"
-                nameKey="name"
-                colors={["#34d399", "#facc15"]}
-                title="عدد محطات المعالجه مقابل التحليه"
-              />
-            </div>
+          {/* العمود الخاص بالخريطة - 2/3 */}
+          <div className="md:col-span-2 h-full rounded-xl leaflet-container !bg-transparent">
+            <h2 className="text-lg font-bold mb-2">عرض الإحداثيات</h2>
+            <MapView data={data} />
           </div>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">كمية مياه الصرف الصحي</h2>
-          <div className="grid grid-cols-1 gap-4">
-            <StatCard
-              title="كمية مياه الصرف"
-              value={`${getSewageVolume()} م³/سنة`}
-            />
-          </div>
-        </section>
-
-        <section className="mb-6">
-          <h2 className="text-2xl font-semibold mb-4">الإحداثيات</h2>
-          <div className="h-96">
-            <MapView data={mapData || {}} />
-          </div>
-        </section>
+        </div>
       </div>
     </>
   );

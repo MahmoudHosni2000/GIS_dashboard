@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import MapView from "../components/MapView";
 
 const BiodiversityForm = () => {
   const navigate = useNavigate();
 
   // استرجاع البيانات من localStorage (إذا كانت موجودة)
   const [formData, setFormData] = useState(() => {
-    const savedData = localStorage.getItem("biodiversityFormData");
-    return savedData ? JSON.parse(savedData) : initialFormData;
+    try {
+      const saved = localStorage.getItem("biodiversityFormData");
+      const parsed = JSON.parse(saved);
+      return parsed && typeof parsed === "object" ? parsed : initialFormData;
+    } catch (error) {
+      console.error("خطأ في قراءة البيانات من localStorage:", error);
+      return initialFormData;
+    }
   });
 
   // حفظ البيانات في localStorage عند التغيير
@@ -31,249 +38,296 @@ const BiodiversityForm = () => {
     navigate("/biodiversity");
   };
 
+  const handleLocationSelect = (coords) => {
+    setFormData((prev) => {
+      const newLat = coords.latitude.toFixed(6);
+      const newLng = coords.longitude.toFixed(6);
+
+      if (prev.latitude === newLat && prev.longitude === newLng) {
+        return prev; // مفيش تغيير
+      }
+
+      return {
+        ...prev,
+        latitude: newLat,
+        longitude: newLng,
+      };
+    });
+  };
+
   return (
-    <div className="space-y-8 p-5" dir="rtl">
+    <div className="space-y-8 p-5 h-screen" dir="rtl">
       <Helmet>
         <title>نموذج التنوع البيولوجي | لوحة المعلومات</title>
       </Helmet>
-      <div className="container mx-auto">
+      <div className="mx-auto flex flex-col h-[-webkit-fill-available]">
         <img
           className="form-logo"
           src="https://img.icons8.com/?size=100&id=115365&format=png&color=000000"
           alt="Logo"
         />
-        <h1 className="text-2xl font-bold text-center mb-5 form-title">
+        <h2 className="text-2xl font-bold text-center mb-5 form-title">
           تطبيق إضافة وتحديث بيانات التنوع البيولوجي
-        </h1>
+        </h2>
 
         <form
           onSubmit={handleSubmit}
-          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+          className="flex flex-col flex-1 h-0 md:flex-row form"
         >
-          {/* القسم الأول: بيانات عامة */}
-          <div className="col-span-2 space-y-4 form !pt-0">
-            <h2 className="col-span-2 text-xl font-semibold mb-4">
-              البيانات العامة
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "dailyTouristBoats",
-                "mooringPoints",
-                "coralChange",
-                "trainedCrew",
-                "trainedGuides",
-              ].map((key) => (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="mb-1 font-medium">
-                    {labels[key]}
-                  </label>
-                  <input
-                    type="number"
-                    name={key}
-                    id={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="px-4 py-2 border rounded"
-                    placeholder="أدخل القيمة"
-                  />
-                </div>
-              ))}
+          <div className="w-full md:w-1/3 p-2 overflow-auto">
+            {/* القسم الأول: بيانات عامة */}
+            <div className="col-span-2 space-y-4 !pt-0">
+              <h2 className="text-base font-bold mb-3 mt-1">البيانات العامة</h2>
+              <div className="grid grid-cols-2 gap-4 items-end">
+                {[
+                  "dailyTouristBoats",
+                  "mooringPoints",
+                  "coralChange",
+                  "trainedCrew",
+                  "trainedGuides",
+                ].map((key) => (
+                  <div key={key} className="flex flex-col">
+                    <label
+                      htmlFor={key}
+                      className="block text-xs font-normal text-gray-600"
+                    >
+                      {labels[key]}
+                    </label>
+                    <input
+                      type="number"
+                      name={key}
+                      id={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      className="w-full px-4 py-1 border rounded text-right text-xs"
+                      placeholder="أدخل القيمة"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="mt-2 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-800 dark:via-white to-transparent" />
 
-          {/* القسم الثاني: الأنشطة البيئية */}
-          <div className="col-span-2 space-y-4 form !pt-0">
-            <h2 className="col-span-2 text-xl font-semibold mb-4">
-              الأنشطة البيئية
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "ecoWaterSports",
-                "sustainabilityIncentives",
-                "visitorsPerSite",
-                "greenFinsMembers",
-                "greenFinsIncentives",
-              ].map((key) => (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="mb-1 font-medium">
-                    {labels[key]}
-                  </label>
-                  <input
-                    type="number"
-                    name={key}
-                    id={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="px-4 py-2 border rounded"
-                    placeholder="أدخل القيمة"
-                  />
-                </div>
-              ))}
+            {/* القسم الثاني: الأنشطة البيئية */}
+            <div className="col-span-2 space-y-4 !pt-0">
+              <h2 className="text-base font-bold mb-3 mt-1">الأنشطة البيئية</h2>
+              <div className="grid grid-cols-2 gap-4 items-end">
+                {[
+                  "ecoWaterSports",
+                  "sustainabilityIncentives",
+                  "visitorsPerSite",
+                  "greenFinsMembers",
+                  "greenFinsIncentives",
+                ].map((key) => (
+                  <div key={key} className="flex flex-col">
+                    <label
+                      htmlFor={key}
+                      className="block text-xs font-normal text-gray-600"
+                    >
+                      {labels[key]}
+                    </label>
+                    <input
+                      type="number"
+                      name={key}
+                      id={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      className="w-full px-4 py-1 border rounded text-right text-xs"
+                      placeholder="أدخل القيمة"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="mt-2 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-800 dark:via-white to-transparent" />
 
-          {/* القسم الثالث: أنواع الشعاب */}
-          <div className="col-span-2 space-y-4 form !pt-0">
-            <h2 className="col-span-2 text-xl font-semibold mb-4">
-              أنواع الشعاب المرجانية
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "reefSpeciesChange",
-                "paTrainedPersonnel",
-                "paBudgetIncrease",
-                "enforcementPatrols",
-                "patrolActions",
-              ].map((key) => (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="mb-1 font-medium">
-                    {labels[key]}
-                  </label>
-                  <input
-                    type="number"
-                    name={key}
-                    id={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="px-4 py-2 border rounded"
-                    placeholder="أدخل القيمة"
-                  />
-                </div>
-              ))}
+            {/* القسم الثالث: أنواع الشعاب */}
+            <div className="col-span-2 space-y-4 !pt-0">
+              <h2 className="text-base font-bold mb-3 mt-1">
+                أنواع الشعاب المرجانية
+              </h2>
+              <div className="grid grid-cols-2 gap-4 items-end">
+                {[
+                  "reefSpeciesChange",
+                  "paTrainedPersonnel",
+                  "paBudgetIncrease",
+                  "enforcementPatrols",
+                  "patrolActions",
+                ].map((key) => (
+                  <div key={key} className="flex flex-col">
+                    <label
+                      htmlFor={key}
+                      className="block text-xs font-normal text-gray-600"
+                    >
+                      {labels[key]}
+                    </label>
+                    <input
+                      type="number"
+                      name={key}
+                      id={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      className="w-full px-4 py-1 border rounded text-right text-xs"
+                      placeholder="أدخل القيمة"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="mt-2 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-800 dark:via-white to-transparent" />
 
-          {/* القسم الرابع: الإدارة والتدريب */}
-          <div className="col-span-2 space-y-4 form !pt-0">
-            <h2 className="col-span-2 text-xl font-semibold mb-4">
-              الإدارة والتدريب
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "boatsWithSewageTanks",
-                "seaNutrientDecrease",
-                "boatsUsingLandFacilities",
-                "dischargeSalinityDecrease",
-                "greyWaterUseReduction",
-              ].map((key) => (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="mb-1 font-medium">
-                    {labels[key]}
-                  </label>
-                  <input
-                    type="number"
-                    name={key}
-                    id={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="px-4 py-2 border rounded"
-                    placeholder="أدخل القيمة"
-                  />
-                </div>
-              ))}
+            {/* القسم الرابع: الإدارة والتدريب */}
+            <div className="col-span-2 space-y-4 !pt-0">
+              <h2 className="text-base font-bold mb-3 mt-1">
+                الإدارة والتدريب
+              </h2>
+              <div className="grid grid-cols-2 gap-4 items-end">
+                {[
+                  "boatsWithSewageTanks",
+                  "seaNutrientDecrease",
+                  "boatsUsingLandFacilities",
+                  "dischargeSalinityDecrease",
+                  "greyWaterUseReduction",
+                ].map((key) => (
+                  <div key={key} className="flex flex-col">
+                    <label
+                      htmlFor={key}
+                      className="block text-xs font-normal text-gray-600"
+                    >
+                      {labels[key]}
+                    </label>
+                    <input
+                      type="number"
+                      name={key}
+                      id={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      className="w-full px-4 py-1 border rounded text-right text-xs"
+                      placeholder="أدخل القيمة"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="mt-2 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-800 dark:via-white to-transparent" />
 
-          {/* القسم الخامس: المشغلين والنظافة */}
-          <div className="col-span-2 space-y-4 form !pt-0">
-            <h2 className="col-span-2 text-xl font-semibold mb-4">
-              المشغلين والنظافة
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "operatorsPromotingSafeProducts",
-                "marineCleanups",
-                "coastalDamageReports",
-                "illegalFishingReports",
-                "birdMortalityDecrease",
-              ].map((key) => (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="mb-1 font-medium">
-                    {labels[key]}
-                  </label>
-                  <input
-                    type="number"
-                    name={key}
-                    id={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="px-4 py-2 border rounded"
-                    placeholder="أدخل القيمة"
-                  />
-                </div>
-              ))}
+            {/* القسم الخامس: المشغلين والنظافة */}
+            <div className="col-span-2 space-y-4 !pt-0">
+              <h2 className="text-base font-bold mb-3 mt-1">
+                المشغلين والنظافة
+              </h2>
+              <div className="grid grid-cols-2 gap-4 items-end">
+                {[
+                  "operatorsPromotingSafeProducts",
+                  "marineCleanups",
+                  "coastalDamageReports",
+                  "illegalFishingReports",
+                  "birdMortalityDecrease",
+                ].map((key) => (
+                  <div key={key} className="flex flex-col">
+                    <label
+                      htmlFor={key}
+                      className="block text-xs font-normal text-gray-600"
+                    >
+                      {labels[key]}
+                    </label>
+                    <input
+                      type="number"
+                      name={key}
+                      id={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      className="w-full px-4 py-1 border rounded text-right text-xs"
+                      placeholder="أدخل القيمة"
+                    />
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+            <div className="mt-2 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-800 dark:via-white to-transparent" />
 
-          {/* القسم السادس: الحيوانات البحرية */}
-          <div className="col-span-2 space-y-4 form !pt-0">
-            <h2 className="col-span-2 text-xl font-semibold mb-4">
-              الحيوانات البحرية
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {[
-                "birdRehabilitationCases",
-                "turtleNestingSites",
-                "turtlesRescued",
-              ].map((key) => (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="mb-1 font-medium">
-                    {labels[key]}
-                  </label>
-                  <input
-                    type="number"
-                    name={key}
-                    id={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="px-4 py-2 border rounded"
-                    placeholder="أدخل القيمة"
-                  />
-                </div>
-              ))}
+            {/* القسم السادس: الحيوانات البحرية */}
+            <div className="col-span-3 space-y-4 !pt-0">
+              <h2 className="text-base font-bold mb-3 mt-1">
+                الحيوانات البحرية
+              </h2>
+              <div className="grid grid-cols-3 gap-4 items-end">
+                {[
+                  "birdRehabilitationCases",
+                  "turtleNestingSites",
+                  "turtlesRescued",
+                ].map((key) => (
+                  <div key={key} className="flex flex-col">
+                    <label
+                      htmlFor={key}
+                      className="block text-xs font-normal text-gray-600"
+                    >
+                      {labels[key]}
+                    </label>
+                    <input
+                      type="number"
+                      name={key}
+                      id={key}
+                      value={formData[key]}
+                      onChange={handleChange}
+                      className="w-full px-4 py-1 border rounded text-right text-xs"
+                      placeholder="أدخل القيمة"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-2 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-800 dark:via-white to-transparent" />
+
+            {/* قسم الموقع الجغرافي */}
+            <div className="col-span-2 space-y-4 !pt-0">
+              <h2 className="text-base font-bold mb-3 mt-1">
+                قسم الموقع الجغرافي
+              </h2>
+
+              <div className="grid grid-cols-2 gap-4">
+                {/* خط العرض */}
+                <input
+                  label="خط العرض (Latitude)"
+                  type="number"
+                  value={formData.latitude}
+                  onChange={(e) => handleChange("latitude", e.target.value)}
+                  className="w-full px-4 py-1 border rounded text-right text-xs"
+                />
+
+                {/* خط الطول */}
+                <input
+                  label="خط الطول (Longitude)"
+                  type="number"
+                  value={formData.longitude}
+                  onChange={(e) => handleChange("longitude", e.target.value)}
+                  className="w-full px-4 py-1 border rounded text-right text-xs"
+                />
+              </div>
+            </div>
+            <div className="mt-2 h-[1px] w-full bg-gradient-to-r from-transparent via-gray-800 dark:via-white to-transparent" />
+
+            <div className="text-center flex flex-col sm:flex-row justify-end !mt-2 !mb-0">
+              <button
+                onClick={() => navigate("/")}
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-6 rounded-r-lg transition duration-200 text-sm"
+              >
+                حفظ
+              </button>
+
+              <button
+                type="button"
+                className="bg-green-600 hover:bg-green-700 text-white font-semibold py-1 px-6 rounded-l-lg transition duration-200 text-sm"
+              >
+                إرسال البيانات (Excel)
+              </button>
             </div>
           </div>
 
           {/* قسم الموقع الجغرافي */}
-          <div className="col-span-2 space-y-4 form !pt-0">
-            <h2 className="col-span-2 text-xl font-semibold mb-4">
-              قسم الموقع الجغرافي
-            </h2>
-            <div className="grid grid-cols-2 gap-4">
-              {["longitude", "latitude"].map((key) => (
-                <div key={key} className="flex flex-col">
-                  <label htmlFor={key} className="mb-1 font-medium">
-                    {labels[key]}
-                  </label>
-                  <input
-                    type="number"
-                    name={key}
-                    id={key}
-                    value={formData[key]}
-                    onChange={handleChange}
-                    className="px-4 py-2 border rounded"
-                    placeholder="أدخل القيمة"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-          <div></div>
-          <div className="text-center flex flex-col sm:flex-row justify-end">
-            <button
-              onClick={() => navigate("/")}
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-r-lg transition duration-200"
-            >
-              حفظ
-            </button>
-
-            <button
-              type="button"
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-l-lg transition duration-200"
-            >
-              إرسال البيانات (Excel)
-            </button>
+          <div className="w-full md:w-2/3">
+            <MapView onLocationSelect={handleLocationSelect} />
           </div>
         </form>
       </div>

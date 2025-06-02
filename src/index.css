@@ -14,7 +14,6 @@ body {
 
 .form {
     border-radius: 20px;
-    padding: 40px;
     box-sizing: border-box;
     background: #ecf0f3;
     box-shadow: 14px 14px 20px #cbced1, -14px -14px 20px white;
@@ -36,8 +35,8 @@ body {
 }
 
 .form-logo {
-    block-size: 100px;
-    inline-size: 100px;
+    block-size: 90px;
+    inline-size: 90px;
     background: url(https://img.icons8.com/?size=100&id=114622&format=png&color=000000);
     margin: auto;
     border-radius: 50%;
@@ -54,8 +53,8 @@ body {
 
 .form-title {
     margin-block-start: 10px;
-    font-weight: 900;
-    font-size: 1.8rem;
+    font-weight:bolder;
+    font-size: 1.3rem;
     color: #1DA1F2;
     letter-spacing: 1px;
 }
@@ -81,4 +80,26 @@ body {
 /* عند الـ hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #555;
+}
+
+input[type="checkbox"] + span{
+    font-size: 0.8rem;
+    margin: 0 !important;
+}
+
+@layer utilities {
+  .dark .bg-dashboard {
+    filter: brightness(0.5) contrast(1.2);
+  }
+}
+
+.bg-white
+ {
+    background-color: rgb(255 255 255 / 30%);
+    backdrop-filter: blur(10px);
+}
+.bg-dark
+ {
+    background-color: #0000004d;
+    backdrop-filter: blur(10px);
 }

@@ -6,25 +6,6 @@ import { useEffect } from "react";
 
 const DashboardFilter = ({ data, filter, setFilter }) => {
   const navigate = useNavigate();
-  const theme = localStorage.getItem("theme") || "light";
-
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-
-    const html = document.documentElement;
-
-    if (theme === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-    } else if (theme === "light") {
-      html.classList.remove("dark");
-      html.classList.add("light");
-    } else {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      html.classList.toggle("dark", isDark);
-      html.classList.toggle("light", !isDark);
-    }
-  }, [theme]);
 
   const handleChange = (e) => {
     setFilter({ ...filter, [e.target.name]: e.target.value });
@@ -153,58 +134,62 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
   };
 
   return (
-    <div className="space-y-6">
-      {/* Filters */}
-      <form className="flex flex-col space-y-4 text-right rtl">
-        <select
-          name="section"
-          value={filter.section}
-          onChange={handleChange}
-          className="p-2 border border-gray-300 rounded dark:bg-gray-600 dark:text-white bg-white"
-        >
-          <option value="all">الكل</option>
-          <option value="population">عدد السكان</option>
-          <option value="hospitals">المستشفيات</option>
-          <option value="hotels">الفنادق</option>
-          <option value="diving_centres">مراكز الغوص</option>
-        </select>
-
-        {filter.section === "population" && (
+    <>
+      <div className="flex flex-col gap-2 text-right" dir="rtl">
+        <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
+          <span>لوحة مؤشرات الأداء العام للإجماليات</span>
+        </h1>
+        {/* Filters */}
+        <div className="flex flex-col gap-2 text-right rtl">
           <select
-            name="population"
-            value={filter.population}
+            name="section"
+            value={filter.section}
             onChange={handleChange}
-            className="p-2 border border-gray-300 rounded dark:bg-gray-600 dark:text-white bg-white"
+            className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
           >
             <option value="all">الكل</option>
-            <option value="ذكور">ذكور</option>
-            <option value="إناث">إناث</option>
-            <option value="أطفال">أطفال</option>
-            <option value="مُسنين">كبار السن</option>
+            <option value="population">عدد السكان</option>
+            <option value="hospitals">المستشفيات</option>
+            <option value="hotels">الفنادق</option>
+            <option value="diving_centres">مراكز الغوص</option>
           </select>
-        )}
-        {/*  */}
-        {filter.section === "diving_centres" && (
-          <select
-            name="diving_centres"
-            value={filter.diving_centres}
-            onChange={handleChange}
-            className="p-2 border border-gray-300 rounded dark:bg-gray-600 dark:text-white bg-white"
-          >
-            <option value="all">الكل</option>
-            <option value="green">زعانف خضراء</option>
-            <option value="notGreen">زعانف غير خضراء</option>
-          </select>
-        )}
-        {/*  */}
-        <button
-          onClick={() => navigate("/DashboardForm")}
-          className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
-        >
-          تعديل البيانات
-        </button>
-      </form>
 
+          {filter.section === "population" && (
+            <select
+              name="population"
+              value={filter.population}
+              onChange={handleChange}
+              className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
+            >
+              <option value="all">الكل</option>
+              <option value="ذكور">ذكور</option>
+              <option value="إناث">إناث</option>
+              <option value="أطفال">أطفال</option>
+              <option value="مُسنين">كبار السن</option>
+            </select>
+          )}
+          {/*  */}
+          {filter.section === "diving_centres" && (
+            <select
+              name="diving_centres"
+              value={filter.diving_centres}
+              onChange={handleChange}
+              className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
+            >
+              <option value="all">الكل</option>
+              <option value="green">زعانف خضراء</option>
+              <option value="notGreen">زعانف غير خضراء</option>
+            </select>
+          )}
+          {/*  */}
+          <button
+            onClick={() => navigate("/DashboardForm")}
+            className="bg-green-500 text-white p-1 rounded text-[10px] sm:text-xs md:text-sm"
+          >
+            تعديل البيانات
+          </button>
+        </div>
+      </div>
       {/* Cards and Bar Chart */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
         {getCardData().map((item, index) => (
@@ -241,7 +226,7 @@ const DashboardFilter = ({ data, filter, setFilter }) => {
             </div>
           )}
       </div>
-    </div>
+    </>
   );
 };
 

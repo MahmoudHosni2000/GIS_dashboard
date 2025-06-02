@@ -26,8 +26,8 @@ const CustomPieChart = ({
   console.log(data);
 
   return (
-    <div className="dark:bg-gray-600 dark:text-white bg-white p-4 rounded-xl shadow w-full max-w-[500px] mx-auto">
-      <h2 className="font-bold mb-2 text-center">{title}</h2>
+    <div className="dark:bg-dark dark:text-white bg-white p-2 rounded-xl shadow h-full w-full max-w-[500px] mx-auto">
+      <h2 className="font-bold mb-2 text-center text-sm">{title}</h2>
       <div className="w-full h-[300px]">
         <ResponsiveContainer width="100%" height="100%">
           <PieChart>
@@ -50,7 +50,14 @@ const CustomPieChart = ({
               ))}
             </Pie>
             <Tooltip formatter={(value) => `${value} وحدة`} />
-            <Legend layout="horizontal" verticalAlign="bottom" align="center" />
+            <Legend
+              layout="horizontal"
+              verticalAlign="bottom"
+              align="center"
+              wrapperStyle={{
+                fontSize: "12px", // ✅ قللت الخط هنا
+              }}
+            />
           </PieChart>
         </ResponsiveContainer>
       </div>

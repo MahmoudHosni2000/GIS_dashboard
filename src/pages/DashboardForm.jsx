@@ -78,7 +78,7 @@ const DashboardForm = () => {
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* القسم الأول */}
-          <div className="space-y-4 form">
+          <div className="space-y-4 form p-3">
             <h2 className="text-lg font-semibold">بيانات السكان</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="flex flex-col w-auto">
@@ -132,7 +132,7 @@ const DashboardForm = () => {
           </div>
 
           {/* القسم الثاني */}
-          <div className="space-y-4 form">
+          <div className="space-y-4 form p-3">
             <h2 className="text-lg font-semibold">
               بيانات الفنادق والمستشفيات
             </h2>

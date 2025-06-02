@@ -11,7 +11,6 @@ const Dashboard = () => {
     section: "all",
   });
 
-
   useEffect(() => {
     const stored = localStorage.getItem("dashboardFormData");
     let parsed = {};
@@ -49,10 +48,10 @@ const Dashboard = () => {
       <Helmet>
         <title>لوحة مؤشرات الأداء العام للإجماليات</title>
       </Helmet>
-      <div className="flex flex-col h-fill-available space-y-4" dir="rtl">
-        <h1 className="mx-auto text-3xl font-extrabold">
-          لوحة مؤشرات الأداء العام للإجماليات
-        </h1>
+      <div
+        className="flex flex-col space-y-6 text-right h-[-webkit-fill-available] w-[-webkit-fill-available]"
+        dir="rtl"
+      >
         <DashboardFilter data={data} filter={filter} setFilter={setFilter} />
       </div>
     </>

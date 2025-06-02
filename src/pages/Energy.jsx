@@ -11,25 +11,6 @@ const Energy = () => {
   const [showSplash, setShowSplash] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [diffs, setDiffs] = useState({});
-  const theme = localStorage.getItem("theme") || "dark";
-
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-
-    const html = document.documentElement;
-
-    if (theme === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-    } else if (theme === "light") {
-      html.classList.remove("dark");
-      html.classList.add("light");
-    } else {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      html.classList.toggle("dark", isDark);
-      html.classList.toggle("light", !isDark);
-    }
-  }, [theme]);
 
   const navigate = useNavigate();
 
@@ -39,7 +20,6 @@ const Energy = () => {
     if (localData) {
       const parsed = JSON.parse(localData);
 
-      // تحويل القيم إلى أرقام
       const dataObj = {
         solar_energy_unit: parsed.solar_energy_unit,
         electricity_consumption_unit: parsed.electricity_consumption_unit,
@@ -55,12 +35,12 @@ const Energy = () => {
         smart_rooms: parseInt(parsed.smart_rooms),
         dimmable_area_percent: parseFloat(parsed.dimmable_area_percent),
       };
-      console.log("Data from localStorage:", dataObj);
 
+      // console.log("✔️ Setting data from localStorage:", dataObj);
       setData(dataObj);
     } else {
-      // إذا لم توجد بيانات في localStorage
-      setData({
+      // default fallback
+      const defaultData = {
         solar_energy_unit: "year",
         electricity_consumption_unit: "year",
         pv_capacity_mwp: 0,
@@ -71,7 +51,9 @@ const Energy = () => {
         smart_rooms: 0,
         dimmable_area_percent: 0,
         monthly_generation_mwh: 0,
-      });
+      };
+      // console.log("⚠️ No localStorage data, using default:", defaultData);
+      setData(defaultData);
     }
 
     setTimeout(() => setShowSplash(false), 200);
@@ -84,57 +66,57 @@ const Energy = () => {
     }
   }, []);
 
-  console.log("Diffs from localStorage:", diffs);
+  // console.log("Diffs from localStorage:", diffs);
 
   const handleFilterChange = (e) => {
     setSelectedCategory(e.target.value);
   };
 
-  if (showSplash || !data) return <SplashScreen />;
+  // if (showSplash || !data) return <SplashScreen />;
 
   // تقسيم الكروت حسب الفئة
   const solarEnergyCards = [
     {
       label: "القدرة الشمسية المركبة",
-      value: `${data.pv_capacity_mwp} ميغاواط بيك`,
+      value: `${data?.pv_capacity_mwp} ميغاواط بيك`,
       icon: <Zap className="w-6 h-6 text-yellow-500" />,
-      percentage: diffs.pv_capacity_mwp,
+      percentage: diffs?.pv_capacity_mwp,
     },
     {
       label: "نسبة التغطية بالطاقة الشمسية",
-      value: `${data.solar_coverage_percent}%`,
+      value: `${data?.solar_coverage_percent}%`,
       icon: <Zap className="w-6 h-6 text-green-600" />,
-      percentage: diffs.solar_coverage_percent,
+      percentage: diffs?.solar_coverage_percent,
     },
     {
       label: `الطاقة الكهربائية المنتجة من الطاقة الشمسية (MWh/${
-        data.solar_energy_unit === "month" ? "شهر" : "سنة"
+        data?.solar_energy_unit === "month" ? "شهر" : "سنة"
       })`,
-      value: `${data.solar_energy_production}%`,
+      value: `${data?.solar_energy_production}%`,
       icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
-      percentage: diffs.solar_energy_production,
+      percentage: diffs?.solar_energy_production,
     },
   ];
 
   const electricityCards = [
     {
       label: `استهلاك الطاقة الكهربائية (MWh/${
-        data.electricity_consumption_unit === "month" ? "شهر" : "سنة"
+        data?.electricity_consumption_unit === "month" ? "شهر" : "سنة"
       })`,
-      value: `${data.electricity_consumption}`,
+      value: `${data?.electricity_consumption}`,
       icon: <Zap className="w-6 h-6 text-green-500" />,
       percentage: diffs.electricity_consumption,
     },
     {
       label:
         "النسبة المئوية لاستهلاك الطاقة الكهربائية التي تغطيها الطاقة الكهروضوئية (%)",
-      value: `${data.solar_coverage_percent}%`,
+      value: `${data?.solar_coverage_percent}%`,
       icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
       percentage: diffs.solar_coverage_percent,
     },
     {
       label: "متوسط استهلاك النزيل",
-      value: `${data.daily_consumption_per_guest} ك.و.س/يوم`,
+      value: `${data?.daily_consumption_per_guest} ك.و.س/يوم`,
       icon: <Zap className="w-6 h-6 text-blue-600" />,
       percentage: diffs.daily_consumption_per_guest,
     },
@@ -143,121 +125,115 @@ const Energy = () => {
   const smartRoomCards = [
     {
       label: "عدد الغرف الذكية",
-      value: data.smart_rooms,
+      value: data?.smart_rooms,
       icon: <Lightbulb className="w-6 h-6 text-blue-500" />,
       percentage: diffs.smart_rooms,
     },
     {
       label: "نسبة المساحات القابلة للتعتيم",
-      value: `${data.dimmable_area_percent}%`,
+      value: `${data?.dimmable_area_percent}%`,
       icon: <LayoutGrid className="w-6 h-6 text-green-500" />,
       percentage: diffs.dimmable_area_percent,
     },
   ];
-
-  console.log(diffs.dimmable_area_percent);
 
   return (
     <>
       <Helmet>
         <title>الطاقة | لوحة المؤشرات</title>
       </Helmet>
-      <div className="flex flex-col space-y-4 text-right" dir="rtl">
-        <h1 className="mx-auto text-3xl font-extrabold">
-          لوحة مؤشرات الأداء العام للطاقة
-        </h1>
-        {/* فلتر الصفحة */}
-        <div className="flex flex-col space-y-4 text-right rtl">
-          <select
-            dir="rtl"
-            className="border p-2 rounded-lg dark:bg-gray-600 dark:text-white bg-white"
-            value={selectedCategory}
-            onChange={handleFilterChange}
-          >
-            <option value="all">عرض الكل</option>
-            <option value="solar_energy">الطاقة الشمسية</option>
-            <option value="electricity_consunption">استهلاك الكهرباء</option>
-            <option value="smart_rooms">
-              الغرف الذكية والمساحات القابلة للتعتيم
-            </option>
-            <option value="map">عرض الإحداثيات</option>
-          </select>
-          <button
-            onClick={() => navigate("/EnergyForm")}
-            className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
-          >
-            تعديل بيانات الطاقة
-          </button>
+      {/* الهيكل الرئيسي للصفحة */}
+      <div
+        className="flex flex-col space-y-6 text-right h-[-webkit-fill-available]"
+        dir="rtl"
+      >
+        {/* العنوان والفلاتر */}
+        <div className="flex flex-col gap-2 text-right" dir="rtl">
+          <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
+            لوحة مؤشرات الأداء العام للطاقة
+          </h1>
+
+          {/* الفلاتر */}
+          <div className="flex flex-col gap-2 text-right rtl">
+            <select
+              dir="rtl"
+              className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
+              value={selectedCategory}
+              onChange={handleFilterChange}
+            >
+              <option value="all">عرض الكل</option>
+              <option value="solar_energy">الطاقة الشمسية</option>
+              <option value="electricity_consunption">استهلاك الكهرباء</option>
+              <option value="smart_rooms">
+                الغرف الذكية والمساحات القابلة للتعتيم
+              </option>
+              <option value="map">عرض الإحداثيات</option>
+            </select>
+
+            <button
+              onClick={() => navigate("/EnergyForm")}
+              className="bg-green-500 text-white p-1 rounded text-[10px] sm:text-xs md:text-sm"
+            >
+              تعديل بيانات الطاقة
+            </button>
+          </div>
         </div>
 
-        {/* كروت الطاقة الشمسية */}
-        {(selectedCategory === "all" ||
-          selectedCategory === "solar_energy") && (
-          <>
-            <h2 className="text-2xl font-bold text-right rtl mt-6">
-              I. الطاقة الشمسية
-            </h2>
-            <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {solarEnergyCards.map((item, i) => (
-                <Card
-                  key={i}
-                  icon={item.icon}
-                  value={item.value}
-                  label={item.label}
-                  percentage={item.percentage}
-                />
-              ))}
-            </div>
-          </>
-        )}
+        {/* المحتوى الرئيسي بياخد باقي الصفحة */}
+        <div className={`grid grid-cols-3 gap-2 flex-1 h-0`}>
+          {/* الجزء الأول: 1/3 */}
+          <div className="col-span-1 overflow-y-auto pr-2 h-full" dir="ltr">
+            {(selectedCategory === "all" ||
+              selectedCategory === "solar_energy") && (
+              <>
+                <h2 className="text-xl font-bold mb-4">الطاقة الشمسية</h2>
+                <div className="grid grid-cols-1 gap-4">
+                  {solarEnergyCards.map((item, i) => (
+                    <Card key={i} {...item} />
+                  ))}
+                </div>
+              </>
+            )}
 
-        {/* كروت استهلاك الكهرباء */}
-        {(selectedCategory === "all" ||
-          selectedCategory === "electricity_consunption") && (
-          <>
-            <h2 className="text-2xl font-bold text-right rtl mt-6">
-              II. استهلاك الكهرباء
-            </h2>
-            <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {electricityCards.map((item, i) => (
-                <Card
-                  key={i}
-                  icon={item.icon}
-                  value={item.value}
-                  label={item.label}
-                  percentage={item.percentage}
-                />
-              ))}
-            </div>
-          </>
-        )}
+            {(selectedCategory === "all" ||
+              selectedCategory === "electricity_consunption") && (
+              <>
+                <h2 className="text-xl font-bold mb-4">استهلاك الكهرباء</h2>
+                <div className="grid grid-cols-1 gap-4">
+                  {electricityCards.map((item, i) => (
+                    <Card key={i} {...item} />
+                  ))}
+                </div>
+              </>
+            )}
 
-        {/* كروت الغرف الذكية والتعتيم */}
-        {(selectedCategory === "all" || selectedCategory === "smart_rooms") && (
-          <>
-            <h2 className="text-2xl font-bold text-right rtl mt-6">
-              III. الغرف الذكية والمساحات القابلة للتعتيم
-            </h2>
-            <div dir="rtl" className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {smartRoomCards.map((item, i) => (
-                <Card
-                  key={i}
-                  icon={item.icon}
-                  value={item.value}
-                  label={item.label}
-                  percentage={item.percentage}
-                />
-              ))}
-            </div>
-          </>
-        )}
+            {(selectedCategory === "all" ||
+              selectedCategory === "smart_rooms") && (
+              <>
+                <h2 className="text-xl font-bold mb-4">
+                  الغرف الذكية والمساحات القابلة للتعتيم
+                </h2>
+                <div className="grid grid-cols-1 gap-4">
+                  {smartRoomCards.map((item, i) => (
+                    <Card key={i} {...item} />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
 
-        {(selectedCategory === "all" || selectedCategory === "map") && (
-          <>
-            <h2 className="text-2xl font-bold mb-4">IV. عرض الإحداثيات</h2>
-            <MapView data={data} />
-          </>
-        )}
+          {/* الجزء الثاني: الخريطة */}
+          {(selectedCategory === "all" || selectedCategory === "map") && (
+            <div
+              className={`${
+                selectedCategory === "map" ? "md:col-span-3" : "md:col-span-2"
+              } h-full rounded-xl leaflet-container !bg-transparent`}
+            >
+              <h2 className="text-xl font-bold mb-4">عرض الإحداثيات</h2>
+              <MapView data={data} />
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

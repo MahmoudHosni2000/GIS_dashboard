@@ -28,7 +28,7 @@ const Sidebar = () => {
   ];
 
   return (
-    <div className="flex">
+    <div className="flex" dir="ltr">
       <div
         className={`${
           open ? "w-64" : "w-20"

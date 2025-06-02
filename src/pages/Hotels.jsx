@@ -12,26 +12,7 @@ const Hotels = () => {
   const [selectedHotel, setSelectedHotel] = useState(null);
   const [selectedLocation, setSelectedLocation] = useState(""); // لحفظ القطاع المختار
   const [filteredHotels, setFilteredHotels] = useState([]); // لحفظ الفنادق المصفاة
-  const theme = localStorage.getItem("theme") || "dark";
 
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
-
-    const html = document.documentElement;
-
-    if (theme === "dark") {
-      html.classList.add("dark");
-      html.classList.remove("light");
-    } else if (theme === "light") {
-      html.classList.remove("dark");
-      html.classList.add("light");
-    } else {
-      const isDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-      html.classList.toggle("dark", isDark);
-      html.classList.toggle("light", !isDark);
-    }
-  }, [theme]);
-  
   const navigate = useNavigate();
   useEffect(() => {
     const localData = localStorage.getItem("hotelFormData");
@@ -109,20 +90,22 @@ const Hotels = () => {
         <title>الفنادق | لوحة المؤشرات الجغرافية</title>
       </Helmet>
 
-      <div className="flex flex-col space-y-6 text-right rtl" dir="rtl">
-        <h1 className="mx-auto text-3xl font-extrabold">
+      <div
+        className="flex flex-col space-y-6 text-right h-[-webkit-fill-available]"
+        dir="rtl"
+      >
+        <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
           لوحة مؤشرات الأداء العام للفنادق
         </h1>
 
         {/* فلتر القطاع */}
-        <div className="grid grid-cols-2 gap-4">
-          <div className="flex flex-col">
-            <label htmlFor="locationSelect">اختر القطاع :</label>
+        <div className="flex flex-col gap-2 text-right rtl">
+          <div className="flex gap-2">
             <select
               id="locationSelect"
               value={selectedLocation}
               onChange={(e) => setSelectedLocation(e.target.value)} // تغيير القطاع المختار
-              className="p-2 rounded-md border border-gray-300 dark:bg-gray-600 dark:text-white bg-white"
+              className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
             >
               <option value="">جميع القطاعات</option>
               {locations.map((location, index) => (
@@ -131,10 +114,7 @@ const Hotels = () => {
                 </option>
               ))}
             </select>
-          </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="hotelSelect">اختر الفندق :</label>
             <select
               id="hotelSelect"
               value={selectedHotel?.name || ""}
@@ -144,7 +124,7 @@ const Hotels = () => {
                 );
                 setSelectedHotel(selected); // تغيير الفندق المختار
               }}
-              className="p-2 rounded-md border border-gray-300 dark:bg-gray-600 dark:text-white bg-white"
+              className="border p-1 rounded basis-1/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
             >
               <option value="">اختر فندقاً</option>
               {filteredHotels.map((hotel, index) => (
@@ -154,84 +134,86 @@ const Hotels = () => {
               ))}
             </select>
           </div>
-        </div>
-        <button
-          onClick={() => navigate("/HotelsForm")}
-          className="bg-green-500 text-white p-2 rounded col-span-2 sm:col-span-1 xl:col-span-2 m-0"
-        >
-          تعديل بيانات الفنادق
-        </button>
-        {/* قسم معلومات الفندق */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">معلومات الفندق</h2>
-          <div className="grid grid-cols-2 gap-4">
-            <StatCard title="اسم الفندق" value={hotel.name} />
-            <StatCard title="عدد الغرف" value={hotel.numberOfRooms} />
-            <StatCard title="عدد الزوار" value={hotel.numberOfVisitors} />
-            <StatCard title="تقييم الفندق" value={hotel.hotelCategory} />
-          </div>
+          <button
+            onClick={() => navigate("/HotelsForm")}
+            className="bg-green-500 text-white p-1 rounded text-[10px] sm:text-xs md:text-sm"
+          >
+            تعديل بيانات الفنادق
+          </button>
         </div>
 
-        {/* قسم كمية الكهرباء المستهلكة */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">
-            كمية الكهرباء المستهلكة (كيلوواط/سنة)
-          </h2>
-          <div className="grid grid-cols-1 gap-4">
-            <CustomBarChart
-              data={electricityData}
-              xKey="year"
-              barKey="electricity"
-              barColor="#f59e0b"
-              title="استهلاك الكهرباء (ك.و/سنة)"
-            />
-          </div>
-        </div>
+        <div className="grid grid-cols-3 gap-2 flex-1 h-0">
+          {/* العمود الخاص بمعلومات الفندق والرسوم البيانية - 1/3 */}
+          <div className="col-span-1 overflow-y-auto pr-2 h-full" dir="ltr">
+            {/* قسم معلومات الفندق */}
+            <div>
+              <h2 className="text-xl font-bold mb-4">معلومات الفندق</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <StatCard title="اسم الفندق" value={hotel.name} />
+                <StatCard title="عدد الغرف" value={hotel.numberOfRooms} />
+                <StatCard title="عدد الزوار" value={hotel.numberOfVisitors} />
+                <StatCard title="تقييم الفندق" value={hotel.hotelCategory} />
+              </div>
+            </div>
 
-        {/* قسم متوسط نسبة الإشغال */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">متوسط نسبة الإشغال</h2>
-          <div className="grid grid-cols-1 gap-4">
-            <CustomLineChart
-              data={accommodationData}
-              xKey="year"
-              yKeys={[{ name: "percentage", color: "#3b82f6" }]}
-              title="نسبة الإشغال على مدار السنوات"
-            />
-          </div>
-        </div>
+            {/* قسم كمية الكهرباء المستهلكة */}
+            <div>
+              <h2 className="text-xl font-bold mb-4">
+                كمية الكهرباء المستهلكة (كيلوواط/سنة)
+              </h2>
+              <CustomBarChart
+                data={electricityData}
+                xKey="year"
+                barKey="electricity"
+                barColor="#f59e0b"
+                title="استهلاك الكهرباء (ك.و/سنة)"
+              />
+            </div>
 
-        {/* قسم الخصائص البيئية */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">الخصائص البيئية</h2>
-          <div className="grid grid-cols-3 gap-4">
-            <StatCard
-              title="سعة الطاقة الشمسية (ك.و)"
-              value={hotel.solarPowerCapacity}
-            />
-            <StatCard
-              title="سخان مياه شمسي"
-              value={hotel.solarWaterHeater ? "نعم" : "لا"}
-            />
-            <StatCard
-              title="محطة تحلية"
-              value={hotel.desalinationPlant ? "نعم" : "لا"}
-            />
-            <StatCard
-              title="محطة معالجة"
-              value={hotel.treatmentPlant ? "نعم" : "لا"}
-            />
-            <StatCard
-              title="فصل النفايات"
-              value={hotel.wasteSeparation ? "نعم" : "لا"}
-            />
-          </div>
-        </div>
+            {/* قسم متوسط نسبة الإشغال */}
+            <div>
+              <h2 className="text-xl font-bold mb-4">متوسط نسبة الإشغال</h2>
+              <CustomLineChart
+                data={accommodationData}
+                xKey="year"
+                yKeys={[{ name: "percentage", color: "#3b82f6" }]}
+                title="نسبة الإشغال على مدار السنوات"
+              />
+            </div>
 
-        {/* قسم الموقع الجغرافي */}
-        <div>
-          <h2 className="text-xl font-bold mb-4">الموقع الجغرافي</h2>
-          <MapView data={hotel} />
+            {/* قسم الخصائص البيئية */}
+            <div>
+              <h2 className="text-xl font-bold mb-4">الخصائص البيئية</h2>
+              <div className="grid grid-cols-2 gap-4">
+                <StatCard
+                  title="سعة الطاقة الشمسية (ك.و)"
+                  value={hotel.solarPowerCapacity}
+                />
+                <StatCard
+                  title="سخان مياه شمسي"
+                  value={hotel.solarWaterHeater ? "نعم" : "لا"}
+                />
+                <StatCard
+                  title="محطة تحلية"
+                  value={hotel.desalinationPlant ? "نعم" : "لا"}
+                />
+                <StatCard
+                  title="محطة معالجة"
+                  value={hotel.treatmentPlant ? "نعم" : "لا"}
+                />
+                <StatCard
+                  title="فصل النفايات"
+                  value={hotel.wasteSeparation ? "نعم" : "لا"}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* العمود الخاص بالخريطة - 2/3 */}
+          <div className="col-span-2 h-full rounded-xl leaflet-container !bg-transparent">
+            <h2 className="text-xl font-bold mb-4">الموقع الجغرافي</h2>
+            <MapView data={hotel} />
+          </div>
         </div>
       </div>
     </>
