@@ -19,6 +19,7 @@ const CustomBarChart = ({
   colors = [],
 }) => {
   const [isDarkMode, setIsDarkMode] = useState(false);
+console.log(data);
 
   useEffect(() => {
     // 👇 check if HTML has class "dark" (Tailwind default)
@@ -47,7 +48,7 @@ const CustomBarChart = ({
 
   return (
     <div className="w-full">
-      <div className="dark:bg-dark dark:text-white bg-white p-2 rounded-xl shadow-lg w-full hover:shadow-xl transition">
+      <div className="h-[-webkit-fill-available] dark:bg-dark dark:text-white bg-white p-2 rounded-xl shadow-lg w-full hover:shadow-xl transition">
         <h2 className="font-bold mb-2 text-sm">{title}</h2>
         <div dir="ltr" className="w-full min-w-0 h-[10rem]">
           <ResponsiveContainer width="100%" height="100%">

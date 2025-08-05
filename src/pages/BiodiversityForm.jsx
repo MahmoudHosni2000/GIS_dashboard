@@ -1,28 +1,12 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import MapView from "../components/MapView";
 
 const BiodiversityForm = () => {
-  const navigate = useNavigate();
+  const [formData, setFormData] = useState(initialFormData);
 
-  // استرجاع البيانات من localStorage (إذا كانت موجودة)
-  const [formData, setFormData] = useState(() => {
-    try {
-      const saved = localStorage.getItem("biodiversityFormData");
-      const parsed = JSON.parse(saved);
-      return parsed && typeof parsed === "object" ? parsed : initialFormData;
-    } catch (error) {
-      console.error("خطأ في قراءة البيانات من localStorage:", error);
-      return initialFormData;
-    }
-  });
-
-  // حفظ البيانات في localStorage عند التغيير
-  useEffect(() => {
-    localStorage.setItem("biodiversityFormData", JSON.stringify(formData));
-  }, [formData]);
-
+  // تحديث الحقول عند التغيير
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -31,28 +15,31 @@ const BiodiversityForm = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("تم إرسال البيانات:", formData);
-    // هنا ممكن تبعت البيانات لـ API مستقبلاً
-    navigate("/biodiversity");
+  // تحديث الإحداثيات من الخريطة
+  const handleLocationSelect = (coords) => {
+    setFormData((prev) => ({
+      ...prev,
+      latitude: coords.latitude.toFixed(6),
+      longitude: coords.longitude.toFixed(6),
+    }));
   };
 
-  const handleLocationSelect = (coords) => {
-    setFormData((prev) => {
-      const newLat = coords.latitude.toFixed(6);
-      const newLng = coords.longitude.toFixed(6);
+  // إرسال النموذج
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-      if (prev.latitude === newLat && prev.longitude === newLng) {
-        return prev; // مفيش تغيير
-      }
+    try {
+      const existing =
+        JSON.parse(localStorage.getItem("biodiversityFormData")) || [];
+      const updated = [...existing, formData];
+      localStorage.setItem("biodiversityFormData", JSON.stringify(updated));
+      console.log("تم حفظ البيانات:", formData);
 
-      return {
-        ...prev,
-        latitude: newLat,
-        longitude: newLng,
-      };
-    });
+      // تحديث الصفحة
+      window.location.reload();
+    } catch (error) {
+      console.error("خطأ أثناء حفظ البيانات:", error);
+    }
   };
 
   return (
@@ -309,7 +296,7 @@ const BiodiversityForm = () => {
 
             <div className="text-center flex flex-col sm:flex-row justify-end !mt-2 !mb-0">
               <button
-                onClick={() => navigate("/")}
+                // onClick={() => navigate("/")}
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-6 rounded-r-lg transition duration-200 text-sm"
               >

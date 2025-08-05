@@ -17,10 +17,6 @@ const HotelsForm = () => {
   const [location, setLocation] = useState("");
   const [longitude, setLongitude] = useState("");
   const [latitude, setLatitude] = useState("");
-  const [formData, setFormData] = useState({
-    latitude: "",
-    longitude: "",
-  });
   const [electricityBills, setElectricityBills] = useState({
     2021: "",
     2022: "",
@@ -71,24 +67,17 @@ const HotelsForm = () => {
 
     console.log("تم حفظ البيانات في localStorage:", hotelData);
   };
-
+  const handleSubmit = (e) => {
+    e.preventDefault(); // يمنع التحديث التلقائي للصفحة
+    handleSave(); // ينفذ الحفظ
+  };
   const handleLocationSelect = (coords) => {
-    setFormData((prev) => {
-      const newLat = coords.latitude.toFixed(6);
-      const newLng = coords.longitude.toFixed(6);
-
-      if (prev.latitude === newLat && prev.longitude === newLng) {
-        return prev; // مفيش تغيير
-      }
-
-      return {
-        ...prev,
-        latitude: newLat,
-        longitude: newLng,
-      };
-    });
+    setLatitude(coords.latitude.toFixed(6));
+    setLongitude(coords.longitude.toFixed(6));
   };
 
+  console.log(longitude, latitude);
+  
   return (
     <div className="space-y-8 p-5 h-screen" dir="rtl">
       <Helmet>
@@ -104,7 +93,7 @@ const HotelsForm = () => {
           نموذج إضافة وتحديث بيانات الفنادق
         </h2>
         <form
-          onSubmit={handleSave}
+          onSubmit={handleSubmit}
           className="flex flex-col flex-1 h-0 md:flex-row form"
         >
           <div className="w-full md:w-1/3 p-2 overflow-auto">
@@ -326,7 +315,7 @@ const HotelsForm = () => {
                   </label>
                   <input
                     type="number"
-                    value={formData.latitude}
+                    value={latitude}
                     onChange={(e) => setLatitude(e.target.value)}
                     className="w-full px-4 py-1 border rounded text-right text-xs"
                   />
@@ -339,7 +328,7 @@ const HotelsForm = () => {
                   </label>
                   <input
                     type="number"
-                    value={formData.longitude}
+                    value={longitude}
                     onChange={(e) => setLongitude(e.target.value)}
                     className="w-full px-4 py-1 border rounded text-right text-xs"
                   />
@@ -350,7 +339,6 @@ const HotelsForm = () => {
             {/* زر الحفظ */}
             <div className="text-center flex flex-col sm:flex-row justify-end !mt-2 !mb-0">
               <button
-                onClick={() => navigate("/hotels")}
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-6 rounded-r-lg transition duration-200 text-sm"
               >

@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import StatCard from "../components/StatCard";
 import CustomBarChart from "../components/CustomBarChart";
-import SplashScreen from "../components/SplashScreen";
+// import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
-import MapView from "../components/MapView";
+import MapDash from "../components/MapDash";
 
 const Sustainability = () => {
   const navigate = useNavigate();
@@ -12,37 +12,73 @@ const Sustainability = () => {
   const [data, setData] = useState(null);
   const [showSplash, setShowSplash] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("الكل");
+  const [mapData, setMapData] = useState([]);
 
   useEffect(() => {
     const storedData = localStorage.getItem("sustainabilityData");
+    setMapData(JSON.parse(storedData) || []);
     if (storedData) {
-      setData(JSON.parse(storedData));
-    } else {
+      const parsedData = JSON.parse(storedData); // نحولها لمصفوفة فعلاً
+
+      const sumKey = (arr, key) =>
+        arr.reduce((sum, item) => sum + Number(item[key] || 0), 0);
+
       setData({
-        solar_capacity_mw: 0,
+        solar_capacity_mw: sumKey(parsedData, "solar_capacity_mw"),
         sustainable_transport_index: {
-          public_transport_share_percent: 0,
-          bike_lanes_km: 0,
-          pedestrian_zones_km: 0,
+          public_transport_share_percent: sumKey(
+            parsedData.map((item) => item.sustainable_transport_index || {}),
+            "public_transport_share_percent"
+          ),
+          bike_lanes_km: sumKey(
+            parsedData.map((item) => item.sustainable_transport_index || {}),
+            "bike_lanes_km"
+          ),
+          pedestrian_zones_km: sumKey(
+            parsedData.map((item) => item.sustainable_transport_index || {}),
+            "pedestrian_zones_km"
+          ),
         },
         green_infra_coverage_percent: {
-          parks: 0,
-          green_roofs: 0,
-          urban_forests: 0,
+          parks: sumKey(
+            parsedData.map((item) => item.green_infra_coverage_percent || {}),
+            "parks"
+          ),
+          green_roofs: sumKey(
+            parsedData.map((item) => item.green_infra_coverage_percent || {}),
+            "green_roofs"
+          ),
+          urban_forests: sumKey(
+            parsedData.map((item) => item.green_infra_coverage_percent || {}),
+            "urban_forests"
+          ),
         },
-        waste_to_energy_mwh_per_year: 0,
-        climate_risk_index: 0,
-        circular_economy_score_percent: 0,
+        waste_to_energy_mwh_per_year: sumKey(
+          parsedData,
+          "waste_to_energy_mwh_per_year"
+        ),
+        climate_risk_index: sumKey(parsedData, "climate_risk_index"),
+        circular_economy_score_percent: sumKey(
+          parsedData,
+          "circular_economy_score_percent"
+        ),
         water_energy_nexus_efficiency: {
-          energy_per_m3_water_kwh: 0,
+          energy_per_m3_water_kwh: sumKey(
+            parsedData.map((item) => item.water_energy_nexus_efficiency || {}),
+            "energy_per_m3_water_kwh"
+          ),
         },
-        carbon_neutrality_progress_percent: 0,
+        carbon_neutrality_progress_percent: sumKey(
+          parsedData,
+          "carbon_neutrality_progress_percent"
+        ),
       });
     }
+
     setTimeout(() => setShowSplash(false), 200);
   }, []);
 
-  if (showSplash || !data) return <SplashScreen />;
+  // if (showSplash || !data) return <SplashScreen />;
 
   const transportData = [
     {
@@ -70,21 +106,17 @@ const Sustainability = () => {
         <title>الاستدامة | لوحة المعلومات الجغرافية</title>
       </Helmet>
 
-      <div className="flex flex-col space-y-6 text-right h-[-webkit-fill-available]" dir="rtl">
-        
+      <div
+        className="flex flex-col space-y-6 text-right h-[-webkit-fill-available] w-[-webkit-fill-available]"
+        dir="rtl"
+      >
         <div className="flex flex-col gap-2 text-right">
           <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
             لوحة مؤشرات الأداء العام للاستدامة والمرونة المناخية
           </h1>
 
           {/* ComboBox لتحديد القسم */}
-          <div className="mb-4 flex items-center gap-4">
-            <label
-              htmlFor="category"
-              className="font-medium text-gray-700 dark:text-white"
-            >
-              اختر القسم:
-            </label>
+          <div className="flex flex-col gap-2 text-right rtl">
             <select
               id="category"
               value={selectedCategory}
@@ -116,7 +148,7 @@ const Sustainability = () => {
             {(selectedCategory === "الكل" ||
               selectedCategory === "الطاقة والبيئة") && (
               <section>
-                <h2 className="text-xl font-bold mb-4">الطاقة والبيئة</h2>
+                <h2 className="text-lg font-bold mb-2">الطاقة والبيئة</h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   <StatCard
                     title="القدرة الشمسية (ميغاواط)"
@@ -154,7 +186,7 @@ const Sustainability = () => {
             {(selectedCategory === "الكل" ||
               selectedCategory === "النقل المستدام") && (
               <section>
-                <h2 className="text-xl font-bold mb-4">النقل المستدام</h2>
+                <h2 className="text-lg font-bold mb-2">النقل المستدام</h2>
                 <CustomBarChart
                   title="مؤشر النقل المستدام"
                   data={transportData}
@@ -168,7 +200,7 @@ const Sustainability = () => {
             {(selectedCategory === "الكل" ||
               selectedCategory === "تغطية البنية التحتية الخضراء") && (
               <section>
-                <h2 className="text-xl font-bold mb-4">
+                <h2 className="text-lg font-bold mb-2">
                   تغطية البنية التحتية الخضراء
                 </h2>
                 <StatCard
@@ -190,16 +222,14 @@ const Sustainability = () => {
             {(selectedCategory === "الكل" ||
               selectedCategory === "إحداثيات الموقع") && (
               <section className="h-[inherit]">
-                <h2 className="text-xl font-bold mb-4">إحداثيات الموقع</h2>
                 <div className="h-full">
                   {" "}
                   {/* تعطي ارتفاع للخريطة عشان تبان كويس */}
-                  <MapView data={data} />
+                  <MapDash initialData={mapData} />
                 </div>
               </section>
             )}
           </div>
-
         </div>
       </div>
     </>

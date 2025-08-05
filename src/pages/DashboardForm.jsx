@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const DashboardForm = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +15,7 @@ const DashboardForm = () => {
     divingCentersNotGreen: "",
   });
 
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const theme = localStorage.getItem("theme") || "dark";
 
   useEffect(() => {
@@ -48,8 +48,17 @@ const DashboardForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("dashboardFormData", JSON.stringify(formData));
-    navigate("/");
+
+    const existingData =
+      JSON.parse(localStorage.getItem("dashboardFormData")) || [];
+
+    // أضف البيانات الجديدة للمصفوفة
+    const updatedData = [...existingData, formData];
+
+    localStorage.setItem("dashboardFormData", JSON.stringify(updatedData));
+
+    // إعادة تحميل الصفحة
+    window.location.reload();
   };
 
   const inputProps = {
@@ -210,7 +219,7 @@ const DashboardForm = () => {
           {/* زر الحفظ */}
           <div className="text-center flex flex-col sm:flex-row justify-end">
             <button
-              onClick={() => navigate("/")}
+              // onClick={() => navigate("/")}
               type="submit"
               className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-r-lg transition duration-200"
             >

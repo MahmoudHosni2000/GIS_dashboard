@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import MapView from "../components/MapView";
 
 const TransportForm = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     eBuses: "",
@@ -40,9 +40,20 @@ const TransportForm = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    localStorage.setItem("transportData", JSON.stringify(formData));
+
+    // جلب البيانات القديمة من localStorage (أو مصفوفة فاضية لو مفيش بيانات)
+    const oldData = JSON.parse(localStorage.getItem("transportData")) || [];
+
+    // إضافة البيانات الجديدة
+    oldData.push(formData);
+
+    // تخزين البيانات مرة تانية بعد التحديث
+    localStorage.setItem("transportData", JSON.stringify(oldData));
+
     console.log("تم حفظ البيانات:", formData);
-    navigate("/Transport");
+
+    // عمل refresh للصفحة
+    window.location.reload();
   };
 
   const handleLocationSelect = (coords) => {
@@ -218,7 +229,6 @@ const TransportForm = () => {
             {/* زر الإرسال */}
             <div className="text-center flex flex-col sm:flex-row justify-end !mt-3 !mb-0">
               <button
-                onClick={() => navigate("/transport")}
                 type="submit"
                 className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-6 rounded-r-lg transition duration-200 text-sm"
               >
@@ -257,7 +267,6 @@ const InputField = ({ label, name, value, onChange, placeholder }) => (
         onChange={onChange}
         className="w-full px-4 py-1 border rounded text-right text-xs"
         placeholder={placeholder}
-        min="0"
       />
     </div>
   </div>

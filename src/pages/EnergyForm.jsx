@@ -98,7 +98,7 @@ const EnergyForm = () => {
     localStorage.setItem("energyFormData", JSON.stringify(formData));
 
     console.log("Form Data Submitted:", formData);
-    navigate("/Energy");
+    navigate("/energy");
   };
 
   return (

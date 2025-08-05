@@ -1,123 +1,104 @@
 import { useEffect, useState } from "react";
 import { Helmet } from "react-helmet";
 import SplashScreen from "../components/SplashScreen";
-import { useNavigate } from "react-router-dom";
 import MapView from "../components/MapView";
 
 const SustainabilityForm = () => {
-  const [formData, setFormData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+const [formData, setFormData] = useState({
+  solar_capacity_mw: 0,
+  waste_to_energy_mwh_per_year: 0,
+  climate_risk_index: 0,
+  circular_economy_score_percent: 0,
+  carbon_neutrality_progress_percent: 0,
+  water_energy_nexus_efficiency: {
+    energy_per_m3_water_kwh: 0,
+  },
+  sustainable_transport_index: {
+    public_transport_share_percent: 0,
+    bike_lanes_km: 0,
+    pedestrian_zones_km: 0,
+  },
+  green_infrastructure_coverage_percent: 0,
+  latitude: "",
+  longitude: "",
+});
 
-  useEffect(() => {
-    const storedData = localStorage.getItem("sustainabilityData");
-    if (storedData) {
-      const parsedData = JSON.parse(storedData);
-      // تحويل القيم النصية إلى أرقام حيثما كان ذلك مناسبًا
-      const transformedData = transformData(parsedData);
-      setFormData(transformedData);
-      setLoading(false);
-    } else {
-      setFormData({
-        solar_capacity_mw: 0,
-        waste_to_energy_mwh_per_year: 0,
-        climate_risk_index: 0,
-        circular_economy_score_percent: 0,
-        carbon_neutrality_progress_percent: 0,
-        water_energy_nexus_efficiency: {
-          energy_per_m3_water_kwh: 0,
-        },
-        sustainable_transport_index: {
-          public_transport_share_percent: 0,
-          bike_lanes_km: 0,
-          pedestrian_zones_km: 0,
-        },
-        green_infrastructure_coverage_percent: 0,
-        latitude: "",
-        longitude: "",
-      });
-      setLoading(false);
+const [allData, setAllData] = useState([]);
+const [loading, setLoading] = useState(true);
+
+useEffect(() => {
+  const storedArray = localStorage.getItem("sustainabilityData");
+  if (storedArray) {
+    setAllData(JSON.parse(storedArray));
+  }
+  setLoading(false);
+}, []);
+
+const transformData = (data) => ({
+  ...data,
+  solar_capacity_mw: parseFloat(data.solar_capacity_mw) || 0,
+  waste_to_energy_mwh_per_year: parseFloat(data.waste_to_energy_mwh_per_year) || 0,
+  climate_risk_index: parseFloat(data.climate_risk_index) || 0,
+  circular_economy_score_percent: parseFloat(data.circular_economy_score_percent) || 0,
+  carbon_neutrality_progress_percent: parseFloat(data.carbon_neutrality_progress_percent) || 0,
+  green_infrastructure_coverage_percent: parseFloat(data.green_infrastructure_coverage_percent) || 0,
+  water_energy_nexus_efficiency: {
+    energy_per_m3_water_kwh: parseFloat(data.water_energy_nexus_efficiency.energy_per_m3_water_kwh) || 0,
+  },
+  sustainable_transport_index: {
+    public_transport_share_percent: parseFloat(data.sustainable_transport_index.public_transport_share_percent) || 0,
+    bike_lanes_km: parseFloat(data.sustainable_transport_index.bike_lanes_km) || 0,
+    pedestrian_zones_km: parseFloat(data.sustainable_transport_index.pedestrian_zones_km) || 0,
+  },
+  latitude: parseFloat(data.latitude) || "",
+  longitude: parseFloat(data.longitude) || "",
+});
+
+const handleChange = (fieldPath, value) => {
+  setFormData((prev) => {
+    const newData = { ...prev };
+    const path = fieldPath.split(".");
+    let target = newData;
+
+    for (let i = 0; i < path.length - 1; i++) {
+      target[path[i]] = target[path[i]] || {};
+      target = target[path[i]];
     }
-  }, []);
 
-  const transformData = (data) => {
+    target[path[path.length - 1]] = value;
+    return newData;
+  });
+};
+
+const handleSubmit = (e) => {
+  e.preventDefault();
+  const newEntry = transformData(formData);
+
+  const updatedArray = [...allData, newEntry];
+  localStorage.setItem("sustainabilityData", JSON.stringify(updatedArray));
+  alert("تم حفظ البيانات بنجاح!");
+
+  // Refresh للصفحة
+  window.location.reload();
+};
+
+const handleLocationSelect = (coords) => {
+  const newLat = coords.latitude.toFixed(6);
+  const newLng = coords.longitude.toFixed(6);
+
+  setFormData((prev) => {
+    if (prev.latitude === newLat && prev.longitude === newLng) return prev;
+
     return {
-      solar_capacity_mw: parseFloat(data.solar_capacity_mw) || 0,
-      waste_to_energy_mwh_per_year:
-        parseFloat(data.waste_to_energy_mwh_per_year) || 0,
-      climate_risk_index: parseFloat(data.climate_risk_index) || 0,
-      circular_economy_score_percent:
-        parseFloat(data.circular_economy_score_percent) || 0,
-      carbon_neutrality_progress_percent:
-        parseFloat(data.carbon_neutrality_progress_percent) || 0,
-      sustainable_transport_index: {
-        public_transport_share_percent:
-          parseFloat(
-            data.sustainable_transport_index.public_transport_share_percent
-          ) || 0,
-        bike_lanes_km:
-          parseFloat(data.sustainable_transport_index.bike_lanes_km) || 0,
-        pedestrian_zones_km:
-          parseFloat(data.sustainable_transport_index.pedestrian_zones_km) || 0,
-      },
-      green_infrastructure_coverage_percent:
-        parseFloat(data.green_infrastructure_coverage_percent) || 0,
-      water_energy_nexus_efficiency: {
-        energy_per_m3_water_kwh:
-          parseFloat(
-            data.water_energy_nexus_efficiency.energy_per_m3_water_kwh
-          ) || 0,
-      },
-      latitude: parseFloat(data.latitude) || "",
-      longitude: parseFloat(data.longitude) || "",
+      ...prev,
+      latitude: newLat,
+      longitude: newLng,
     };
-  };
+  });
+};
 
-  const handleChange = (fieldPath, value) => {
-    setFormData((prev) => {
-      const newData = { ...prev };
-      const path = fieldPath.split(".");
-      let target = newData;
+if (loading) return <SplashScreen />;
 
-      // التحقق من وجود الكائنات المفقودة وتعيين قيم افتراضية إذا لزم الأمر
-      for (let i = 0; i < path.length - 1; i++) {
-        target[path[i]] = target[path[i]] || {}; // تعيين كائن فارغ إذا كان غير موجود
-        target = target[path[i]];
-      }
-
-      // تحديث القيمة في المكان الصحيح
-      target[path[path.length - 1]] = value;
-
-      localStorage.setItem("sustainabilityData", JSON.stringify(newData));
-      return newData;
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    localStorage.setItem("sustainabilityData", JSON.stringify(formData));
-    console.log("تم إرسال البيانات:", formData);
-    alert("تم حفظ البيانات بنجاح!");
-  };
-
-  const handleLocationSelect = (coords) => {
-    setFormData((prev) => {
-      const newLat = coords.latitude.toFixed(6);
-      const newLng = coords.longitude.toFixed(6);
-
-      if (prev.latitude === newLat && prev.longitude === newLng) {
-        return prev; // مفيش تغيير
-      }
-
-      return {
-        ...prev,
-        latitude: newLat,
-        longitude: newLng,
-      };
-    });
-  };
-
-  if (loading) return <SplashScreen />;
   return (
     <div className="space-y-8 p-1" dir="rtl">
       <Helmet>
@@ -300,7 +281,6 @@ const SustainabilityForm = () => {
                 {/* زر الإرسال */}
                 <div className="text-center flex flex-col sm:flex-row justify-end !mt-2 !mb-0">
                   <button
-                    onClick={() => navigate("/sustainability")}
                     type="submit"
                     className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-1 px-6 rounded-r-lg transition duration-200 text-sm"
                   >

@@ -13,27 +13,53 @@ const Dashboard = () => {
 
   useEffect(() => {
     const stored = localStorage.getItem("dashboardFormData");
-    let parsed = {};
+    let parsedArray = [];
 
     if (stored) {
-      parsed = JSON.parse(stored);
+      parsedArray = JSON.parse(stored);
     }
+
+    const totals = parsedArray.reduce(
+      (acc, item) => {
+        acc.male += Number(item.male || 0);
+        acc.female += Number(item.female || 0);
+        acc.children += Number(item.children || 0);
+        acc.elderly += Number(item.elderly || 0);
+        acc.hospitals += Number(item.hospitals || 0);
+        acc.hotelsGreen += Number(item.hotelsGreen || 0);
+        acc.hotelsNotGreen += Number(item.hotelsNotGreen || 0);
+        acc.divingCentersGreen += Number(item.divingCentersGreen || 0);
+        acc.divingCentersNotGreen += Number(item.divingCentersNotGreen || 0);
+        return acc;
+      },
+      {
+        male: 0,
+        female: 0,
+        children: 0,
+        elderly: 0,
+        hospitals: 0,
+        hotelsGreen: 0,
+        hotelsNotGreen: 0,
+        divingCentersGreen: 0,
+        divingCentersNotGreen: 0,
+      }
+    );
 
     const formattedData = {
       population: {
-        ذكور: Number(parsed.male || 0),
-        إناث: Number(parsed.female || 0),
-        أطفال: Number(parsed.children || 0),
-        مُسنين: Number(parsed.elderly || 0),
+        ذكور: totals.male,
+        إناث: totals.female,
+        أطفال: totals.children,
+        مُسنين: totals.elderly,
       },
-      hospitals: Number(parsed.hospitals || 0),
+      hospitals: totals.hospitals,
       hotels: {
-        green_star: Number(parsed.hotelsGreen || 0),
-        non_green_star: Number(parsed.hotelsNotGreen || 0),
+        green_star: totals.hotelsGreen,
+        non_green_star: totals.hotelsNotGreen,
       },
       Diving_centres: {
-        divingCentersGreen: Number(parsed.divingCentersGreen || 0),
-        divingCentersNotGreen: Number(parsed.divingCentersNotGreen || 0),
+        divingCentersGreen: totals.divingCentersGreen,
+        divingCentersNotGreen: totals.divingCentersNotGreen,
       },
     };
 

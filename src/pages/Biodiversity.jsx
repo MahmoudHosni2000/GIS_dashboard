@@ -5,49 +5,75 @@ import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import MapView from "../components/MapView";
+import MapDash from "../components/MapDash";
 
 const Biodiversity = () => {
   const navigate = useNavigate();
   const [data, setData] = useState(null);
   const [showSplash, setShowSplash] = useState(true);
   const [filter, setFilter] = useState("all");
+  const [mapData, setMapData] = useState([]);
 
   useEffect(() => {
     const storedData = localStorage.getItem("biodiversityFormData");
-    const parsed = storedData ? JSON.parse(storedData) : {};
+    setMapData(storedData ? JSON.parse(storedData) : []);
+    const parsedArray = storedData ? JSON.parse(storedData) : [];
+
+    // دالة تجمع قيمة مفتاح معين عبر كل العناصر
+    const sumKey = (arr, key) =>
+      arr.reduce((sum, item) => sum + Number(item[key] || 0), 0);
 
     const transformed = {
-      tourism_boats_daily: { siteA: Number(parsed.dailyTouristBoats || 0) },
-      operational_moorings: { siteA: Number(parsed.mooringPoints || 0) },
-      visitors_per_site: { siteA: Number(parsed.visitorsPerSite || 0) },
-      coral_change_percent: parsed.coralChange || "0",
-      latitude: parsed.latitude || "",
-      longitude: parsed.longitude || "",
-      trained_crew_percent: parsed.trainedCrew || "0",
-      trained_guides_percent: parsed.trainedGuides || "0",
-      eco_friendly_sports_percent: parsed.ecoWaterSports || "0",
-      sustainability_incentives: parsed.sustainabilityIncentives || "0",
-      green_fins_growth_percent: parsed.greenFinsMembers || "0",
-      green_fins_operator_incentives: parsed.greenFinsIncentives || "0",
-      reef_species_change_percent: parsed.reefSpeciesChange || "0",
-      pa_trained_personnel_percent: parsed.paTrainedPersonnel || "0",
-      pa_budget_growth_percent: parsed.paBudgetIncrease || "0",
-      enforcement_patrols: parsed.enforcementPatrols || "0",
-      enforcement_actions: parsed.patrolActions || "0",
-      boats_with_holding_tanks: parsed.boatsWithSewageTanks || "0",
-      nutrient_level_reduction_percent: parsed.seaNutrientDecrease || "0",
-      pump_out_facility_boats: parsed.boatsUsingLandFacilities || "0",
-      effluent_quality_improvement_percent:
-        parsed.dischargeSalinityDecrease || "0",
-      grey_water_reduction_percent: parsed.greyWaterUseReduction || "0",
-      reef_safe_product_operators: parsed.operatorsPromotingSafeProducts || "0",
-      marine_cleanups: parsed.marineCleanups || "0",
-      coastal_damage_reports: parsed.coastalDamageReports || "0",
-      illegal_fishing_reports: parsed.illegalFishingReports || "0",
-      bird_mortality_decrease_percent: parsed.birdMortalityDecrease || "0",
-      bird_rehab_actions: parsed.birdRehabilitationCases || "0",
-      protected_turtle_sites: parsed.turtleNestingSites || "0",
-      rescued_turtles: parsed.turtlesRescued || "0",
+      tourism_boats_daily: { siteA: sumKey(parsedArray, "dailyTouristBoats") },
+      operational_moorings: { siteA: sumKey(parsedArray, "mooringPoints") },
+      visitors_per_site: { siteA: sumKey(parsedArray, "visitorsPerSite") },
+
+      coral_change_percent: sumKey(parsedArray, "coralChange"),
+      trained_crew_percent: sumKey(parsedArray, "trainedCrew"),
+      trained_guides_percent: sumKey(parsedArray, "trainedGuides"),
+      eco_friendly_sports_percent: sumKey(parsedArray, "ecoWaterSports"),
+      sustainability_incentives: sumKey(
+        parsedArray,
+        "sustainabilityIncentives"
+      ),
+      green_fins_growth_percent: sumKey(parsedArray, "greenFinsMembers"),
+      green_fins_operator_incentives: sumKey(
+        parsedArray,
+        "greenFinsIncentives"
+      ),
+      reef_species_change_percent: sumKey(parsedArray, "reefSpeciesChange"),
+      pa_trained_personnel_percent: sumKey(parsedArray, "paTrainedPersonnel"),
+      pa_budget_growth_percent: sumKey(parsedArray, "paBudgetIncrease"),
+      enforcement_patrols: sumKey(parsedArray, "enforcementPatrols"),
+      enforcement_actions: sumKey(parsedArray, "patrolActions"),
+      boats_with_holding_tanks: sumKey(parsedArray, "boatsWithSewageTanks"),
+      nutrient_level_reduction_percent: sumKey(
+        parsedArray,
+        "seaNutrientDecrease"
+      ),
+      pump_out_facility_boats: sumKey(parsedArray, "boatsUsingLandFacilities"),
+      effluent_quality_improvement_percent: sumKey(
+        parsedArray,
+        "dischargeSalinityDecrease"
+      ),
+      grey_water_reduction_percent: sumKey(
+        parsedArray,
+        "greyWaterUseReduction"
+      ),
+      reef_safe_product_operators: sumKey(
+        parsedArray,
+        "operatorsPromotingSafeProducts"
+      ),
+      marine_cleanups: sumKey(parsedArray, "marineCleanups"),
+      coastal_damage_reports: sumKey(parsedArray, "coastalDamageReports"),
+      illegal_fishing_reports: sumKey(parsedArray, "illegalFishingReports"),
+      bird_mortality_decrease_percent: sumKey(
+        parsedArray,
+        "birdMortalityDecrease"
+      ),
+      bird_rehab_actions: sumKey(parsedArray, "birdRehabilitationCases"),
+      protected_turtle_sites: sumKey(parsedArray, "turtleNestingSites"),
+      rescued_turtles: sumKey(parsedArray, "turtlesRescued"),
     };
 
     setData(transformed);
@@ -73,34 +99,33 @@ const Biodiversity = () => {
         <title>التنوع البيولوجي | لوحة المؤشرات الجغرافية</title>
       </Helmet>
 
-      <div className="flex flex-col space-y-6 text-right h-[-webkit-fill-available]">
-        <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
-          لوحة مؤشرات الأداء العام للتنوع البيولوجي
-        </h1>
-        {/* أزرار الفلترة */}
-        <div
-          className="flex flex-col sm:flex-row sm:items-center gap-4 mb-6"
-          dir="rtl"
-        >
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
-          >
-            <option value="all">الكل</option>
-            <option value="tourism">السياحة</option>
-            <option value="training">التدريب والممارسات البيئية</option>
-            <option value="reef">الشعاب البحرية</option>
-            <option value="conservation">جهود الحماية</option>
-          </select>
+      <div className="flex flex-col space-y-6 text-right h-[-webkit-fill-available] w-[-webkit-fill-available]">
+        <div className="flex flex-col gap-2 text-right">
+          <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
+            لوحة مؤشرات الأداء العام للتنوع البيولوجي
+          </h1>
+          {/* أزرار الفلترة */}
+          <div className="flex flex-col gap-2 text-right rtl" dir="rtl">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="border p-1 rounded basis-3/4 dark:bg-gray-600 dark:text-white bg-white text-[10px] sm:text-xs md:text-sm"
+            >
+              <option value="all">الكل</option>
+              <option value="tourism">السياحة</option>
+              <option value="training">التدريب والممارسات البيئية</option>
+              <option value="reef">الشعاب البحرية</option>
+              <option value="conservation">جهود الحماية</option>
+            </select>
 
-          {/* زر التعديل */}
-          <button
-            onClick={() => navigate("/BiodiversityForm")}
-            className="bg-green-500 text-white p-1 rounded text-[10px] sm:text-xs md:text-sm"
-          >
-            تعديل بيانات التنوع البيولوجي
-          </button>
+            {/* زر التعديل */}
+            <button
+              onClick={() => navigate("/BiodiversityForm")}
+              className="bg-green-500 text-white p-1 rounded text-[10px] sm:text-xs md:text-sm"
+            >
+              تعديل بيانات التنوع البيولوجي
+            </button>
+          </div>
         </div>
         <div className="grid grid-cols-3 gap-2 flex-1 h-0">
           {/* باقي الصفحة - 1/3 */}
@@ -111,7 +136,7 @@ const Biodiversity = () => {
             {/* المواقع السياحية */}
             {(filter === "all" || filter === "tourism") && (
               <>
-                <h2 className="text-xl font-bold">المواقع السياحية</h2>
+                <h2 className="text-lg font-bold mb-2">المواقع السياحية</h2>
                 <div className="grid grid-cols-1 gap-4">
                   <CustomBarChart
                     data={boatsData}
@@ -140,7 +165,7 @@ const Biodiversity = () => {
             {/* التدريب والممارسات البيئية */}
             {(filter === "all" || filter === "training") && (
               <>
-                <h2 className="text-xl font-bold">
+                <h2 className="text-lg font-bold mb-2">
                   التدريب والممارسات البيئية
                 </h2>
                 <div className="grid grid-cols-4 gap-4">
@@ -180,7 +205,7 @@ const Biodiversity = () => {
             {/* تأثير الشعاب والبيئة البحرية */}
             {(filter === "all" || filter === "reef") && (
               <>
-                <h2 className="text-xl font-bold">
+                <h2 className="text-lg font-bold mb-2">
                   تأثير الشعاب والبيئة البحرية
                 </h2>
                 <div className="grid grid-cols-4 gap-4">
@@ -234,7 +259,7 @@ const Biodiversity = () => {
             {/* إجراءات الحماية */}
             {(filter === "all" || filter === "conservation") && (
               <>
-                <h2 className="text-xl font-bold">إجراءات الحماية</h2>
+                <h2 className="text-lg font-bold mb-2">إجراءات الحماية</h2>
                 <div className="grid grid-cols-4 gap-4">
                   <StatCard
                     title="تنظيفات ساحلية وبحرية تطوعية"
@@ -277,8 +302,7 @@ const Biodiversity = () => {
 
           {/* العمود الخاص بالخريطة - 2/3 */}
           <div className="col-span-2 h-full rounded-xl leaflet-container !bg-transparent">
-            <h2 className="text-xl font-bold mb-4">الموقع الجغرافي</h2>
-            <MapView data={data} />
+            <MapDash initialData={mapData} />
           </div>
         </div>
       </div>

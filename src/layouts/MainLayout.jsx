@@ -20,7 +20,7 @@ const MainLayout = () => {
     return () => observer.disconnect();
   }, []);
 
-  const bgImage = isDark ? "/assets/Dark.png" : "/assets/light.jpg";
+  const bgImage = isDark ? "/assets/Dark.png" : "/assets/Light.png";
 
   return (
     <div

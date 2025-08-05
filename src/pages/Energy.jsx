@@ -5,6 +5,7 @@ import MapView from "../components/MapView";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
+import MapDash from "../components/MapDash";
 
 const Energy = () => {
   const [data, setData] = useState(null);
@@ -78,7 +79,7 @@ const Energy = () => {
   const solarEnergyCards = [
     {
       label: "القدرة الشمسية المركبة",
-      value: `${data?.pv_capacity_mwp} ميغاواط بيك`,
+      value: `${data?.pv_capacity_mwp} MWp`,
       icon: <Zap className="w-6 h-6 text-yellow-500" />,
       percentage: diffs?.pv_capacity_mwp,
     },
@@ -116,7 +117,7 @@ const Energy = () => {
     },
     {
       label: "متوسط استهلاك النزيل",
-      value: `${data?.daily_consumption_per_guest} ك.و.س/يوم`,
+      value: `${data?.daily_consumption_per_guest} kWh/day`,
       icon: <Zap className="w-6 h-6 text-blue-600" />,
       percentage: diffs.daily_consumption_per_guest,
     },
@@ -144,7 +145,7 @@ const Energy = () => {
       </Helmet>
       {/* الهيكل الرئيسي للصفحة */}
       <div
-        className="flex flex-col space-y-6 text-right h-[-webkit-fill-available]"
+        className="flex flex-col space-y-6 text-right h-[-webkit-fill-available] w-[-webkit-fill-available]"
         dir="rtl"
       >
         {/* العنوان والفلاتر */}
@@ -186,7 +187,7 @@ const Energy = () => {
             {(selectedCategory === "all" ||
               selectedCategory === "solar_energy") && (
               <>
-                <h2 className="text-xl font-bold mb-4">الطاقة الشمسية</h2>
+                <h2 className="text-lg font-bold mb-2">الطاقة الشمسية</h2>
                 <div className="grid grid-cols-1 gap-4">
                   {solarEnergyCards.map((item, i) => (
                     <Card key={i} {...item} />
@@ -198,7 +199,7 @@ const Energy = () => {
             {(selectedCategory === "all" ||
               selectedCategory === "electricity_consunption") && (
               <>
-                <h2 className="text-xl font-bold mb-4">استهلاك الكهرباء</h2>
+                <h2 className="text-lg font-bold mb-2">استهلاك الكهرباء</h2>
                 <div className="grid grid-cols-1 gap-4">
                   {electricityCards.map((item, i) => (
                     <Card key={i} {...item} />
@@ -210,7 +211,7 @@ const Energy = () => {
             {(selectedCategory === "all" ||
               selectedCategory === "smart_rooms") && (
               <>
-                <h2 className="text-xl font-bold mb-4">
+                <h2 className="text-lg font-bold mb-2">
                   الغرف الذكية والمساحات القابلة للتعتيم
                 </h2>
                 <div className="grid grid-cols-1 gap-4">
@@ -229,8 +230,7 @@ const Energy = () => {
                 selectedCategory === "map" ? "md:col-span-3" : "md:col-span-2"
               } h-full rounded-xl leaflet-container !bg-transparent`}
             >
-              <h2 className="text-xl font-bold mb-4">عرض الإحداثيات</h2>
-              <MapView data={data} />
+              <MapView initialData={data} />
             </div>
           )}
         </div>

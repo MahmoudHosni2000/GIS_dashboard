@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import Card from "../components/Card";
 import { Users, Hospital, Hotel, WavesLadder } from "lucide-react";
 import CustomBarChart from "../components/CustomBarChart";
-import { useEffect } from "react";
 
 const DashboardFilter = ({ data, filter, setFilter }) => {
   const navigate = useNavigate();

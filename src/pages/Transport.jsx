@@ -4,7 +4,7 @@ import CustomPieChart from "../components/CustomPieChart";
 import SplashScreen from "../components/SplashScreen";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
-import MapView from "../components/MapView";
+import MapDash from "../components/MapDash";
 
 const defaultData = {
   eBuses: "0",
@@ -26,15 +26,26 @@ const Transport = () => {
   const [data, setData] = useState(defaultData);
   const [showSplash, setShowSplash] = useState(true);
   const [filter, setFilter] = useState("all");
-
+  const [mapData, setMapData] = useState([]);
   useEffect(() => {
-    const saved = localStorage.getItem("transportData");
-    if (saved) {
-      setData(JSON.parse(saved));
+    const saved = JSON.parse(localStorage.getItem("transportData")) || [];
+    setMapData(saved);
+    if (saved.length > 0) {
+      const totals = saved.reduce((acc, item) => {
+        for (let key in item) {
+          if (key === "latitude" || key === "longitude") continue;
+          const value = Number(item[key]);
+          acc[key] = (acc[key] || 0) + (isNaN(value) ? 0 : value);
+        }
+        return acc;
+      }, {});
+      setData(totals);
+    } else {
+      setData(defaultData);
     }
+
     setTimeout(() => setShowSplash(false), 200);
   }, []);
-  console.log(data);
 
   if (showSplash) return <SplashScreen />;
 
@@ -69,7 +80,8 @@ const Transport = () => {
       <Helmet>
         <title>النقل | لوحة مؤشرات نظم المعلومات الجغرافية</title>
       </Helmet>
-      <div className="flex flex-col space-y-6 text-right h-[-webkit-fill-available]">
+      <div className="flex flex-col space-y-6 text-right h-[-webkit-fill-available] w-[-webkit-fill-available]">
+        <div className="flex flex-col gap-2 text-right">
           <h1 className="mx-auto text-3xl font-extrabold p-2.5 bg-white/55 rounded-md backdrop-blur-md w-full flex justify-center">
             لوحة مؤشرات الأداء العام للنقل
           </h1>
@@ -91,8 +103,9 @@ const Transport = () => {
               تعديل بيانات النقل
             </button>
           </div>
+        </div>
 
-        <div class="grid grid-cols-3 gap-2 flex-1 h-0">
+        <div className="grid grid-cols-3 gap-2 flex-1 h-0">
           {/* العمود الأول - 1/3 */}
           <div
             className="col-span-1 overflow-y-auto pr-2 h-full flex flex-col gap-2"
@@ -163,8 +176,8 @@ const Transport = () => {
           </div>
 
           {/* العمود الثاني - 2/3 */}
-          <div className="md:col-span-2 ">
-            <MapView data={data} />
+          <div className="col-span-2 h-full rounded-xl leaflet-container !bg-transparent ">
+            <MapDash initialData={mapData} />
           </div>
         </div>
       </div>

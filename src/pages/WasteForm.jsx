@@ -568,7 +568,6 @@ export default function WasteForm() {
               <h2 className="font-medium mt-6 text-gray-700">
                 فعاليات التوعية والتواصل:
               </h2>
-
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
                 {/* عدد الفعاليات */}
                 <InputField

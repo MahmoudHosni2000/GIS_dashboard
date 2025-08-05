@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import L from "leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  LayersControl,
+  useMapEvents,
+} from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 
 // أيقونة مخصصة للماركر
@@ -12,10 +18,13 @@ const gifIcon = L.icon({
 });
 
 // مكون لتحديث الإحداثيات بناءً على نقر المستخدم
-const LocationPicker = ({ setCoords }) => {
+const LocationPicker = ({ setCoords, onLocationSelect }) => {
   useMapEvents({
     click(e) {
-      setCoords([e.latlng.lat, e.latlng.lng]);
+      const lat = e.latlng.lat;
+      const lng = e.latlng.lng;
+      setCoords([lat, lng]);
+      onLocationSelect?.({ latitude: lat, longitude: lng }); // ✅ هنا الباس
     },
   });
   return null;
@@ -35,22 +44,34 @@ const MapView = ({ initialData, onLocationSelect }) => {
     }
   }, [initialData]);
 
-  // كل ما تتغير الإحداثيات، ابعتها للمكون الأب
-  useEffect(() => {
-    if (coords && onLocationSelect) {
-      onLocationSelect({ latitude: coords[0], longitude: coords[1] });
-    }
-  }, [coords, onLocationSelect]);
-
   return (
     <MapContainer
-      center={coords || defaultCoords}
       zoom={12}
+      center={coords || defaultCoords}
       className="w-full h-full rounded-l-[20px] shadow-lg"
     >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <LayersControl position="topright">
+        <LayersControl.BaseLayer checked name="Satellite">
+          <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}" />
+        </LayersControl.BaseLayer>
+
+        <LayersControl.BaseLayer name="OpenStreetMap">
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        </LayersControl.BaseLayer>
+
+        <LayersControl.BaseLayer name="Topographic">
+          <TileLayer url="https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png" />
+        </LayersControl.BaseLayer>
+
+        <LayersControl.BaseLayer name="Dark Mode">
+          <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+        </LayersControl.BaseLayer>
+      </LayersControl>
       {coords && <Marker position={coords} icon={gifIcon} />}
-      <LocationPicker setCoords={setCoords} />
+      <LocationPicker
+        setCoords={setCoords}
+        onLocationSelect={onLocationSelect}
+      />
     </MapContainer>
   );
 };
